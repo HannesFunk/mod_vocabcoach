@@ -68,6 +68,12 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
 
         // Here, more information could be added
 
+        $years = [];
+        for ($i=5; $i<=13; $i++) {
+            $years[$i] = $i;
+        }
+        $mform->addElement('select', 'year', 'Jahrgangsstufe', $years);
+
         // Add standard elements.
         $this->standard_coursemodule_elements();
 

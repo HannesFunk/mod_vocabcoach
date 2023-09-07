@@ -45,7 +45,7 @@ class vocab_manager {
 
     function does_vocab_exist(string $front, string $back) : bool {
         global $DB;
-        $condition1 = $DB->sql_compare_text('front') . ' = ' . $DB->sql_compare_text(':front');
+        $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
         $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
 
         $query = "SELECT COUNT(*) FROM {mod_vocabcoach_vocab} WHERE $condition1 AND $condition2";
@@ -104,19 +104,24 @@ class vocab_manager {
         global $DB;
 
         try {
-            $list_id = $DB->insert_record('mod_vocabcoach_lists', $list_info, true);
+            return $DB->insert_record('mod_vocabcoach_lists', $list_info, true);
         } catch (dml_exception $e) {
             return -1;
         }
-
-        return $list_id;
    }
 
    function add_vocab_to_list (int $vocabid, int $listid) : bool {
         global $DB;
+        $conditions = [
+            'vocabid' => $vocabid,
+            'listid' => $listid,
+        ];
 
         try {
-            $DB->insert_record('mod_vocabcoach_list_contains', ['vocabid'=>$vocabid, 'listid'=>$listid]);
+            if ($DB->count_records('mod_vocabcoach_list_contains', $conditions) > 0) {
+                return false;
+            }
+            $DB->insert_record('mod_vocabcoach_list_contains', $conditions);
         } catch (dml_exception $e) {
             return false;
         }
@@ -164,16 +169,16 @@ class vocab_manager {
         return true;
    }
 
-   public function edit_list($listid, $vocabarray) {
+   public function edit_list($listid, $vocabarray) :void {
         global $DB;
 
         foreach($vocabarray as $vocab) {
             if ($vocab->correct_everywhere) {
                 $DB->update_record('mod_vocabcoach_vocab', $vocab);
             } else {
+                $this->remove_vocab_from_list($vocab->id, $listid);
                 $new_id = $this->insert_vocab($vocab, $this->userid);
                 $this->add_vocab_to_list($new_id, $listid);
-                $this->remove_vocab_from_list($vocab->id, $listid);
             }
         }
 

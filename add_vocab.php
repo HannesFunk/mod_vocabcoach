@@ -56,14 +56,21 @@ $PAGE->set_url(new moodle_url('/mod/vocabcoach/add_vocab.php', ['id'=>$cm->id]))
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_title(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('add_vocab_title', 'mod_vocabcoach'));
-$PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init');
+$PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init', [$editlistid ?? -1]);
+$PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 
 if ($mode === 'edit') {
     $listapi = new \mod_vocabcoach\external\check_vocab_api();
     $old_vocab_array = $listapi->get_list_vocabs($editlistid);
-    $mform = new add_vocab_form(null, ['mode'=>$mode, 'old'=>$old_vocab_array]);
+    $mform = new add_vocab_form(null, ['mode'=>$mode, 'old'=>$old_vocab_array, 'listid'=>$editlistid, 'year'=>$moduleinstance->year]);
+    $listinfo = $DB->get_record('mod_vocabcoach_lists', ['id'=>$editlistid],
+        'title AS list_title, 
+        book AS list_book, 
+        unit AS list_unit, 
+        year AS list_year');
+    $mform->set_data($listinfo);
 } else {
-    $mform = new add_vocab_form(null, ['mode' => $mode, 'old' => null]);
+    $mform = new add_vocab_form(null, ['mode' => $mode, 'old' => null, 'year'=>$moduleinstance->year]);
 }
 
 if ($mform->is_cancelled()) {
@@ -81,7 +88,7 @@ if ($mform->is_cancelled()) {
             continue;
         }
         $vocab = new stdClass();
-        $vocab->id = $_POST['id'][$id] ?? '0';
+        $vocab->id = $_POST['vocabid'][$i] ?? '0';
         $vocab->correct_everywhere = false;
         $vocab->front = $_POST['front'][$i];
         $vocab->back = $_POST['back'][$i];

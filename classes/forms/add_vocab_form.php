@@ -32,14 +32,6 @@ class add_vocab_form extends moodleform {
         $mform = $this->_form; // Don't forget the underscore!
 
         $mode = $this->_customdata['mode'];
-        $existing_data = $this->_customdata['old'];
-        if ($existing_data === null) {
-          $emptyrow = new StdClass;
-          $emptyrow->id  = 0;
-          $emptyrow->front  = '';
-          $emptyrow->back = '';
-          $existing_data[] = $emptyrow;
-        }
 
         $id = optional_param('id', 0, PARAM_INT);
 
@@ -47,27 +39,10 @@ class add_vocab_form extends moodleform {
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'mode', $mode);
         $mform->setType('mode', PARAM_TEXT);
+        $mform->addElement('hidden', 'listid', $this->_customdata['listid'] ?? 0);
+        $mform->setType('listid', PARAM_TEXT);
 
-        $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));
-
-        $mform->addElement('static', 'info_lines', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
-
-        $repeat_element = [
-
-        ];
-
-        foreach ($existing_data as $row) {
-            $vocabrow = array();
-            $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]', $row->id);
-            $vocabrow[] =& $mform->createElement('text', 'front[]', 'value="{$row->front}"');
-            $vocabrow[] =& $mform->createElement('text', 'back[]', 'value="{$row->back}"');
-            $mform->addGroup($vocabrow, '', get_string('vocab', 'mod_vocabcoach'));
-            $mform->setType('vocabid[]', PARAM_INT);
-            $mform->setType('front[]', PARAM_TEXT);
-            $mform->setType('back[]', PARAM_TEXT);
-        }
-
-        if ($mode === 'list') {
+        if ($mode === 'list' || $mode === 'edit') {
             $mform->addElement('header', 'listsectionheader', get_string('listprops', 'mod_vocabcoach'));
 
             $mform->addElement('text', 'list_title', 'Name');
@@ -78,9 +53,12 @@ class add_vocab_form extends moodleform {
             $mform->setType('list_book', PARAM_TEXT);
             $mform->addRule('list_book', 'Darf nicht leer sein.', 'required');
 
-            $mform->addElement('text', 'list_year', 'Jahrgangsstufe');
-            $mform->setType('list_year', PARAM_TEXT);
-            $mform->addRule('list_year', 'Darf nicht leer sein.', 'required');
+            $years = [];
+            for ($i=5; $i<=13; $i++) {
+                $years[$i] = $i;
+            }
+            $mform->addElement('select', 'list_year', 'Jahrgangsstufe', $years, ['disabled']);
+            $mform->setDefault('list_year', $this->_customdata['year']);
 
             $mform->addElement('text', 'list_unit', 'Unit');
             $mform->setType('list_unit', PARAM_TEXT);
@@ -90,8 +68,21 @@ class add_vocab_form extends moodleform {
             $mform->addHelpButton('add_to_user_database', 'add_vocab_add_to_user_database', 'mod_vocabcoach');
         }
 
-        $this->add_action_buttons();
+        $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));
 
+        $mform->addElement('static', 'info_lines', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
+
+        $vocabrow = array();
+        $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
+        $vocabrow[] =& $mform->createElement('text', 'front[]');
+        $vocabrow[] =& $mform->createElement('text', 'back[]');
+        $mform->addGroup($vocabrow, '', get_string('vocab', 'mod_vocabcoach'));
+        $mform->setType('vocabid[]', PARAM_INT);
+        $mform->setType('front[]', PARAM_TEXT);
+        $mform->setType('back[]', PARAM_TEXT);
+
+
+        $this->add_action_buttons();
     }
 
     //Custom validation should be added here

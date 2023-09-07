@@ -16,27 +16,25 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 TODO:
 Programming:
 - JS: relative paths
-- addvocab - js: letzte node mit front[]
-- add_vocab: cancel: falscher redirect
 
 Features:
 - Gamification
 - Stalking-Tools
-- Vokabeln mit Bildern
 - Übersicht: how is my class doing?
 - Listen bearbeiten als Ersteller oder Teacher
 - Tippen/ etc. als Standardeinstellung
 
+OUT OF SCOPE:
+- Vokabeln mit Bildern
 
 Improvements
 - Zusammenfassung nach Abfrage
-- globale Einstellungen
 - globales Layout
 - Code-Linting
 - center Karteikästen auf Startseite
 - Buch-Liste
-- Jahrgangsstufe: automatisch wählen, Dropbown
 - Aktion: Liste in meinen Kasten übernehmen
+- Anleitung für add-vocab beim editten (z.B. löschen durch leer lassen)
 
 Meta:
 - Elternbrief

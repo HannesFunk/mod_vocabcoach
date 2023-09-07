@@ -1,0 +1,54 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_vocabcoach/boxes
+
+
+    Example context (json):
+    {
+
+    }
+}}
+
+<h1>Karteikasten</h1>
+
+<input type="button" class="btn btn-primary" value="Vokabeln hinzufügen" onclick="location.href='{{{addvocaburl}}}'">
+<input type="button" class="btn btn-primary" value="Neue Vokabelliste erstellen" onclick="location.href='{{{addlisturl}}}'">
+<input type="button" class="btn btn-primary" value="Vokabellisten anzeigen" onclick="location.href='{{{listsurl}}}'">
+
+
+<hr>
+<div id="vocabcoach-box-container">
+
+    {{#boxdata}}
+    <div class="box" onclick="location.href='{{checkurl}}&stage={{stage}}'">
+        <span class="box-title">Fach {{stage}}</span>
+        <span class="box-numbers">{{due}} / {{total}}</span>
+    </div>
+    {{/boxdata}}
+
+</div>
+
+<div class="clearfix"></div>
+
+<hr>
+<div class="activity-report">
+    <div>Durchgehend eingeloggt seit {{days_logged_in}} Tagen.</div>
+    <div>Durchgehend alle Vokabeln wiederholt seit {{days_checked_all}} Tagen.</div>
+</div>
+
+

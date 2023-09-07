@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-load-gruntfile": "^0.0.2"
+  },
+  "dependencies": {
+    "semver": "^7.5.4"
+  }
+}

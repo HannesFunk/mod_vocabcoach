@@ -1,0 +1,103 @@
+
+<h3>Vokabellisten</h3>
+
+<table id="table-list" class="table generaltable">
+
+
+<tbody>
+<tr data-list-id="{{id}}">
+    <th>Name</th>
+    <th>Jgst.</th>
+    <th>Buch</th>
+    <th>Kapitel</th>
+    <th>Anzahl Vokabeln</th>
+    <th>Ersteller:in</th>
+    <th>Aktionen</th>
+</tr>
+{{#emptyList}}
+    <td colspan="7" class="text-center">
+        <span>Keine Vokabelliste gefunden.</span>
+    </td>
+{{/emptyList}}
+{{#lists}}
+<tr data-list-id="{{id}}">
+    <td>{{title}}</td>
+    <td>{{year}}</td>
+    <td>{{book}}</td>
+    <td>{{unit}}</td>
+    <td>{{number}}</td>
+    <td>{{creator}}</td>
+    <td>
+    <div class="dropdown">
+        <a href="#" class="btn btn-link btn-icon colour-inherit text-decoration-none d-flex align-items-center justify-content-center" role="button" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" tabindex="0" aria-controls="list-{{id}}-menu" aria-label="Aktionen anzeigen" aria-expanded="false">
+            <i class="fa fa-ellipsis-v text-dark  py-2" aria-hidden="true"></i>
+        </a>
+        <div
+            class="dropdown-menu dropdown-menu-right"
+            aria-labelledby="list-{{id}}-menu"
+            data-rel="menu-content"
+            role="menu"
+            id="list-{{id}}-menu"
+        >
+            <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Abfrage"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/check_list"
+            >
+                <span class="menu-action-text">Abfrage</span>
+            </a>
+            <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Löschen"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/delete_list"
+            >
+                <span class="menu-action-text">Löschen</span>
+            </a>
+            <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Als PDF exportieren"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/show_pdf"
+            >
+                <span class="menu-action-text">Als PDF exportieren</span>
+            </a>
+            <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Bearbeiten"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/edit_list"
+            >
+                <span class="menu-action-text">Bearbeiten</span>
+            </a>
+        </div>
+
+    </div>
+    </td>
+</tr>
+{{/lists}}
+</tbody>
+
+</table>
+{{#loading}}
+<div class="spinner-container">
+    <div class="spinner"></div>
+</div>
+{{/loading}}

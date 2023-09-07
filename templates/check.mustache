@@ -1,0 +1,67 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_vocabcoach/check
+
+
+    Example context (json):
+    {
+
+    }
+}}
+
+<h2>Abfrage</h2>
+<div id="check-container" data-vocab-data-id="-1">
+    <div id="check-header">
+        <div id="check-button-close" class="btn btn-secondary"
+             data-action="mod_vocabcoach/end-check" style="background-color: grey; float: right;">X</div>
+        <div class="clearfix"></div>
+
+        {{{check-settings-form}}}
+
+        <p class="instruction-front-back-random">Überlege dir die Übersetzung der Vokabel und überprüfe deine Lösung, indem du in das leere Feld klickst.</p>
+        <p class="check-number-remaining"></p>
+        <div class="clearfix"></div>
+
+    </div>
+
+    <div id="check-box-front" data-action="mod_vocabcoach/reveal-card"><div id="check-front">Lädt...</div>
+        <div id="check-type-area" style="display: none;">
+            <label for="input-vocab-front"></label>
+            <input type="text" name="input-vocab-front" id="input-vocab-front" style="display: block" />
+            <input type="button" class="btn btn-primary" value="Prüfen" id="button-typed-vocab-check" data-action="mod-vocabcoach/typed-vocab-check" />
+            <input type="button" class="btn btn-secondary" value="Auflösen" id="button-typed-vocab-reveal" data-action="mod-vocabcoach/typed-vocab-reveal" />
+            <input type="button" class="btn btn-secondary" id="button-typed-vocab-next" style="display: none" value="Nächste" data-action="mod-vocabcoach/typed-vocab-unknown" />
+        </div>
+    </div>
+    <div id="check-box-back" data-action="mod_vocabcoach/reveal-card"><div id="check-back">Lädt...</div>
+    </div>
+
+    <div id="check-summary" data-action="mod_vocabcoach/end-check">
+        <div>
+            <span class="check-summary-known"></span> von <span class="check-summary-total"></span> gewusst!
+        </div>
+        <div class="check-summary-message"></div>
+    </div>
+</div>
+
+<div id="check-buttons">
+    <input type="button" id="check-button-no" class="btn btn-secondary" data-action="mod_vocabcoach/update-vocab" data-vocabcoach-known="false" value="Didn't know that!" />
+    <input type="button" id="check-button-yes" class="btn btn-primary" data-action="mod_vocabcoach/update-vocab" data-vocabcoach-known="true" value="Got it!" />
+</div>
+
+

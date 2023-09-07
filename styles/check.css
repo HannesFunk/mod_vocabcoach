@@ -1,0 +1,68 @@
+#check-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 85%;
+    margin: auto;
+}
+
+#check-box-front,
+#check-box-back {
+    border: 1px solid grey;
+    border-radius: 10px;
+    width: 85%;
+    height: 20vh;
+    text-align: center;
+    margin: auto;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#check-summary {
+    height: calc(40vh + 30px);
+    margin: auto;
+    width: 85%;
+    text-align: center;
+    border-radius: 10px;
+    border: 3px solid blue;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.check-summary-known,
+.check-summary-total {
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+input.wrong {
+    animation: shake .5s;
+    border-color: darkred;
+}
+
+@keyframes shake {
+    20% {
+        transform: translate(8px);
+    }
+    40% {
+        transform: translate(-8px);
+    }
+    60% {
+        transform: translate(8px);
+    }
+    80% {
+        transform: translate(-8px);
+    }
+}
+
+.check-number-remaining {
+    float: right;
+}
+
+.instruction-front-back-random {
+    float: left;
+}

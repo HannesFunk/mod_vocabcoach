@@ -1,0 +1,29 @@
+#vocabcoach-box-container .box {
+    border: 1px solid black;
+    border-radius: 3px;
+    background-color: #ccc;
+    margin: 10px;
+    cursor: pointer;
+    float: left;
+}
+
+#vocabcoach-box-container .box-title {
+    font-weight: bold;
+    display: block;
+    border-bottom: 4px solid #5F021F;
+    background-color: #999;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+#vocabcoach-box-container .box-numbers {
+    background-color: rgb(59 130 246 / 0.5);
+    font-size: x-large;
+    display: block;
+    padding: 10px;
+    text-align: center;
+}
+
+
+

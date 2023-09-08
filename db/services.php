@@ -32,24 +32,17 @@ $functions = [
         'description' => 'Retrieves vocabulary from a list with given listid.',
         'type' => 'write',
         'ajax' => true,
-    ], 'mod_vocabcoach_get_lists' => [
-        'classname' => 'mod_vocabcoach\external\manage_lists_api',
-        'methodname' => 'get_lists',
-        'description' => 'Return all the lists meeting certain (or no) search criteria.',
-        'type' => 'write',
-        'ajax' => true,
-    ],
-    'mod_vocabcoach_delete_list' => [
+    ], 'mod_vocabcoach_delete_list' => [
         'classname' => 'mod_vocabcoach\external\manage_lists_api',
         'methodname' => 'delete_list',
         'description' => 'Remove a list with certain id.',
         'type' => 'write',
         'ajax' => true,
     ],
-    'mod_vocabcoach_delete_list' => [
+    'mod_vocabcoach_add_list_to_user' => [
         'classname' => 'mod_vocabcoach\external\manage_lists_api',
-        'methodname' => 'delete_list',
-        'description' => 'Remove a list with certain id.',
+        'methodname' => 'add_list_to_user',
+        'description' => 'Add all the new vocab from one list to the user db.',
         'type' => 'write',
         'ajax' => true,
     ],

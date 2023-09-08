@@ -1,6 +1,10 @@
 
 <h3>Vokabellisten</h3>
 
+<div class="btn btn-secondary btn-close"
+     data-action="mod_vocabcoach/close_page">X</div>
+<div class="clearfix"></div>
+
 <table id="table-list" class="table generaltable">
 
 
@@ -49,6 +53,7 @@
                 data-list-id="{{id}}"
                 data-action="mod_vocabcoach/check_list"
             >
+                <i class="fa fa-question-circle-o text-dark  pr-2" aria-hidden="true"></i>
                 <span class="menu-action-text">Abfrage</span>
             </a>
             <a
@@ -56,24 +61,13 @@
                 role="menuitem"
                 tabindex="-1"
                 data-targetstate="0"
-                title="Löschen"
+                title="In meinen Kasten übernehmen"
                 href="#"
                 data-list-id="{{id}}"
-                data-action="mod_vocabcoach/delete_list"
+                data-action="mod_vocabcoach/add_list_to_user"
             >
-                <span class="menu-action-text">Löschen</span>
-            </a>
-            <a
-                class="dropdown-item menu-action"
-                role="menuitem"
-                tabindex="-1"
-                data-targetstate="0"
-                title="Als PDF exportieren"
-                href="#"
-                data-list-id="{{id}}"
-                data-action="mod_vocabcoach/show_pdf"
-            >
-                <span class="menu-action-text">Als PDF exportieren</span>
+                <i class="fa fa-save text-dark  pr-2" aria-hidden="true"></i>
+                <span class="menu-action-text">In meinen Kasten übernehmen</span>
             </a>
             <a
                 class="dropdown-item menu-action"
@@ -85,7 +79,34 @@
                 data-list-id="{{id}}"
                 data-action="mod_vocabcoach/edit_list"
             >
+                <i class="fa fa-edit text-dark  pr-2" aria-hidden="true"></i>
                 <span class="menu-action-text">Bearbeiten</span>
+            </a>
+            <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Als PDF exportieren"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/show_pdf"
+            >
+                <i class="fa fa-copy text-dark  pr-2" aria-hidden="true"></i>
+                <span class="menu-action-text">Als PDF exportieren</span>
+            </a>
+            <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Löschen"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/delete_list"
+            >
+                <i class="fa fa-trash-o text-dark  pr-2" aria-hidden="true"></i>
+                <span class="menu-action-text">Löschen</span>
             </a>
         </div>
 

@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-global $PAGE, $OUTPUT, $DB;
+global $PAGE, $OUTPUT, $DB, $USER;
 
 /**
  * Prints an instance of mod_vocabcoach.
@@ -23,22 +23,25 @@ global $PAGE, $OUTPUT, $DB;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
-require_login();
 
-global $USER;
 $id = required_param('id', PARAM_INT);
 
-$PAGE->set_context(\context_system::instance());
-$PAGE->set_url('/mod/vocabcoach/lists.php');
+$cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+$moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
+
+require_login($course, true, $cm);
+$modulecontext = context_module::instance($cm->id);
+$PAGE->set_context($modulecontext);
+$PAGE->set_url('/mod/vocabcoach/lists.php', ['id' => $id]);
 $PAGE->set_title('Vokabelcoach - Vokabellisten');
 $PAGE->set_heading('Vokabelcoach - Vokabellisten');
 
-$PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init', [$id]);
+$PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init', [$id, $USER->id]);
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
+$PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/lists', ['loading' => true]);

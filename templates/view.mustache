@@ -26,16 +26,24 @@
 
 <h1>Karteikasten</h1>
 
-<input type="button" class="btn btn-primary" value="Vokabeln hinzufügen" onclick="location.href='{{{addvocaburl}}}'">
-<input type="button" class="btn btn-primary" value="Neue Vokabelliste erstellen" onclick="location.href='{{{addlisturl}}}'">
-<input type="button" class="btn btn-primary" value="Vokabellisten anzeigen" onclick="location.href='{{{listsurl}}}'">
+<h4 class="mt-5">Aktionen</h4>
+<hr>
+<input type="button" class="btn btn-primary" value="Vokabeln hinzufügen" data-action="mod_vocabcoach/add_vocab_user">
+<input type="button" class="btn btn-primary" value="Neue Vokabelliste erstellen" data-action="mod_vocabcoach/add_vocab_list">
+<input type="button" class="btn btn-primary" value="Vokabellisten anzeigen" data-action="mod_vocabcoach/show_lists">
 
 
+<h4 class="mt-5">Dein Vokabelkasten</h4>
 <hr>
 <div id="vocabcoach-box-container">
 
     {{#boxdata}}
-    <div class="box" onclick="location.href='{{checkurl}}&stage={{stage}}'">
+    <div
+        class="box {{#inactive}}box-faded{{/inactive}}"
+        data-due="{{due}}"
+        data-stage="{{stage}}"
+        data-action="mod_vocabcoach/check_box"
+    >
         <span class="box-title">Fach {{stage}}</span>
         <span class="box-numbers">{{due}} / {{total}}</span>
     </div>
@@ -45,10 +53,11 @@
 
 <div class="clearfix"></div>
 
+<h4 class="mt-5">Aktivität</h4>
 <hr>
 <div class="activity-report">
-    <div>Durchgehend eingeloggt seit {{days_logged_in}} Tagen.</div>
-    <div>Durchgehend alle Vokabeln wiederholt seit {{days_checked_all}} Tagen.</div>
+    <span class="streak">Durchgehend eingeloggt seit {{days_logged_in}} Tagen.</span>
+    <span class="streak">Durchgehend alle Vokabeln wiederholt seit {{days_checked_all}} Tagen.</span>
 </div>
 
 

@@ -8,9 +8,12 @@ export const init = (listid = -1) => {
     if (listid != -1) {
         const row = document.getElementsByName('front[]')[0].closest('div.row.form-group');
         row.style.display = 'none';
+        const spinnerContainer = document.createElement('div');
+        spinnerContainer.classList.add('spinner-container');
         const spinner = document.createElement('div');
         spinner.classList.add('spinner');
-        row.parentNode.insertBefore(spinner, row.nextSibling);
+        spinnerContainer.appendChild(spinner);
+        row.parentNode.insertBefore(spinnerContainer, row.nextSibling);
 
         getListArrayAJAX(listid).then(
             (array) => {
@@ -58,13 +61,12 @@ function addRow(id = 0, front = "", back = "") {
 }
 
 function addRowMaybe(callingElement) {
-    if (isLast(callingElement)) {
+    const frontInputs = document.querySelectorAll('input[name="front[]"]');
+    const noElements = frontInputs.length;
+    const index = Array.from(frontInputs).indexOf(callingElement);
+    if (index === noElements - 1) {
         addRow();
+        return true;
     }
     return false;
-}
-
-function isLast(caller) {
-    const vocabRow = caller.closest('div.row.form-group');
-    return !vocabRow.nextSibling;
 }

@@ -1,12 +1,29 @@
-import {deleteListAJAX, getListsAJAX} from "./repository";
+import {addListToUserAJAX, deleteListAJAX, getListsAJAX} from "./repository";
 import mustache from 'core/mustache';
-import {saveCancel} from 'core/notification';
+import notification, {saveCancel} from 'core/notification';
 import Log from 'core/log';
 
 let vocabcoachId;
-export function init(id) {
-    vocabcoachId = id;
+let userId;
+
+function addListToUser(listid) {
+    addListToUserAJAX(listid, userId, vocabcoachId).then(
+        () => {
+            const notificationData = {
+                message: "Neue Vokabeln von dieser Liste wurden deinem Karteikarten hinzugefügt.",
+                type: "success",
+            };
+            notification.addNotification(notificationData);
+        }
+    );
+}
+
+export function init(cmid, usrid) {
+    vocabcoachId = cmid;
+    userId = usrid;
+
     printLists();
+
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.deleteList)) {
             deleteList(e.target.getAttribute('data-list-id'));
@@ -18,6 +35,11 @@ export function init(id) {
         } else if (e.target.closest(Selectors.actions.editList)) {
             const menuItem = e.target.closest(Selectors.actions.editList);
             location.href = 'add_vocab.php?id=' + vocabcoachId + '&mode=edit&listid=' + menuItem.getAttribute('data-list-id');
+        } else if (e.target.closest(Selectors.actions.addListToUser)) {
+            const menuItem = e.target.closest(Selectors.actions.addListToUser);
+            addListToUser(menuItem.getAttribute('data-list-id'));
+        } else if (e.target.closest(Selectors.actions.closePage)) {
+            location.href = '../../mod/vocabcoach/view.php?id=' + vocabcoachId;
         }
     });
 }
@@ -28,6 +50,8 @@ const Selectors = {
         checkList: '[data-action="mod_vocabcoach/check_list"]',
         showPdf: '[data-action="mod_vocabcoach/show_pdf"]',
         editList: '[data-action="mod_vocabcoach/edit_list"]',
+        addListToUser: '[data-action="mod_vocabcoach/add_list_to_user"]',
+        closePage: '[data-action="mod_vocabcoach/close_page"]',
     }
 };
 
@@ -45,16 +69,15 @@ export function printLists() {
         }
     );
 
-    const fetchTemplate = fetch('http://localhost/moodle/mod/vocabcoach/templates/lists.mustache').then(
+    const fetchTemplate = fetch('../../mod/vocabcoach/templates/lists.mustache').then(
         (res) => { return res.text(); }
     ).then(
         (text) => { template = text; }
-    ); // TODO: This is hard-coded!
+    );
 
     Promise.all([getData, fetchTemplate]).then(() => {
             mustache.parse(template);
-            const output = mustache.render(template, json);
-            document.querySelectorAll('[role="main"]')[0].innerHTML = output;
+            document.querySelectorAll('[role="main"]')[0].innerHTML = mustache.render(template, json);
             return true;
         }
     );

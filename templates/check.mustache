@@ -27,8 +27,8 @@
 <h2>Abfrage</h2>
 <div id="check-container" data-vocab-data-id="-1">
     <div id="check-header">
-        <div id="check-button-close" class="btn btn-secondary"
-             data-action="mod_vocabcoach/end-check" style="background-color: grey; float: right;">X</div>
+        <div class="btn btn-secondary btn-close"
+             data-action="mod_vocabcoach/end-check">X</div>
         <div class="clearfix"></div>
 
         {{{check-settings-form}}}
@@ -51,11 +51,7 @@
     <div id="check-box-back" data-action="mod_vocabcoach/reveal-card"><div id="check-back">Lädt...</div>
     </div>
 
-    <div id="check-summary" data-action="mod_vocabcoach/end-check">
-        <div>
-            <span class="check-summary-known"></span> von <span class="check-summary-total"></span> gewusst!
-        </div>
-        <div class="check-summary-message"></div>
+    <div class="check-summary mb-3" data-action="mod_vocabcoach/end-check">
     </div>
 </div>
 

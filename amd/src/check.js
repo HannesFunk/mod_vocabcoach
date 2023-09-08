@@ -1,4 +1,5 @@
 import {getBoxArrayAJAX, getListArrayAJAX, updateVocabAJAX} from "./repository";
+import mustache from 'core/mustache';
 
 let vocabArrayJSON = null;
 let modid = -1;
@@ -171,19 +172,28 @@ function resetCheckFields(side) {
 }
 
 function endCheck() {
-    location.href = '/moodle/mod/vocabcoach/view.php?id=' + modid;
+    location.href = '../../mod/vocabcoach/view.php?id=' + modid;
 }
 
 function showSummary() {
+    const templateData = {
+        known: knownCount,
+        total: knownCount + unknownCount,
+        message: getSummaryMessage()
+    };
+    fetch('../../mod/vocabcoach/templates/check_summary.mustache').then(
+        (res) => {
+            return res.text();
+        }
+    ).then(
+        (template) => {
+            const output = mustache.render(template, templateData);
+            document.getElementsByClassName('check-summary')[0].innerHTML = output;
+        }
+    );
+
     document.getElementById('check-box-front').style.display = 'none';
     document.getElementById('check-box-back').style.display = 'none';
-
-    const summaryElement = document.getElementById('check-summary');
-    summaryElement.getElementsByClassName('check-summary-message')[0].innerHTML = getSummaryMessage();
-    summaryElement.getElementsByClassName('check-summary-known')[0].innerHTML = knownCount;
-    summaryElement.getElementsByClassName('check-summary-total')[0].innerHTML = unknownCount + knownCount;
-
-    summaryElement.style.display = 'flex';
 }
 
 function getSummaryMessage() {

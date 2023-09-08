@@ -46,7 +46,7 @@ class box_manager {
             $due = $DB->count_records_select('mod_vocabcoach_vocabdata',
                 'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?', [$userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($min_days_since_check)]);
 
-            $output[] = ['stage'=>$i, 'due'=>$due, 'total'=>$total];
+            $output[] = ['stage'=>$i, 'due'=>$due, 'total'=>$total, 'inactive' => $due == 0];
         }
         return $output;
     }

@@ -21,16 +21,30 @@
     align-items: center;
 }
 
-#check-summary {
+.check-summary {
     height: calc(40vh + 30px);
     margin: auto;
     width: 85%;
     text-align: center;
     border-radius: 10px;
-    border: 3px solid blue;
-    display: none;
+    border: 1px solid grey;
+    display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+}
+
+.check-summary.hidden {
+    display: none;
+}
+
+.check-summary > div {
+    margin-bottom: 1rem;
+}
+
+.check-summary:hover {
+    background-color: #f5f9fc;
+    border: 1px solid #3584c9;
 }
 
 .check-summary-known,

@@ -2,7 +2,7 @@
     border: 1px solid black;
     border-radius: 3px;
     background-color: #ccc;
-    margin: 10px;
+    margin: 15px;
     cursor: pointer;
     float: left;
 }
@@ -25,5 +25,6 @@
     text-align: center;
 }
 
-
-
+.box-faded {
+    opacity: 0.3;
+}

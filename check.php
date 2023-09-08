@@ -31,9 +31,16 @@ require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
 require_once(__DIR__.'/classes/forms/check_settings_form.php');
 
-require_login();
+$id = required_param('id', PARAM_INT);
 
-$PAGE->set_context(\context_system::instance());
+$cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+$moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
+
+require_login($course, true, $cm);
+$modulecontext = context_module::instance($cm->id);
+
+$PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/view.php');
 $PAGE->set_title('Vokabelcoach - Abfrage');
 $PAGE->set_heading('Vokabelcoach - Abfrage');
@@ -43,13 +50,13 @@ $form_html = $check_settings_form->toHtml();
 
 
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
+$PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 $mode = optional_param('mode', 'user', PARAM_TEXT);
 if ($mode === 'user') {
     $PAGE->requires->js_call_amd('mod_vocabcoach/check', 'init', array($USER->id, required_param('stage', PARAM_INT), required_param('id', PARAM_INT)));
 } else if ($mode === 'list') {
     $PAGE->requires->js_call_amd('mod_vocabcoach/check', 'init', array(-1, required_param('listid', PARAM_INT), required_param('id', PARAM_INT)));
 }
-
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/check', ['check-settings-form'=>$form_html]);

@@ -50,4 +50,17 @@ export const deleteListAJAX = (
     },
 }])[0];
 
+export const addListToUserAJAX = (
+    listid,
+    userid,
+    cmid
+) => fetchMany([{
+    methodname: 'mod_vocabcoach_add_list_to_user',
+    args: {
+        'listid': listid,
+        'userid': userid,
+        'cmid': cmid
+    },
+}])[0];
+
 

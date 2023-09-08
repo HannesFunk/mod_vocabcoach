@@ -10,6 +10,9 @@ use external_function_parameters;
 use external_value;
 use external_multiple_structure;
 use external_single_structure;
+use dml_exception;
+use stdClass;
+
 class manage_lists_api extends external_api {
     public static function get_lists_parameters() : external_function_parameters {
         return new external_function_parameters([
@@ -60,7 +63,9 @@ class manage_lists_api extends external_api {
         ]);
     }
 
-    public static function delete_list_returns() : external_single_structure {
+
+    public static function delete_list_returns() : external_single_structure
+    {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
@@ -78,8 +83,51 @@ class manage_lists_api extends external_api {
         }
 
         return ['success'=>true];
-
-
-
     }
+
+    public static function add_list_to_user_parameters() : external_function_parameters {
+        return new external_function_parameters([
+            'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+            'userid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+            'cmid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+        ]);
+    }
+
+    public static function add_list_to_user($listid, $userid, $cmid) : array {
+        self::validate_parameters(self::add_list_to_user_parameters(), ['listid' => $listid, 'userid' => $userid, 'cmid' => $cmid]);
+
+        global $DB;
+
+        $time = strtotime('2000-01-01 00:00:00');
+
+        $query = "SELECT id, vocabid FROM {mod_vocabcoach_list_contains} list_contains 
+                                WHERE list_contains.listid = $listid 
+                                AND list_contains.vocabid NOT IN
+       (SELECT vocabID FROM {mod_vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
+
+        try {
+            $records = $DB->get_records_sql($query);
+            $insert_array = array();
+            foreach (array_values($records) as $record) {
+                $insert = new stdClass();
+                $insert->vocabid = $record->vocabid;
+                $insert->userid = $userid;
+                $insert->cmid = $cmid;
+                $insert->stage = 1;
+                $insert->lastchecked = $time;
+                $insert_array[] = $insert;
+            }
+            $DB->insert_records('mod_vocabcoach_vocabdata', $insert_array);
+            return ['success' => true];
+        } catch (dml_exception $e) {
+            return ['success' => false];
+        }
+    }
+
+    public static function add_list_to_user_returns() : external_single_structure {
+        return new external_single_structure([
+            'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
+        ]);
+    }
+
 }

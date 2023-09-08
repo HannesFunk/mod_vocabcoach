@@ -15,26 +15,26 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 
 TODO:
 Programming:
-- JS: relative paths
+- vocabRows ordentlich!
 
 Features:
 - Gamification
 - Stalking-Tools
 - Übersicht: how is my class doing?
 - Listen bearbeiten als Ersteller oder Teacher
-- Tippen/ etc. als Standardeinstellung
+- Abfrage von Fächer ohne neue Vokabeln.
 
 OUT OF SCOPE:
 - Vokabeln mit Bildern
+- Tippen/ etc. als Standardeinstellung
 
 Improvements
 - Zusammenfassung nach Abfrage
-- globales Layout
 - Code-Linting
-- center Karteikästen auf Startseite
+
+
+Erstmal ned
 - Buch-Liste
-- Aktion: Liste in meinen Kasten übernehmen
-- Anleitung für add-vocab beim editten (z.B. löschen durch leer lassen)
 
 Meta:
 - Elternbrief

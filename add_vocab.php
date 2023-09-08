@@ -37,23 +37,17 @@ if ($mode === 'edit') {
     $editlistid = required_param('listid', PARAM_INT);
 }
 
-// Activity instance id.
-$v = optional_param('v', 0, PARAM_INT);
-
 if ($id) {
     $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
-} else {
-    $moduleinstance = $DB->get_record('vocabcoach', array('id' => $v), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('vocabcoach', $moduleinstance->id, $course->id, false, MUST_EXIST);
 }
 
-require_login();
+require_login($course, true, $cm);
+$modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_url(new moodle_url('/mod/vocabcoach/add_vocab.php', ['id'=>$cm->id]));
-$PAGE->set_context(\context_system::instance());
+$PAGE->set_context($modulecontext);
 $PAGE->set_title(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init', [$editlistid ?? -1]);

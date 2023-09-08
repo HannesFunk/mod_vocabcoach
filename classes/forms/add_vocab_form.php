@@ -70,7 +70,12 @@ class add_vocab_form extends moodleform {
 
         $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));
 
-        $mform->addElement('static', 'info_lines', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
+        if ($mode === 'edit') {
+            $text = get_string('add_vocab_info_lines', 'mod_vocabcoach').' '.get_string('edit_vocab_instructions', 'mod_vocabcoach');
+            $mform->addElement('static', 'info_lines', '', $text);
+        } else {
+            $mform->addElement('static', 'info_lines', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
+        }
 
         $vocabrow = array();
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');

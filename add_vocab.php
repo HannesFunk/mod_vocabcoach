@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-global $PAGE, $OUTPUT, $DB;
+global $PAGE, $OUTPUT, $DB, $USER;
 
 /**
  * Prints an instance of mod_vocabcoach.
@@ -46,6 +46,16 @@ if ($id) {
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
+if ($mode === 'edit') {
+    $vocabmanager = new \mod_vocabcoach\vocab_manager($USER->id);
+    $has_edit_superpower = has_capability('mod/vocabcoach:delete_lists', $modulecontext);
+    $canedit = $has_edit_superpower || $vocabmanager->user_owns_list($USER->id, $editlistid);
+    if (!$canedit) {
+        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('edit_list_not_allowed', 'mod_vocabcoach'),
+            \core\notification::ERROR);
+    }
+}
+
 $PAGE->set_url(new moodle_url('/mod/vocabcoach/add_vocab.php', ['id'=>$cm->id]));
 $PAGE->set_context($modulecontext);
 $PAGE->set_title(get_string('add_vocab_title', 'mod_vocabcoach'));
@@ -68,7 +78,7 @@ if ($mode === 'edit') {
 }
 
 if ($mform->is_cancelled()) {
-    redirect($CFG->wwwroot.'/mod/vocabcoach/view.php?id='.$cm->id, get_string('cancelled_form', 'mod_vocabcoach'));;
+    redirect($CFG->wwwroot.'/mod/vocabcoach/view.php?id='.$cm->id, '');;
 } else if ($formdata = $mform->get_data()) {
     global $USER;
     $userid = $USER->id;

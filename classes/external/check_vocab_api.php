@@ -53,6 +53,7 @@ class check_vocab_api extends external_api {
             'userid' => new external_value(PARAM_INT, VALUE_REQUIRED),
             'cmid' => new external_value(PARAM_INT, VALUE_REQUIRED),
             'stage' => new external_value(PARAM_INT, VALUE_REQUIRED),
+            'force' => new external_value(PARAM_BOOL, VALUE_REQUIRED),
         ]);
     }
 
@@ -60,16 +61,23 @@ class check_vocab_api extends external_api {
         return self::vocab_returns();
     }
 
-    public static function get_user_vocabs($userid, $cmid, $stage) : array {
+    public static function get_user_vocabs($userid, $cmid, $stage, $force) : array {
         global $DB;
-        self::validate_parameters(self::get_user_vocabs_parameters(), ['userid'=>$userid, 'cmid'=>$cmid, 'stage'=>$stage]);
+        self::validate_parameters(self::get_user_vocabs_parameters(), ['userid'=>$userid, 'cmid'=>$cmid, 'stage'=>$stage, 'force' => $force]);
 
         $vocabhelper = new vocabhelper();
         $days = $vocabhelper->BOXES_TIMES[$stage];
         $min_timestamp = $vocabhelper->old_timestamp($days);
 
-        $query = "SELECT vd.ID AS dataid, front, back FROM {mod_vocabcoach_vocab} vocab 
-            JOIN {mod_vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID WHERE vd.userID= ? AND vd.stage = ? AND vd.cmid = ? AND vd.lastchecked < ?;";
+        $query = "SELECT vd.ID AS dataid, front, back 
+                FROM {mod_vocabcoach_vocab} vocab 
+                JOIN {mod_vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID 
+               WHERE vd.userID= ? AND vd.stage = ? AND vd.cmid = ?";
+        if (!$force) {
+            $query .= "AND vd.lastchecked < ?;";
+        } else {
+            $query .= ';';
+        }
         $output =  $DB->get_records_sql($query, [$userid, $stage, $cmid, $min_timestamp]);
 
         return array_values($output);

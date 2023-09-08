@@ -21,7 +21,6 @@ Features:
 - Gamification
 - Stalking-Tools
 - Übersicht: how is my class doing?
-- Listen bearbeiten als Ersteller oder Teacher
 - Abfrage von Fächer ohne neue Vokabeln.
 
 OUT OF SCOPE:

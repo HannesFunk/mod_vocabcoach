@@ -181,7 +181,11 @@ class vocab_manager {
                 $this->add_vocab_to_list($new_id, $listid);
             }
         }
+   }
 
-
+   public function user_owns_list ($userid, $listid) {
+        global $DB;
+        $record = $DB->get_record('mod_vocabcoach_lists', ['id' => $listid], 'createdby');
+        return $record->createdby == $userid;
    }
 }

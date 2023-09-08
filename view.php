@@ -57,8 +57,8 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/activity.css');
 $PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', array($id));
 
-$box_manager = new \mod_vocabcoach\box_manager($id);
-$box_data = $box_manager->get_box_numbers($USER->id);
+$box_manager = new \mod_vocabcoach\box_manager($id, $USER->id);
+$box_data = $box_manager->get_box_details();
 
 $al = new activity_tracker($USER->id, $id);
 $al->log($al->ACT_LOGGED_IN);

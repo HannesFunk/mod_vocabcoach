@@ -18,11 +18,11 @@ function addListToUser(listid) {
     );
 }
 
-export function init(cmid, usrid) {
-    vocabcoachId = cmid;
-    userId = usrid;
+export function init(cmid, usrid, canEditAll) {
+    vocabcoachId = parseInt(cmid);
+    userId = parseInt(usrid);
 
-    printLists();
+    printLists(canEditAll);
 
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.deleteList)) {
@@ -55,13 +55,14 @@ const Selectors = {
     }
 };
 
-// COMMENT: this code is taken from https://stackoverflow.com/questions/40064129/
-// how-can-i-use-a-template-that-is-located-in-a-separate-file-with-mustache-js
-export function printLists() {
+export function printLists(canEditAll) {
     let json = null;
     let template = null;
     const getData = getListsAJAX(vocabcoachId).then(
         res => {
+            res.forEach(list => {
+                list.editable = canEditAll || list.createdby === userId;
+            });
             json = {'lists': res, 'loading': false};
             if (res.length === 0) {
                 json.emptyList = true;

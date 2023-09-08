@@ -21,4 +21,13 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
+    'mod/vocabcoach:delete_lists' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 ];

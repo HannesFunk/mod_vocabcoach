@@ -14,13 +14,15 @@ export const updateVocabAJAX = (
 export const getBoxArrayAJAX = (
     userid,
     cmid,
-    stage
+    stage,
+    force
 ) => fetchMany([{
     methodname: 'mod_vocabcoach_get_user_vocabs',
     args: {
         userid,
         cmid,
-        stage
+        stage,
+        force
     },
 }])[0];
 

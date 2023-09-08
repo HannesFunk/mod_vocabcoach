@@ -34,12 +34,15 @@ $moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*
 
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
+
+$canedit = has_capability('mod/vocabcoach:delete_lists', $modulecontext);
+
 $PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/lists.php', ['id' => $id]);
 $PAGE->set_title('Vokabelcoach - Vokabellisten');
 $PAGE->set_heading('Vokabelcoach - Vokabellisten');
 
-$PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init', [$id, $USER->id]);
+$PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init', [$id, $USER->id, $canedit]);
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 

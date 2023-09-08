@@ -1,4 +1,4 @@
-#vocabcoach-box-container .box {
+.box {
     border: 1px solid black;
     border-radius: 3px;
     background-color: #ccc;
@@ -7,24 +7,39 @@
     float: left;
 }
 
-#vocabcoach-box-container .box-title {
+.box-title {
     font-weight: bold;
-    display: block;
+    text-align: center;
+    font-size: large;
+}
+
+.box-numbers {
+    font-size: x-large;
+    padding: 10px;
+    text-align: center;
+}
+
+.box-top-line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+
     border-bottom: 4px solid #5F021F;
     background-color: #999;
     color: white;
     padding: 10px;
-    text-align: center;
 }
 
-#vocabcoach-box-container .box-numbers {
+.box-bottom-line {
     background-color: rgb(59 130 246 / 0.5);
-    font-size: x-large;
-    display: block;
-    padding: 10px;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    min-height: 4rem;
 }
 
-.box-faded {
+.box.box-faded .box-bottom-line {
     opacity: 0.3;
 }

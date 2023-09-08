@@ -6,14 +6,16 @@ let modid = -1;
 let knownCount = 0;
 let unknownCount = 0;
 let mode = 'front';
+let force = false;
 
-export const init = (userid, addInfo, moduleid) => {
+export const init = (userid, addInfo, moduleid, force_init = false) => {
     modid = moduleid;
     userid = parseInt(userid);
+    force = force_init;
     if (userid === -1) {
         getListVocab(addInfo);
     } else {
-        getBoxVocab(userid, addInfo);
+        getBoxVocab(userid, addInfo, force);
     }
     addListeners(userid);
     resetCheckFields();
@@ -93,8 +95,8 @@ export function changeMode() {
     }
 }
 
-function getBoxVocab (userid, stage)  {
-    getBoxArrayAJAX(userid, modid, stage).then(response => {
+function getBoxVocab (userid, stage, force)  {
+    getBoxArrayAJAX(userid, modid, stage, force).then(response => {
         vocabArrayJSON = response;
         showNext();
         }
@@ -120,13 +122,16 @@ function checkTypedVocab (userid) {
     const typed = document.getElementById('input-vocab-front').value;
     const correct = vocabArrayJSON[0].front;
 
-    if (typed === correct) {
+    if (typed === correct && !force) {
         updateVocabAJAX(vocabArrayJSON[0].dataid, userid, true).then(
             () => {
                 knownCount++;
                 showNext();
             }
         );
+    } else if (typed === correct) {
+        knownCount++;
+        showNext();
     } else {
         document.getElementById('input-vocab-front').classList.add('wrong');
     }
@@ -188,12 +193,15 @@ function showSummary() {
     ).then(
         (template) => {
             const output = mustache.render(template, templateData);
-            document.getElementsByClassName('check-summary')[0].innerHTML = output;
+            const summaryContainer = document.getElementsByClassName('check-summary')[0];
+            summaryContainer.innerHTML = output;
+            summaryContainer.classList.remove('hidden');
+            document.getElementById('check-box-front').style.display = 'none';
+            document.getElementById('check-box-back').style.display = 'none';
         }
     );
 
-    document.getElementById('check-box-front').style.display = 'none';
-    document.getElementById('check-box-back').style.display = 'none';
+
 }
 
 function getSummaryMessage() {
@@ -222,17 +230,17 @@ function reveal(triggeringBox) {
 }
 
 function checkDone(vocabId, userId, known) {
-    if (userId !== -1) {
-        updateVocabAJAX(vocabId, userId, known).then(
+    if (userId === -1 || force) {
+        updateCount(known);
+        showNext();
+    }
+    else {
+    updateVocabAJAX(vocabId, userId, known).then(
             () => {
                 updateCount(known);
                 showNext();
             }
         );
-    }
-    else {
-        updateCount(known);
-        showNext();
     }
 }
 

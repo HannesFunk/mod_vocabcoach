@@ -31,4 +31,18 @@ class vocabhelper {
         $now = time();
         return $now - ($days_ago - 0.5) * 60 * 60 * 24;
     }
+
+    function compute_due_time_string ($lastchecked, $box_time) : string {
+        if ($lastchecked === null) {
+            return '-';
+        }
+        $next_due = time() + $box_time * 60 * 60 * 24;
+        $seconds_left = $next_due - $lastchecked;
+        if ($seconds_left > 60 * 60 * 24) {
+            return floor($seconds_left / (60 * 60 * 24)).' Tagen';
+        } else {
+            return floor ($seconds_left / (60 * 60)).' Stunden';
+        }
+
+    }
 }

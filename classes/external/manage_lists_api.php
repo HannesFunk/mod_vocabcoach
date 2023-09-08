@@ -29,6 +29,7 @@ class manage_lists_api extends external_api {
             'book' => new external_value(PARAM_TEXT),
             'unit' => new external_value(PARAM_TEXT),
             'number' => new external_value(PARAM_INT),
+            'createdby' => new external_value(PARAM_INT),
             'creator' => new external_value(PARAM_TEXT),
             ])
         );

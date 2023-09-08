@@ -41,11 +41,42 @@
     <div
         class="box {{#inactive}}box-faded{{/inactive}}"
         data-due="{{due}}"
+        data-total="{{total}}"
         data-stage="{{stage}}"
         data-action="mod_vocabcoach/check_box"
+        data-next-due="{{next_due}}"
     >
-        <span class="box-title">Fach {{stage}}</span>
-        <span class="box-numbers">{{due}} / {{total}}</span>
+        <div class="box-top-line">
+            <div class="box-title mr-2">Box {{stage}}</div>
+            <div class="dropdown">
+                <a href="#" class="btn btn-link btn-icon colour-inherit text-decoration-none d-flex align-items-center justify-content-center" role="button" data-toggle="dropdown" data-boundary="window" aria-haspopup="true" tabindex="0" aria-controls="box-{{stage}}-menu" aria-label="Aktionen anzeigen" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v text-dark  py-2" aria-hidden="true"></i>
+                </a>
+                <div
+                        class="dropdown-menu dropdown-menu-right"
+                        aria-labelledby="box-{{stage}}-menu"
+                        data-rel="menu-content"
+                        role="menu"
+                        id="box-{{stage}}-menu">
+                    <a
+                            class="dropdown-item menu-action"
+                            role="menuitem"
+                            tabindex="-1"
+                            data-targetstate="0"
+                            title="Nicht fällige abfragen"
+                            href="#"
+                            data-list-id="{{id}}"
+                            data-action="mod_vocabcoach/force_check_all"
+                    >
+                        <i class="fa fa-question-circle-o text-dark  pr-2" aria-hidden="true"></i>
+                        <span class="menu-action-text">Nicht fällige abfragen</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="box-bottom-line">
+            <span class="box-numbers">{{due}} / {{total}}</span>
+        </div>
     </div>
     {{/boxdata}}
 

@@ -48,6 +48,7 @@ $string['edit_vocab_successful'] = 'Liste geändert.';
 $string['add_vocab_info_lines'] = 'Weitere Zeilen werden automatisch ergänzt.';
 $string['add_vocab_add_to_user_database'] = 'Sofort zum eigenen Karteikasten hinzufügen.';
 $string['edit_vocab_instructions'] = 'Um eine Vokabeln zu löschen, lass beide Seiten leer.';
+$string['edit_list_not_allowed'] = 'Du hast nicht die Berechtigung, diese Liste zu ändern.';
 $string['add_vocab_add_to_user_database_help'] = 'Wird dies nicht geklickt, so wird nur die List generiert, die Vokabeln landen aber nicht direkt in deinem Karteikasten. Du kannst sie aber später hinzufügen.';
 
 

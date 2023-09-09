@@ -1,4 +1,5 @@
 import {getListArrayAJAX} from "./repository";
+import {showElement} from "./general";
 
 let template = null;
 
@@ -7,7 +8,7 @@ export const init = (listid = -1) => {
 
     if (listid != -1) {
         const row = document.getElementsByName('front[]')[0].closest('div.row.form-group');
-        row.style.display = 'none';
+        showElement(row, false);
         const spinnerContainer = document.createElement('div');
         spinnerContainer.classList.add('spinner-container');
         const spinner = document.createElement('div');

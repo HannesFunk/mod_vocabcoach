@@ -1,5 +1,6 @@
 import {getBoxArrayAJAX, getListArrayAJAX, updateVocabAJAX} from "./repository";
 import mustache from 'core/mustache';
+import {showElement, showElements} from "./general";
 
 let vocabArrayJSON = null;
 let modid = -1;
@@ -26,7 +27,8 @@ function addListeners(userid) {
         if (e.target.closest(Selectors.actions.checkTypedVocab)) {
             checkTypedVocab(userid);
         } else if (e.target.closest(Selectors.actions.revealCard) && mode !== 'type') {
-            reveal(e.target);
+            const label = e.target.closest(Selectors.actions.revealCard).getElementsByClassName('vc-check-label')[0];
+            showElement(label, true);
         } else if (e.target.closest(Selectors.actions.updateVocab)) {
             checkDone(vocabArrayJSON[0].dataid, userid, e.target.getAttribute('data-vocabcoach-known') === 'true');
         } else if (e.target.closest(Selectors.actions.endCheck)) {
@@ -34,15 +36,16 @@ function addListeners(userid) {
         } else if (e.target.closest(Selectors.actions.revealTypedVocab)) {
             document.getElementById('input-vocab-front').value = vocabArrayJSON[0].front;
             document.getElementById('input-vocab-front').disabled = true;
-            document.getElementById('button-typed-vocab-next').style.display = 'unset';
-            document.getElementById('button-typed-vocab-check').style.display = 'none';
-            document.getElementById('button-typed-vocab-reveal').style.display = 'none';
+
+            showElements(['button-typed-vocab-next'], true);
+            showElements(['button-typed-vocab-check', 'button-typed-vocab-reveal'], false);
         } else if (e.target.closest(Selectors.actions.typedVocabUnkown)) {
-            document.getElementById('button-typed-vocab-next').style.display = 'none';
+            showElements(['button-typed-vocab-next'], false);
+            showElements(['button-typed-vocab-reveal', 'button-typed-vocab-check'], true);
+
             document.getElementById('input-vocab-front').value = '';
             document.getElementById('input-vocab-front').disabled = false;
-            document.getElementById('button-typed-vocab-check').style.display = 'unset';
-            document.getElementById('button-typed-vocab-reveal').style.display = 'unset';
+
             updateVocabAJAX(vocabArrayJSON[0].dataid, userid, false).then(() => { showNext();});
         }
     });
@@ -78,17 +81,14 @@ const Selectors = {
 export function changeMode() {
     mode = document.getElementById('check-mode').value;
     if (mode === 'type') {
-        document.getElementById('check-front').style.display = 'none';
-        document.getElementById('check-back').style.display = 'unset';
-        document.getElementById('check-type-area').style.display = 'unset';
+        showElements(['check-front', 'check-buttons', ], false);
+        showElements(['check-back', 'check-type-area'], true);
         document.getElementById('input-vocab-front').value = '';
-        document.getElementById('check-buttons').style.display = 'none';
-        document.getElementsByClassName('instruction-front-back-random')[0].style.display = 'none';
+        showElement(document.getElementsByClassName('instruction-front-back-random')[0], false);
     } else {
-        document.getElementById('check-front').style.display = 'unset';
-        document.getElementById('check-type-area').style.display = 'none';
-        document.getElementById('check-buttons').removeAttribute('style');
-        document.getElementsByClassName('instruction-front-back-random')[0].style.display = 'unset';
+        showElements(['check-front', 'check-buttons'], true);
+        showElements(['check-type-area'], false);
+        showElement(document.getElementsByClassName('instruction-front-back-random')[0], true);
     }
 
     if (mode === 'front' || mode === 'back') {
@@ -173,8 +173,8 @@ function showNext() {
 }
 
 function resetCheckFields(side) {
-    document.getElementById('check-front').style.display = (side === 'front' ? 'unset' : 'none');
-    document.getElementById('check-back').style.display = (side === 'front' ? 'none' : 'unset');
+    showElement('check-front', side === 'front');
+    showElement('check-back', side !== 'front');
 }
 
 function endCheck() {
@@ -196,9 +196,8 @@ function showSummary() {
             const output = mustache.render(template, templateData);
             const summaryContainer = document.getElementsByClassName('check-summary')[0];
             summaryContainer.innerHTML = output;
-            summaryContainer.classList.remove('hidden');
-            document.getElementById('check-box-front').style.display = 'none';
-            document.getElementById('check-box-back').style.display = 'none';
+            showElement(summaryContainer, true);
+            showElements(['check-box-front', 'check-box-back'], false);
         }
     );
 
@@ -222,13 +221,10 @@ function getSummaryMessage() {
     }
     return "Hm. Da musst du nochmal ran!";
 }
-
-function reveal(triggeringBox) {
-    const element = triggeringBox.childNodes[0];
-    if (element.style.display === 'none') {
-        element.style.display = 'unset';
-    }
-}
+//
+// function reveal(triggeringBox) {
+//     showtriggeringBox.getElementsByClassName('vc-check-label')[0].classList.remove('hidden');
+// }
 
 function checkDone(vocabId, userId, known) {
     if (userId === -1 || force) {

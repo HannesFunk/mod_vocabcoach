@@ -17,11 +17,13 @@ TODO:
 Programming:
 - vocabRows ordentlich!
 - check-type-Bug?!
+- check: Anzeige, falls letztes getippt!
 
 Features:
 - Gamification
 - Stalking-Tools
 - Übersicht: how is my class doing?
+- nach Modusänderung Vokabeln randomisieren
 
 OUT OF SCOPE:
 - Vokabeln mit Bildern

@@ -16,12 +16,12 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 TODO:
 Programming:
 - vocabRows ordentlich!
+- check-type-Bug?!
 
 Features:
 - Gamification
 - Stalking-Tools
 - Übersicht: how is my class doing?
-- Abfrage von Fächer ohne neue Vokabeln.
 
 OUT OF SCOPE:
 - Vokabeln mit Bildern

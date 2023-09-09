@@ -79,6 +79,7 @@ export function changeMode() {
     mode = document.getElementById('check-mode').value;
     if (mode === 'type') {
         document.getElementById('check-front').style.display = 'none';
+        document.getElementById('check-back').style.display = 'unset';
         document.getElementById('check-type-area').style.display = 'unset';
         document.getElementById('input-vocab-front').value = '';
         document.getElementById('check-buttons').style.display = 'none';

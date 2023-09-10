@@ -59,6 +59,7 @@ class add_vocab_form extends moodleform {
             }
             $mform->addElement('select', 'list_year', 'Jahrgangsstufe', $years, ['disabled']);
             $mform->setDefault('list_year', $this->_customdata['year']);
+            $mform->disable_form_change_checker();
 
             $mform->addElement('text', 'list_unit', 'Unit');
             $mform->setType('list_unit', PARAM_TEXT);
@@ -79,9 +80,15 @@ class add_vocab_form extends moodleform {
 
         $vocabrow = array();
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
-        $vocabrow[] =& $mform->createElement('text', 'front[]');
+        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off');
         $vocabrow[] =& $mform->createElement('text', 'back[]');
-        $mform->addGroup($vocabrow, '', get_string('vocab', 'mod_vocabcoach'));
+        $mform->addGroup(
+            $vocabrow,
+            'vocabrow',
+            get_string('vocab', 'mod_vocabcoach'),
+            null,
+            false
+        );
         $mform->setType('vocabid[]', PARAM_INT);
         $mform->setType('front[]', PARAM_TEXT);
         $mform->setType('back[]', PARAM_TEXT);

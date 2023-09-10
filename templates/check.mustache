@@ -39,21 +39,25 @@
 
     </div>
 
-    <div id="check-box-front" data-action="mod_vocabcoach/reveal-card">
-        <div id="check-front" class="vc-check-label">Lädt...</div>
-        <div id="check-type-area" class="hidden">
-            <label for="input-vocab-front"></label>
-            <input type="text" name="input-vocab-front" id="input-vocab-front" style="display: block" />
+    <div id="check-type-area" class="hidden">
+        <label for="input-vocab-front"></label>
+        <input type="text" name="input-vocab-front" id="input-vocab-front" autocapitalize="off" autocomplete="none" spellcheck="false" />
+        <div>
             <input type="button" class="btn btn-primary" value="Prüfen" id="button-typed-vocab-check" data-action="mod-vocabcoach/typed-vocab-check" />
             <input type="button" class="btn btn-secondary" value="Auflösen" id="button-typed-vocab-reveal" data-action="mod-vocabcoach/typed-vocab-reveal" />
             <input type="button" class="btn btn-secondary hidden" id="button-typed-vocab-next" value="Nächste" data-action="mod-vocabcoach/typed-vocab-unknown" />
         </div>
     </div>
-    <div id="check-box-back" data-action="mod_vocabcoach/reveal-card">
-        <div id="check-back" class="vc-check-label">Lädt...</div>
-    </div>
+    <div id="check-area">
+        <div id="check-box-front" data-action="mod_vocabcoach/reveal-card">
+            <div id="check-front" class="vc-check-label">Lädt...</div>
+        </div>
+        <div id="check-box-back" data-action="mod_vocabcoach/reveal-card">
+            <div id="check-back" class="vc-check-label">Lädt...</div>
+        </div>
 
-    <div class="check-summary mb-3 hidden" data-action="mod_vocabcoach/end-check">
+        <div class="check-summary mb-3 hidden" data-action="mod_vocabcoach/end-check">
+        </div>
     </div>
 </div>
 

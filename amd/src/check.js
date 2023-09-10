@@ -14,12 +14,19 @@ export const init = (userid, addInfo, moduleid, force_init = false) => {
     userid = parseInt(userid);
     force = force_init;
     if (userid === -1) {
-        getListVocab(addInfo);
+        getListArrayAJAX(addInfo).then(response => {
+            vocabArrayJSON = response;
+            showNext(false);
+            }
+        );
     } else {
-        getBoxVocab(userid, addInfo, force);
+        getBoxArrayAJAX(userid, modid, addInfo, force).then(response => {
+            vocabArrayJSON = response;
+            showNext(false);
+            }
+        );
     }
     addListeners(userid);
-    resetCheckFields();
 };
 
 function addListeners(userid) {
@@ -80,46 +87,27 @@ const Selectors = {
 };
 export function changeMode() {
     mode = document.getElementById('check-mode').value;
-    if (mode === 'type') {
-        showElements(['check-front', 'check-buttons', ], false);
-        showElements(['check-back', 'check-type-area'], true);
-        document.getElementById('input-vocab-front').value = '';
-        showElement(document.getElementsByClassName('instruction-front-back-random')[0], false);
-    } else {
-        showElements(['check-front', 'check-buttons'], true);
-        showElements(['check-type-area'], false);
-        showElement(document.getElementsByClassName('instruction-front-back-random')[0], true);
-    }
-
-    if (mode === 'front' || mode === 'back') {
-        resetCheckFields(mode);
-    }
-}
-
-function getBoxVocab (userid, stage, force)  {
-    getBoxArrayAJAX(userid, modid, stage, force).then(response => {
-        vocabArrayJSON = response;
-        showNext();
-        }
-    );
-}
-
-function getListVocab (listid)  {
-    getListArrayAJAX(listid).then(response => {
-            vocabArrayJSON = response;
-            showNext();
-        }
-    );
+    vocabArrayJSON = shuffle(vocabArrayJSON);
+    const checkAreaElem = document.getElementById('check-area');
+    startAnimation(checkAreaElem, 'animation-slide-out').then(
+        () => {
+            if (mode === 'type') {
+                showElements(['check-box-front', 'check-buttons'], false);
+                showElements(['check-back', 'check-type-area'], true);
+                document.getElementById('input-vocab-front').value = '';
+                showElement(document.getElementsByClassName('instruction-front-back-random')[0], false);
+            } else {
+                showElements(['check-buttons', 'check-box-front'], true);
+                showElements(['check-type-area'], false);
+                showElement(document.getElementsByClassName('instruction-front-back-random')[0], true);
+            }
+            resetCheckFields();
+            updateLabels();
+            startAnimation(checkAreaElem, 'animation-slide-in').then(null);
+        });
 }
 
 function checkTypedVocab (userid) {
-    const currElementDataID = parseInt(document.getElementById('check-container').getAttribute('data-vocab-data-id'));
-
-    if (currElementDataID !== -1 && vocabArrayJSON[0].dataid !== currElementDataID) { // This is weird and shouldn't happen!
-        console.log("currElementID does not equal 0-element in vocabArrayJSON");
-        return;
-    }
-
     const typed = document.getElementById('input-vocab-front').value;
     const correct = vocabArrayJSON[0].front;
 
@@ -137,15 +125,9 @@ function checkTypedVocab (userid) {
         document.getElementById('input-vocab-front').classList.add('wrong');
     }
 }
-function showNext() {
-    const currElementDataID = parseInt(document.getElementById('check-container').getAttribute('data-vocab-data-id'));
 
-    if (currElementDataID !== -1 && vocabArrayJSON[0].dataid !== currElementDataID) { // This is weird and shouldn't happen!
-        console.log("currElementID does not equal 0-element in vocabArrayJSON");
-        return;
-    }
-
-    if (currElementDataID !== -1) {
+function showNext(removeShown = true) {
+    if (removeShown) {
         vocabArrayJSON.splice(0, 1);
     }
 
@@ -158,23 +140,39 @@ function showNext() {
         return;
     }
 
+    const checkAreaElem = document.getElementById('check-area');
+    startAnimation(checkAreaElem, 'animation-slide-out').then(
+        () => {
+            resetCheckFields();
+            updateLabels();
+            startAnimation(checkAreaElem, 'animation-slide-in').then(null);
+        }
+    );
+}
+
+function updateLabels () {
     document.getElementById('check-front').innerHTML = vocabArrayJSON[0].front;
     document.getElementById('check-back').innerHTML = vocabArrayJSON[0].back;
     document.getElementById('check-container').setAttribute('data-vocab-data-id', vocabArrayJSON[0].dataid);
-
-    if (mode === 'random') {
-        const random = Math.floor(Math.random() * 2) === 0;
-        resetCheckFields(random);
-    } else if (mode === 'type') {
-        document.getElementById('input-vocab-front').value = '';
-    } else {
-        resetCheckFields(mode);
-    }
 }
+function resetCheckFields() {
+    switch (mode) {
+        case 'random': {
+            const random = Math.floor(Math.random() * 2);
+            showElement('check-front', random === 1);
+            showElement('check-back', random === 0);
+            break;
+        }
+        case 'front':
+        case 'back':
+            showElement('check-front', mode === 'front');
+            showElement('check-back', mode === 'back');
+            break;
 
-function resetCheckFields(side) {
-    showElement('check-front', side === 'front');
-    showElement('check-back', side !== 'front');
+        case 'type':
+            document.getElementById('input-vocab-front').value = '';
+            break;
+    }
 }
 
 function endCheck() {
@@ -200,8 +198,6 @@ function showSummary() {
             showElements(['check-box-front', 'check-box-back'], false);
         }
     );
-
-
 }
 
 function getSummaryMessage() {
@@ -244,3 +240,23 @@ function updateCount(known) {
         unknownCount++;
     }
 }
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+let startAnimation = (el, animation) => {
+    return new Promise(resolve => {
+        const listener = () => {
+            el.removeEventListener('animationend', listener);
+            el.classList.remove(animation);
+            resolve();
+        };
+        el.addEventListener('animationend', listener);
+        el.classList.add(animation);
+    });
+};

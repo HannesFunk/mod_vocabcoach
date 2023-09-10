@@ -15,23 +15,18 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 
 TODO:
 Programming:
-- vocabRows ordentlich!
 - check-type-Bug?!
-- check: Anzeige, falls letztes getippt!
-
 
 Mobile Stuff:
-- Main Activity Buttons: Spacing
-- Center Vokabelboxes (display: flex?)
 - ListView zu breit
-- Don't capitalize Englisch
-- 
+- Don't capitalize Englisch --> done, check
+- input-type-area: mit Enter bestätigen
+- Zufalls-Lob
 
 Features:
 - Gamification
 - Stalking-Tools
 - Übersicht: how is my class doing?
-- nach Modusänderung Vokabeln randomisieren
 
 OUT OF SCOPE:
 - Vokabeln mit Bildern
@@ -39,8 +34,6 @@ OUT OF SCOPE:
 
 Improvements
 - Zusammenfassung nach Abfrage
-- Code-Linting
-
 
 Erstmal ned
 - Buch-Liste

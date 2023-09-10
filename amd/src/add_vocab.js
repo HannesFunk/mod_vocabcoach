@@ -10,7 +10,7 @@ export const init = (listidString = "-1") => {
     let listid = parseInt(listidString);
 
     if (listid !== -1) {
-        const row = document.getElementsByName('front[]')[0].closest('div.row.form-group');
+        const row = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
         showElement(row, false);
         const spinnerContainer = document.createElement('div');
         spinnerContainer.classList.add('spinner-container');
@@ -37,13 +37,10 @@ export const init = (listidString = "-1") => {
            addRowMaybe(element);
         }
     });
-
-    const frontElements =  document.getElementsByName('front[]');
-    frontElements[frontElements.length - 1].setAttribute('data-islast', true);
 };
 
 function initTemplate() {
-    const vocabRow = document.getElementsByName('front[]')[0].closest('div.row.form-group');
+    const vocabRow = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
     let temp = document.createElement('div');
     temp.classList.add('form-group', 'row', 'fitem');
     temp.setAttribute('datagroupname', 'vocabrow');
@@ -53,7 +50,7 @@ function initTemplate() {
 }
 
 function addRow(id = 0, front = "", back = "") {
-    const firstRow = document.getElementsByName('front[]')[0].closest('div.row.form-group');
+    const firstRow = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
     const lastRow = firstRow.parentNode.lastChild;
     const tempRow = template.cloneNode(true);
     tempRow.querySelectorAll('input[name="vocabid[]"]')[0].value = id;

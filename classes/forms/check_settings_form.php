@@ -17,19 +17,24 @@
 /**
  * The main mod_vocabcoach configuration form.
  *
- * @package     mod_vocabcoach
+ * @package     check_settings_form
  * @copyright   2023 J. Funk, johannesfunk@outlook.com
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//moodleform is defined in formslib.php
+global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
 class check_settings_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
+        $mform->disable_form_change_checker();
 
-        $mode_options = array ('front'=>'Vorderseite', 'back'=>'Rückseite', 'random'=>'Zufällig', 'type'=>'Englische Vokabeln tippen');
+        $mode_options = [
+            'back'=>'Nach Englisch fragen',
+            'front'=>'Nach Deutsch fragen',
+            'random'=>'Zufällig', 'type'=>'Englische Vokabeln tippen'
+        ];
         $mform->addElement('select', 'mode',
             get_string('mode', 'mod_vocabcoach'),
             $mode_options,

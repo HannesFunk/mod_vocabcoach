@@ -1,10 +1,14 @@
+#vocabcoach-box-container {
+    text-align: center;
+}
+
 .box {
     border: 1px solid black;
     border-radius: 3px;
     background-color: #ccc;
     margin: 15px;
     cursor: pointer;
-    float: left;
+    display: inline-block;
 }
 
 .box-title {

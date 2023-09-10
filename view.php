@@ -23,6 +23,8 @@ global $PAGE, $OUTPUT, $DB, $USER;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_vocabcoach\box_manager;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/classes/forms/add_vocab_form.php');
@@ -57,13 +59,13 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/activity.css');
 $PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', array($id));
 
-$box_manager = new \mod_vocabcoach\box_manager($id, $USER->id);
+$box_manager = new box_manager($id, $USER->id);
 $box_data = $box_manager->get_box_details();
 
 $al = new activity_tracker($USER->id, $id);
-$al->log($al->ACT_LOGGED_IN);
+$al->log($al->types['ACT_LOGGED_IN']);
 if ($al->is_all_done($box_data)) {
-    $al->log($al->ACT_CHECKED_ALL);
+    $al->log($al->types['ACT_CHECKED_ALL']);
 }
 
 $templatecontext = [
@@ -71,8 +73,8 @@ $templatecontext = [
     'addlisturl'=>new moodle_url('/mod/vocabcoach/add_vocab.php', ['id'=>$cm->id, 'mode'=>'list']),
     'boxdata'=> $box_data,
     'listsurl'=>new moodle_url('/mod/vocabcoach/lists.php', ['id'=>$cm->id]),
-    'days_logged_in' => $al->get_continuous_days($al->ACT_LOGGED_IN),
-    'days_checked_all' => $al->get_continuous_days($al->ACT_CHECKED_ALL),
+    'days_logged_in' => $al->get_continuous_days($al->types['ACT_LOGGED_IN']),
+    'days_checked_all' => $al->get_continuous_days($al->types['ACT_CHECKED_ALL']),
 ];
 
 echo $OUTPUT->header();

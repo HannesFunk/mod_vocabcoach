@@ -23,6 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+global $CFG;
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
@@ -38,7 +39,7 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
     /**
      * Defines forms elements
      */
-    public function definition() {
+    public function definition() :void {
         global $CFG;
 
         $mform = $this->_form;

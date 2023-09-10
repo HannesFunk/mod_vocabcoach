@@ -12,13 +12,16 @@
     width: 85%;
     height: 20vh;
     text-align: center;
-    margin: auto;
-    margin-bottom: 15px;
-    margin-top: 15px;
+    margin: 15px auto;
     font-size: xx-large;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#check-box-front.hidden,
+#check-box-back.hidden {
+    display: none;
 }
 
 .check-summary {

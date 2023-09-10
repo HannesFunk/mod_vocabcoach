@@ -13,14 +13,14 @@ function addListToUser(listid) {
                 message: "Neue Vokabeln von dieser Liste wurden deinem Karteikarten hinzugefügt.",
                 type: "success",
             };
-            notification.addNotification(notificationData);
+            notification.addNotification(notificationData).then(null);
         }
     );
 }
 
-export function init(cmid, usrid, canEditAll) {
+export function init(cmid, userIdString, canEditAll) {
     vocabcoachId = parseInt(cmid);
-    userId = parseInt(usrid);
+    userId = parseInt(userIdString);
 
     printLists(canEditAll);
 

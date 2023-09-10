@@ -25,7 +25,7 @@ class check_vocab_api extends external_api {
     public static function update_vocab_returns() : external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'whether the update was successful.'),
-            'message' => new \external_value(PARAM_TEXT, 'a message'),
+            'message' => new external_value(PARAM_TEXT, 'a message'),
         ]);
     }
 
@@ -114,7 +114,7 @@ class check_vocab_api extends external_api {
         try {
             $output =  $DB->get_records_sql($query);
             return array_values($output);
-        } catch(\dml_exception $e) {
+        } catch(\dml_exception) {
             return [];
         }
     }

@@ -23,14 +23,16 @@
 
 namespace mod_vocabcoach;
 
+use vocabhelper;
+
 require ('vocabhelper.php');
 
 class box_manager {
-    private \vocabhelper $vocabhelper;
-    private int $cmid;
+    private vocabhelper $vocabhelper;
+    private int $cmid, $userid;
 
     public function __construct(int $cmid, int $userid) {
-        $this->vocabhelper = new \vocabhelper();
+        $this->vocabhelper = new vocabhelper();
         $this->cmid = $cmid;
         $this->userid = $userid;
     }
@@ -40,19 +42,27 @@ class box_manager {
 
         $output = array();
         for ($i=1; $i<=$this->vocabhelper->BOX_NUMBER; $i++) {
-            $total = $DB->count_records_select('mod_vocabcoach_vocabdata', 'userid = ? AND cmid = ? AND stage = ?', [$this->userid, $this->cmid, $i]);
+            try {
+                $total = $DB->count_records_select('mod_vocabcoach_vocabdata', 'userid = ? AND cmid = ? AND stage = ?', [$this->userid, $this->cmid, $i]);
 
-            $min_days_since_check = $this->vocabhelper->BOXES_TIMES[$i];
-            $due = $DB->count_records_select('mod_vocabcoach_vocabdata',
-                'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?', [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($min_days_since_check)]);
+                $min_days_since_check = $this->vocabhelper->BOXES_TIMES[$i];
+                $due = $DB->count_records_select('mod_vocabcoach_vocabdata',
+                    'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?', [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($min_days_since_check)]);
+            } catch (\dml_exception $e) {
+                die ($e->getMessage());
+            }
 
             if ($due === 0) {
                 $query = "SELECT MIN(vd.lastchecked) AS recent 
                             FROM {mod_vocabcoach_vocabdata} vd
                             WHERE userid = {$this->userid} AND cmid = {$this->cmid} AND stage = {$i}
                             ";
-                $record = $DB->get_record_sql($query);
-                $next_due = $this->vocabhelper->compute_due_time_string($record->recent, $this->vocabhelper->BOXES_TIMES[$i]);
+                try {
+                    $record = $DB->get_record_sql($query);
+                    $next_due = $this->vocabhelper->compute_due_time_string($record->recent, $this->vocabhelper->BOXES_TIMES[$i]);
+                } catch (\dml_exception) {
+                    $next_due = '-';
+                }
             } else {
                 $next_due = 'Jetzt';
             }

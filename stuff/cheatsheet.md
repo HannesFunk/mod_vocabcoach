@@ -19,6 +19,14 @@ Programming:
 - check-type-Bug?!
 - check: Anzeige, falls letztes getippt!
 
+
+Mobile Stuff:
+- Main Activity Buttons: Spacing
+- Center Vokabelboxes (display: flex?)
+- ListView zu breit
+- Don't capitalize Englisch
+- 
+
 Features:
 - Gamification
 - Stalking-Tools

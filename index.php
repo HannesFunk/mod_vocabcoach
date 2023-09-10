@@ -23,6 +23,7 @@
  */
 
 require(__DIR__.'/../../config.php');
+global $DB, $PAGE, $OUTPUT;
 
 require_once(__DIR__.'/lib.php');
 
@@ -33,11 +34,11 @@ require_course_login($course);
 
 $coursecontext = context_course::instance($course->id);
 
-$event = \mod_vocabcoach\event\course_module_instance_list_viewed::create(array(
-    'context' => $modulecontext
-));
-$event->add_record_snapshot('course', $course);
-$event->trigger();
+//$event = \mod_vocabcoach\event\course_module_instance_list_viewed::create(array(
+//    'context' => $modulecontext
+//));
+//$event->add_record_snapshot('course', $course);
+//$event->trigger();
 
 $PAGE->set_url('/mod/vocabcoach/index.php', array('id' => $id));
 $PAGE->set_title(format_string($course->fullname));
@@ -73,12 +74,12 @@ foreach ($vocabcoachs as $vocabcoach) {
     if (!$vocabcoach->visible) {
         $link = html_writer::link(
             new moodle_url('/mod/vocabcoach/view.php', array('id' => $vocabcoach->coursemodule)),
-            format_string($vocabcoach->name, true),
+            format_string($vocabcoach->name),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
             new moodle_url('/mod/vocabcoach/view.php', array('id' => $vocabcoach->coursemodule)),
-            format_string($vocabcoach->name, true));
+            format_string($vocabcoach->name));
     }
 
     if ($course->format == 'weeks' || $course->format == 'topics') {

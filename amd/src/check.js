@@ -39,7 +39,7 @@ function addListeners(userid) {
 
             showElements(['button-typed-vocab-next'], true);
             showElements(['button-typed-vocab-check', 'button-typed-vocab-reveal'], false);
-        } else if (e.target.closest(Selectors.actions.typedVocabUnkown)) {
+        } else if (e.target.closest(Selectors.actions.typedVocabUnknown)) {
             showElements(['button-typed-vocab-next'], false);
             showElements(['button-typed-vocab-reveal', 'button-typed-vocab-check'], true);
 
@@ -71,7 +71,7 @@ const Selectors = {
         modeChanged: '[data-action="mod-vocabcoach/change-mode"]',
         checkTypedVocab: '[data-action="mod-vocabcoach/typed-vocab-check"]',
         revealTypedVocab: '[data-action="mod-vocabcoach/typed-vocab-reveal"]',
-        typedVocabUnkown: '[data-action="mod-vocabcoach/typed-vocab-unknown"]',
+        typedVocabUnknown: '[data-action="mod-vocabcoach/typed-vocab-unknown"]',
     },
     formElements : {
         mode: '[id="check-mode"]',
@@ -221,10 +221,6 @@ function getSummaryMessage() {
     }
     return "Hm. Da musst du nochmal ran!";
 }
-//
-// function reveal(triggeringBox) {
-//     showtriggeringBox.getElementsByClassName('vc-check-label')[0].classList.remove('hidden');
-// }
 
 function checkDone(vocabId, userId, known) {
     if (userId === -1 || force) {

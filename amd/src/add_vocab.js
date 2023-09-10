@@ -1,12 +1,15 @@
+// noinspection SpellCheckingInspection
+
 import {getListArrayAJAX} from "./repository";
 import {showElement} from "./general";
 
 let template = null;
 
-export const init = (listid = -1) => {
+export const init = (listidString = "-1") => {
     initTemplate();
+    let listid = parseInt(listidString);
 
-    if (listid != -1) {
+    if (listid !== -1) {
         const row = document.getElementsByName('front[]')[0].closest('div.row.form-group');
         showElement(row, false);
         const spinnerContainer = document.createElement('div');
@@ -27,7 +30,6 @@ export const init = (listid = -1) => {
             }
         );
     }
-
 
     document.addEventListener('change', event => {
         const element = event.target;

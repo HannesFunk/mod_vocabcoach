@@ -32,12 +32,12 @@ class vocabhelper {
         return $now - ($days_ago - 0.5) * 60 * 60 * 24;
     }
 
-    function compute_due_time_string ($lastchecked, $box_time) : string {
-        if ($lastchecked === null) {
+    function compute_due_time_string ($last_checked, $box_time) : string {
+        if ($last_checked === null) {
             return '-';
         }
         $next_due = time() + $box_time * 60 * 60 * 24;
-        $seconds_left = $next_due - $lastchecked;
+        $seconds_left = $next_due - $last_checked;
         if ($seconds_left > 60 * 60 * 24) {
             return floor($seconds_left / (60 * 60 * 24)).' Tagen';
         } else {

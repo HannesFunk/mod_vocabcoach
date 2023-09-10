@@ -33,6 +33,9 @@ class vocab_manager {
         $this->userid = $userid;
     }
 
+    /**
+     * @throws dml_exception
+     */
     public function insert_vocab($vocab, int $userid) : int {
         $front = $vocab->front;
         $back = $vocab->back;
@@ -49,8 +52,12 @@ class vocab_manager {
         $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
 
         $query = "SELECT COUNT(*) FROM {mod_vocabcoach_vocab} WHERE $condition1 AND $condition2";
-        $count = $DB->count_records_sql($query, array('front'=>$front, 'back'=>$back));
-        return $count > 0;
+        try {
+            $count = $DB->count_records_sql($query, array('front' => $front, 'back' => $back));
+            return $count > 0;
+        } catch (dml_exception) {
+            return false;
+        }
     }
 
     function create_record ($front, $back, $userid) : int {
@@ -61,12 +68,15 @@ class vocab_manager {
         $new_vocab->createdby = $userid;
 
         try {
-            return $DB->insert_record('mod_vocabcoach_vocab', $new_vocab, true);
-        } catch (dml_exception $e) {
+            return $DB->insert_record('mod_vocabcoach_vocab', $new_vocab);
+        } catch (dml_exception) {
             return -1;
         }
     }
 
+    /**
+     * @throws dml_exception
+     */
     function determine_id($front, $back) : int {
         global $DB;
         $condition1 = $DB->sql_compare_text('front') . ' = ' . $DB->sql_compare_text(':front');
@@ -77,6 +87,9 @@ class vocab_manager {
         return array_values($records)[0]->id;
     }
 
+    /**
+     * @throws dml_exception
+     */
     function add_vocab_to_user(int $vocabid, int $userid, int $cmid) : bool {
         global $DB;
 
@@ -104,8 +117,8 @@ class vocab_manager {
         global $DB;
 
         try {
-            return $DB->insert_record('mod_vocabcoach_lists', $list_info, true);
-        } catch (dml_exception $e) {
+            return $DB->insert_record('mod_vocabcoach_lists', $list_info);
+        } catch (dml_exception) {
             return -1;
         }
    }
@@ -122,7 +135,7 @@ class vocab_manager {
                 return false;
             }
             $DB->insert_record('mod_vocabcoach_list_contains', $conditions);
-        } catch (dml_exception $e) {
+        } catch (dml_exception) {
             return false;
         }
         return true;
@@ -133,7 +146,7 @@ class vocab_manager {
 
         try {
             $DB->delete_records('mod_vocabcoach_list_contains', ['vocabid'=>$vocabid, 'listid'=>$listid]);
-        } catch (dml_exception $e) {
+        } catch (dml_exception) {
             return false;
         }
         return true;
@@ -151,7 +164,7 @@ class vocab_manager {
 
         try {
             $records = $DB->get_records_sql($query);
-            $insertarray = array();
+            $insert_array = array();
             foreach (array_values($records) as $record) {
                 $insert = new stdClass();
                 $insert->vocabid = $record->vocabid;
@@ -159,10 +172,10 @@ class vocab_manager {
                 $insert->cmid = $cmid;
                 $insert->stage = 1;
                 $insert->lastchecked = $time;
-                $insertarray[] = $insert;
+                $insert_array[] = $insert;
             }
-            $DB->insert_records('mod_vocabcoach_vocabdata', $insertarray);
-        } catch (dml_exception $e) {
+            $DB->insert_records('mod_vocabcoach_vocabdata', $insert_array);
+        } catch (dml_exception) {
             return false;
         }
 
@@ -183,7 +196,7 @@ class vocab_manager {
         }
    }
 
-   public function user_owns_list ($userid, $listid) {
+   public function user_owns_list ($userid, $listid) : bool {
         global $DB;
         $record = $DB->get_record('mod_vocabcoach_lists', ['id' => $listid], 'createdby');
         return $record->createdby == $userid;

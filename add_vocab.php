@@ -23,6 +23,10 @@ global $PAGE, $OUTPUT, $DB, $USER;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\notification;
+use mod_vocabcoach\external\check_vocab_api;
+use mod_vocabcoach\vocab_manager;
+
 require(__DIR__.'/../../config.php');
 global $CFG;
 require_once(__DIR__.'/lib.php');
@@ -47,12 +51,12 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 if ($mode === 'edit') {
-    $vocabmanager = new \mod_vocabcoach\vocab_manager($USER->id);
+    $vocabmanager = new vocab_manager($USER->id);
     $has_edit_superpower = has_capability('mod/vocabcoach:delete_lists', $modulecontext);
     $canedit = $has_edit_superpower || $vocabmanager->user_owns_list($USER->id, $editlistid);
     if (!$canedit) {
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('edit_list_not_allowed', 'mod_vocabcoach'),
-            \core\notification::ERROR);
+            notification::ERROR);
     }
 }
 
@@ -64,7 +68,7 @@ $PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init', [$editlistid ??
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 
 if ($mode === 'edit') {
-    $listapi = new \mod_vocabcoach\external\check_vocab_api();
+    $listapi = new check_vocab_api();
     $old_vocab_array = $listapi->get_list_vocabs($editlistid);
     $mform = new add_vocab_form(null, ['mode'=>$mode, 'old'=>$old_vocab_array, 'listid'=>$editlistid, 'year'=>$moduleinstance->year]);
     $listinfo = $DB->get_record('mod_vocabcoach_lists', ['id'=>$editlistid],
@@ -78,12 +82,12 @@ if ($mode === 'edit') {
 }
 
 if ($mform->is_cancelled()) {
-    redirect($CFG->wwwroot.'/mod/vocabcoach/view.php?id='.$cm->id, '');;
+    redirect($CFG->wwwroot.'/mod/vocabcoach/view.php?id='.$cm->id, '');
 } else if ($formdata = $mform->get_data()) {
     global $USER;
     $userid = $USER->id;
     $redirect = true;
-    $vocabmanager = new \mod_vocabcoach\vocab_manager($userid);
+    $vocabmanager = new vocab_manager($userid);
 
     // Step 0: construct $vocab_array directly from $_POST - this is a dirty hack, but all I can think of right now.
     $vocabarray = array();
@@ -104,7 +108,7 @@ if ($mform->is_cancelled()) {
         foreach ($vocabarray as $vocab) {
             $vocabid = $vocabmanager->insert_vocab($vocab, $userid);
             if (!$vocabmanager->add_vocab_to_user($vocabid, $userid, $id)) {
-                \core\notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', \core\notification::ERROR);
+                notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
             }
         }
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('add_vocab_successful', 'mod_vocabcoach'));
@@ -123,7 +127,7 @@ if ($mform->is_cancelled()) {
     }
     $listid = $vocabmanager->add_list($listinfo);
     if ($listid ==  -1) {
-        \core\notification::add('Fehler beim Anlegen der Liste. ', \core\notification::ERROR);
+        notification::add('Fehler beim Anlegen der Liste. ', notification::ERROR);
         $redirect = false;
     }
 
@@ -131,7 +135,7 @@ if ($mform->is_cancelled()) {
     foreach ($vocabarray as $vocab) {
         $vocabid = $vocabmanager->insert_vocab($vocab, $userid);
         if (!$vocabmanager->add_vocab_to_list($vocabid, $listid)) {
-            \core\notification::add('Fehler beim Eintragen der Vokabeln in die Liste. ', \core\notification::ERROR);
+            notification::add('Fehler beim Eintragen der Vokabeln in die Liste. ', notification::ERROR);
             $redirect = false;
         }
     }
@@ -139,7 +143,8 @@ if ($mform->is_cancelled()) {
     // Step 3: add list to user (if necessary)
     if (isset($formdata->add_to_user_database) && $formdata->add_to_user_database == 1) {
         if (!$vocabmanager->add_list_to_user_database($listid, $userid, $id)) {
-            \core\notification::add('Fehler beim Eintragen der Vokabeln. ', \core\notification::ERROR);\core\notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', \core\notification::ERROR);
+            notification::add('Fehler beim Eintragen der Vokabeln. ', notification::ERROR);
+            notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
             $redirect = false;
         }
     }

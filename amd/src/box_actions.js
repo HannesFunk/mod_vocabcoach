@@ -14,7 +14,7 @@ const Selectors = {
 export function init(cmid) {
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.dropdown)) {
-            return;
+            return false;
         } else if (e.target.closest(Selectors.actions.forceCheck)) {
            checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
         }  else if (e.target.closest(Selectors.actions.checkBox)) {
@@ -35,7 +35,7 @@ function checkBox(cmid, box, force = false) {
             type: "info",
             message: 'In dieser Box sind zur Zeit keine Vokabeln enthalten.'
         };
-        notification.addNotification(msgData);
+        notification.addNotification(msgData).then(null);
     }
     else if (!force && parseInt(box.getAttribute('data-due')) === 0) {
         const dueTime =  box.getAttribute('data-next-due');
@@ -44,7 +44,7 @@ function checkBox(cmid, box, force = false) {
             message : "In dieser Box hast du bereits alle Vokabeln gelernt. Die nächsten Vokabeln sind in " + dueTime
             +" fällig."
         };
-        notification.addNotification(msgData);
+        notification.addNotification(msgData).then(null);
     } else {
         const stage = box.getAttribute('data-stage');
         location.href = 'check.php?id=' + cmid + '&stage=' + stage + "&force=" + force;

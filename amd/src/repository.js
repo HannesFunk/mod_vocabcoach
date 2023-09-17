@@ -64,5 +64,24 @@ export const addListToUserAJAX = (
         'cmid': cmid
     },
 }])[0];
+export const distributeListAJAX = (
+    listid,
+    cmid
+) => fetchMany([{
+    methodname: 'mod_vocabcoach_distribute_list',
+    args: {
+        'listid': listid,
+        'cmid': cmid
+    },
+}])[0];
+
+export const getFeedbackLineAJAX = (
+    achievement
+) => fetchMany([{
+    methodname: 'mod_vocabcoach_get_feedback_line',
+    args: {
+        'achievement': achievement
+    },
+}])[0];
 
 

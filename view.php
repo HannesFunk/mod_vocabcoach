@@ -57,7 +57,7 @@ $PAGE->set_context($modulecontext);
 
 $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/activity.css');
-$PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', array($id));
+$PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', array($id, $USER->id));
 
 $box_manager = new box_manager($id, $USER->id);
 $box_data = $box_manager->get_box_details();
@@ -69,10 +69,7 @@ if ($al->is_all_done($box_data)) {
 }
 
 $templatecontext = [
-    'addvocaburl'=>new moodle_url('/mod/vocabcoach/add_vocab.php', ['id'=>$cm->id, 'mode'=>'user']),
-    'addlisturl'=>new moodle_url('/mod/vocabcoach/add_vocab.php', ['id'=>$cm->id, 'mode'=>'list']),
     'boxdata'=> $box_data,
-    'listsurl'=>new moodle_url('/mod/vocabcoach/lists.php', ['id'=>$cm->id]),
     'days_logged_in' => $al->get_continuous_days($al->types['ACT_LOGGED_IN']),
     'days_checked_all' => $al->get_continuous_days($al->types['ACT_CHECKED_ALL']),
 ];

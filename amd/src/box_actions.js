@@ -7,16 +7,23 @@ const Selectors = {
         addList: '[data-action="mod_vocabcoach/add_vocab_list"]',
         showLists: '[data-action="mod_vocabcoach/show_lists"]',
         forceCheck: '[data-action="mod_vocabcoach/force_check_all"]',
-        dropdown: '[class="dropdown"]',
+        showPdfUser: '[data-action="mod_vocabcoach/show_pdf_user"]',
+    },
+    elements: {
+        dropdown: '.dropdown',
     }
 };
 
-export function init(cmid) {
+export function init(cmid, userid) {
     document.addEventListener('click', e => {
-        if (e.target.closest(Selectors.actions.dropdown)) {
+        if (e.target.closest(Selectors.actions.forceCheck)) {
+            checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
+        } else if (e.target.closest(Selectors.actions.showPdfUser)) {
+            const stage = e.target.closest(Selectors.actions.showPdfUser).getAttribute('data-stage');
+            window.open('pages/vocablist_pdf.php?userid=' + userid + '&cmid=' +
+                cmid + '&stage=' + stage);
+        } else if (e.target.closest(Selectors.elements.dropdown)) {
             return false;
-        } else if (e.target.closest(Selectors.actions.forceCheck)) {
-           checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
         }  else if (e.target.closest(Selectors.actions.checkBox)) {
            checkBox(cmid, e.target.closest(Selectors.actions.checkBox));
         } else if (e.target.closest(Selectors.actions.addUserVocab)) {
@@ -36,8 +43,11 @@ function checkBox(cmid, box, force = false) {
             message: 'In dieser Box sind zur Zeit keine Vokabeln enthalten.'
         };
         notification.addNotification(msgData).then(null);
-    }
-    else if (!force && parseInt(box.getAttribute('data-due')) === 0) {
+    } else if (parseInt(box.getAttribute('data-due')) > 0) {
+        notification.addNotification({type: 'info',
+            message: 'Wiederhole zuerst die aktuell fälligen Vokabeln in dieser Box. ' +
+                'Erst danach kannst du auch die anderen abfragen.'}).then(null);
+    } else if (!force && parseInt(box.getAttribute('data-due')) === 0) {
         const dueTime =  box.getAttribute('data-next-due');
         const msgData = {
             type: "info",

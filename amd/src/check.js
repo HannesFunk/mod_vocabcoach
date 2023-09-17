@@ -1,4 +1,4 @@
-import {getBoxArrayAJAX, getListArrayAJAX, updateVocabAJAX} from "./repository";
+import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX, updateVocabAJAX} from "./repository";
 import mustache from 'core/mustache';
 import {showElement, showElements} from "./general";
 
@@ -6,7 +6,7 @@ let vocabArrayJSON = null;
 let modid = -1;
 let knownCount = 0;
 let unknownCount = 0;
-let mode = 'front';
+let mode = 'back';
 let force = false;
 
 export const init = (userid, addInfo, moduleid, force_init = false) => {
@@ -63,9 +63,16 @@ function addListeners(userid) {
         }
     });
 
-    document.addEventListener('keyup', e => {
+    document.addEventListener('change', e => {
         if (e.target.closest(Selectors.formElements.typedVocab)) {
             document.getElementById('input-vocab-front').classList.remove('wrong');
+        }
+    });
+
+    document.addEventListener('keyup', e => {
+        if (e.target.closest(Selectors.formElements.typedVocab) &&
+            e.key === 'Enter') {
+                checkTypedVocab(userid);
         }
     });
 }
@@ -85,6 +92,7 @@ const Selectors = {
         typedVocab: '[id="input-vocab-front"]',
     },
 };
+
 export function changeMode() {
     mode = document.getElementById('check-mode').value;
     vocabArrayJSON = shuffle(vocabArrayJSON);
@@ -155,6 +163,7 @@ function updateLabels () {
     document.getElementById('check-back').innerHTML = vocabArrayJSON[0].back;
     document.getElementById('check-container').setAttribute('data-vocab-data-id', vocabArrayJSON[0].dataid);
 }
+
 function resetCheckFields() {
     switch (mode) {
         case 'random': {
@@ -180,43 +189,52 @@ function endCheck() {
 }
 
 function showSummary() {
-    const templateData = {
-        known: knownCount,
-        total: knownCount + unknownCount,
-        message: getSummaryMessage()
-    };
-    fetch('../../mod/vocabcoach/templates/check_summary.mustache').then(
+    let templateData = null;
+    let template = null;
+    const getMsg = getFeedbackLineAJAX(getSummaryAchievement()).then(
+        (result) => {
+            templateData = {
+                known: knownCount,
+                total: knownCount + unknownCount,
+                message: result.line
+            };
+        }
+    );
+
+    const getTemplate = fetch('../../mod/vocabcoach/templates/check_summary.mustache').then(
         (res) => {
             return res.text();
         }
     ).then(
-        (template) => {
-            const output = mustache.render(template, templateData);
-            const summaryContainer = document.getElementsByClassName('check-summary')[0];
-            summaryContainer.innerHTML = output;
-            showElement(summaryContainer, true);
-            showElements(['check-box-front', 'check-box-back'], false);
-        }
+        (text) => {template = text; }
     );
+
+    Promise.all([getMsg, getTemplate]).then(() => {
+        const summaryContainer = document.getElementsByClassName('check-summary')[0];
+        summaryContainer.innerHTML = mustache.render(template, templateData);
+        showElement(summaryContainer, true);
+        showElements(['check-box-front', 'check-box-back', 'check-type-area'], false);
+    });
 }
 
-function getSummaryMessage() {
+function getSummaryAchievement() {
     const ratio = knownCount/(unknownCount + knownCount);
 
     if (ratio > 0.9) {
-        return "Hervorragend!";
+        return 5;
     }
     if (ratio > 0.7) {
-        return "Gut gemacht!";
+        return 3;
     }
     if (ratio > 0.5) {
-        return "Du hast einiges erreicht!";
+        return 2;
     }
     if (ratio > 0.3) {
-        return "Das kannst du besser!";
+        return 1;
     }
-    return "Hm. Da musst du nochmal ran!";
+    return 0;
 }
+
 
 function checkDone(vocabId, userId, known) {
     if (userId === -1 || force) {

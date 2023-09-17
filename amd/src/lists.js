@@ -1,4 +1,4 @@
-import {addListToUserAJAX, deleteListAJAX, getListsAJAX} from "./repository";
+import {addListToUserAJAX, deleteListAJAX, distributeListAJAX, getListsAJAX} from "./repository";
 import mustache from 'core/mustache';
 import notification, {saveCancel} from 'core/notification';
 import Log from 'core/log';
@@ -18,11 +18,11 @@ function addListToUser(listid) {
     );
 }
 
-export function init(cmid, userIdString, canEditAll) {
+export function init(cmid, userIdString, capabilitiesInfo) {
     vocabcoachId = parseInt(cmid);
     userId = parseInt(userIdString);
 
-    printLists(canEditAll);
+    printLists(JSON.parse(capabilitiesInfo));
 
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.deleteList)) {
@@ -40,6 +40,10 @@ export function init(cmid, userIdString, canEditAll) {
             addListToUser(menuItem.getAttribute('data-list-id'));
         } else if (e.target.closest(Selectors.actions.closePage)) {
             location.href = '../../mod/vocabcoach/view.php?id=' + vocabcoachId;
+        } else if (e.target.closest(Selectors.actions.distributeList)) {
+            const menuItem = e.target.closest(Selectors.actions.distributeList);
+            distributeList(menuItem.getAttribute('data-list-id'), vocabcoachId);
+
         }
     });
 }
@@ -52,16 +56,18 @@ const Selectors = {
         editList: '[data-action="mod_vocabcoach/edit_list"]',
         addListToUser: '[data-action="mod_vocabcoach/add_list_to_user"]',
         closePage: '[data-action="mod_vocabcoach/close_page"]',
+        distributeList: '[data-action="mod_vocabcoach/distribute_list"]',
     }
 };
 
-export function printLists(canEditAll) {
+export function printLists(capInfo) {
     let json = null;
     let template = null;
     const getData = getListsAJAX(vocabcoachId).then(
         res => {
             res.forEach(list => {
-                list.editable = canEditAll || list.createdby === userId;
+                list.editable = capInfo.canEdit || list.createdby === userId;
+                list.distributable = capInfo.canDistribute;
             });
             json = {'lists': res, 'loading': false};
             if (res.length === 0) {
@@ -89,7 +95,25 @@ function deleteList(listid) {
         deleteListAJAX(listid).then(
             () => {
                 document.querySelectorAll('tr[data-list-id="' + listid +'"]')[0].remove();
+                notification.addNotification({type: 'success', message: 'Liste gelöscht.'}).then(null);
             }
         );
     }, null).catch ((error) => Log.debug(error));
+}
+
+function distributeList(listid, vocabcoachId) {
+    const doIt = () => {
+        distributeListAJAX(listid, vocabcoachId).then(() => {
+            notification.addNotification(
+                {type: 'success', message: 'Liste an alle Teilnehmer in diesem Kurs verteilt.'}
+            ).then(null);
+        });
+    };
+
+    saveCancel('Bestätigung',
+        'Soll diese Liste wirklich an alle Teilnehmer in diesem Kurs verteilt werden?',
+        'Bestätigen',
+        doIt,
+        null).
+    catch((error) => Log.debug(error));
 }

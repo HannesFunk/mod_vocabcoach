@@ -67,13 +67,23 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
             $this->add_intro_editor();
         }
 
-        // Here, more information could be added
-
         $years = [];
         for ($i=5; $i<=13; $i++) {
             $years[$i] = $i;
         }
         $mform->addElement('select', 'year', 'Jahrgangsstufe', $years);
+
+        $mform->addElement('header', 'boxtimes', get_string('boxtimes', 'mod_vocabcoach'));
+        $mform->addElement('static', 'info_boxtimes', '', get_string('info_boxtimes', 'mod_vocabcoach'));
+        $default_boxtimes = [0, 1, 2, 5, 10, 30];
+        for ($i=1; $i<=5; $i++) {
+            $mform->addElement('text', 'boxtime_'.$i, get_string('boxtime', 'mod_vocabcoach').' '.$i);
+            $mform->setType('boxtime_'.$i, PARAM_INT);
+            $mform->setDefault('boxtime_'.$i, $default_boxtimes[$i]);
+        }
+
+        $mform->addElement('checkbox', 'move_undue', get_string('move_undue', 'vocabcoach'));
+        $mform->addHelpButton('move_undue', 'move_undue', 'mod_vocabcoach');
 
         // Add standard elements.
         $this->standard_coursemodule_elements();

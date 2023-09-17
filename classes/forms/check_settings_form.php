@@ -26,7 +26,7 @@ global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
 class check_settings_form extends moodleform {
-    public function definition() {
+    public function definition() : void {
         $mform = $this->_form;
         $mform->disable_form_change_checker();
 
@@ -43,7 +43,7 @@ class check_settings_form extends moodleform {
 
     }
 
-    public function toHtml() {
+    public function toHtml() : string {
         return $this->_form->toHtml();
     }
 }

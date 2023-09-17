@@ -110,10 +110,10 @@ input.wrong {
 }
 
 #check-area.animation-slide-out {
-    animation: slideOut 5s linear;
+    animation: slideOut .3s linear;
 }
 #check-area.animation-slide-in {
-    animation: slideIn 5s linear;
+    animation: slideIn .3s linear;
 }
 
 /* Keyframes for the animation */

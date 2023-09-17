@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-global $PAGE, $OUTPUT, $DB;
 
 /**
  * Prints an instance of mod_vocabcoach.
@@ -27,11 +26,25 @@ class vocabhelper {
     public int $BOX_NUMBER = 5;
     public array $BOXES_TIMES = [0, 1, 2, 5, 10, 30];
 
+    function __construct($cmid) {
+        global $DB;
+        $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
+        $boxtimes = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
+        for ($i=1; $i<=5; $i++) {
+            $this->BOXES_TIMES[$i] = $boxtimes->{'boxtime_'.$i};
+        }
+    }
+
     function old_timestamp($days_ago) : int {
         $now = time();
         return $now - ($days_ago - 0.5) * 60 * 60 * 24;
     }
 
+    /**
+     * @param $last_checked
+     * @param $box_time
+     * @return string
+     */
     function compute_due_time_string ($last_checked, $box_time) : string {
         if ($last_checked === null) {
             return '-';

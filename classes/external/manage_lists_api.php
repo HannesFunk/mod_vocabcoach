@@ -5,6 +5,7 @@ namespace mod_vocabcoach\external;
 global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 
+use context_course;
 use external_api;
 use external_function_parameters;
 use external_value;
@@ -42,10 +43,10 @@ class manage_lists_api extends external_api {
         global $DB;
 
         try {
-            $records = $DB->get_records('mod_vocabcoach_lists', ['cmid'=>$cmid], '', 'id, title, year, book, unit, createdby');
+            $records = $DB->get_records('vocabcoach_lists', ['cmid'=>$cmid], '', 'id, title, year, book, unit, createdby');
             $output = array();
             foreach ($records as $record) {
-                $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {mod_vocabcoach_list_contains} WHERE listid = ".$record->id.";";
+                $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_contains} WHERE listid = ".$record->id.";";
                 $vocabnumber = $DB->count_records_sql($query);
                 $record->number = $vocabnumber;
                 $creator = \core_user::get_user($record->createdby);
@@ -77,8 +78,8 @@ class manage_lists_api extends external_api {
 
         global $DB;
         try {
-            $DB->delete_records('mod_vocabcoach_lists', ['id'=>$listid]);
-            $DB->delete_records('mod_vocabcoach_list_contains', ['listid'=>$listid]);
+            $DB->delete_records('vocabcoach_lists', ['id'=>$listid]);
+            $DB->delete_records('vocabcoach_list_contains', ['listid'=>$listid]);
         } catch (\dml_exception $e) {
             return ['success' => false];
         }
@@ -101,10 +102,10 @@ class manage_lists_api extends external_api {
 
         $time = strtotime('2000-01-01 00:00:00');
 
-        $query = "SELECT id, vocabid FROM {mod_vocabcoach_list_contains} list_contains 
+        $query = "SELECT id, vocabid FROM {vocabcoach_list_contains} list_contains 
                                 WHERE list_contains.listid = $listid 
                                 AND list_contains.vocabid NOT IN
-       (SELECT vocabID FROM {mod_vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
+       (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
 
         try {
             $records = $DB->get_records_sql($query);
@@ -118,7 +119,7 @@ class manage_lists_api extends external_api {
                 $insert->lastchecked = $time;
                 $insert_array[] = $insert;
             }
-            $DB->insert_records('mod_vocabcoach_vocabdata', $insert_array);
+            $DB->insert_records('vocabcoach_vocabdata', $insert_array);
             return ['success' => true];
         } catch (dml_exception $e) {
             return ['success' => false];
@@ -128,6 +129,34 @@ class manage_lists_api extends external_api {
     public static function add_list_to_user_returns() : external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
+        ]);
+    }
+
+    public static function distribute_list_parameters() : external_function_parameters {
+        return new external_function_parameters([
+                'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+                'cmid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+        ]);
+    }
+
+    public static function distribute_list($listid, $cmid) : array {
+        self::validate_parameters(self::distribute_list_parameters(), ['listid' => $listid, 'cmid' => $cmid]);
+
+        $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
+        $context = context_course::instance($cm->course);
+
+        $students = get_enrolled_users($context);
+
+        foreach ($students as $student) {
+            self::add_list_to_user($listid, $student->id, $cmid);
+        }
+
+        return ['success' => true];
+    }
+
+        public static function distribute_list_returns() : external_single_structure {
+        return new external_single_structure([
+                'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
     }
 

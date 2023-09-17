@@ -24,9 +24,8 @@
     }
 }}
 
-<h1>Karteikasten</h1>
 
-<h4 class="mt-5 hidden">Aktionen</h4>
+<h4 class="mt-5">Aktionen</h4>
 <hr>
 <input type="button" class="btn btn-primary mb-1" value="Vokabeln hinzufügen" data-action="mod_vocabcoach/add_vocab_user">
 <input type="button" class="btn btn-primary mb-1" value="Neue Vokabelliste erstellen" data-action="mod_vocabcoach/add_vocab_list">
@@ -59,7 +58,7 @@
                         role="menu"
                         id="box-{{stage}}-menu">
                     <a
-                            class="dropdown-item menu-action"
+                            class="dropdown-item menu-action {{^inactive}} disabled{{/inactive}}"
                             role="menuitem"
                             tabindex="-1"
                             data-targetstate="0"
@@ -70,6 +69,20 @@
                     >
                         <i class="fa fa-question-circle-o text-dark  pr-2" aria-hidden="true"></i>
                         <span class="menu-action-text">Nicht fällige abfragen</span>
+                    </a>
+                    <a
+                            class="dropdown-item menu-action"
+                            role="menuitem"
+                            tabindex="-1"
+                            data-targetstate="0"
+                            data-stage="{{stage}}"
+                            title="Als PDF exportieren"
+                            href="#"
+                            data-list-id="{{id}}"
+                            data-action="mod_vocabcoach/show_pdf_user"
+                    >
+                        <i class="fa fa-copy text-dark  pr-2" aria-hidden="true"></i>
+                        <span class="menu-action-text">Als PDF exportieren</span>
                     </a>
                 </div>
             </div>

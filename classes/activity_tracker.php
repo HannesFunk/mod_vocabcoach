@@ -5,6 +5,9 @@ class activity_tracker {
     public array $types = [
         "ACT_LOGGED_IN" => 1,
         "ACT_CHECKED_ALL" => 2,
+        "ACT_STUDIED_LIST" => 3,
+        "ACT_ENTERED_VOCAB" => 4,
+        "ACT_CREATED_LIST" => 5,
     ];
 
     function __construct($userid, $cmid) {
@@ -32,11 +35,11 @@ class activity_tracker {
         $log->date = $this->formatDate($date);
 
         try {
-            if ($DB->count_records('mod_vocabcoach_activitylog', ['userid' => $log->userid, 'cmid' => $log->cmid, 'type' => $log->type, 'date' => $log->date]) > 0) {
+            if ($DB->count_records('vocabcoach_activitylog', ['userid' => $log->userid, 'cmid' => $log->cmid, 'type' => $log->type, 'date' => $log->date]) > 0) {
                 return true;
             }
 
-            $DB->insert_record('mod_vocabcoach_activitylog', $log);
+            $DB->insert_record('vocabcoach_activitylog', $log);
             return true;
         } catch (dml_exception) {
             return false;
@@ -82,7 +85,7 @@ class activity_tracker {
             'type' => $type,
         ];
         try {
-            $records = $DB->get_records('mod_vocabcoach_activitylog', $conditions, 'date DESC');
+            $records = $DB->get_records('vocabcoach_activitylog', $conditions, 'date DESC');
         } catch (dml_exception) {
             return -1;
         }
@@ -100,4 +103,19 @@ class activity_tracker {
             $day = $this->day_before($day);
         }
     }
+
+
+
+    //function get_class_log ($cmid) {
+    //    global $DB;
+    //    $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
+    //    $context = context_course::instance($cm->course);
+    //
+    //    $students = get_enrolled_users($context);
+    //
+    //    foreach ($this->types as $type) {
+    //        $query = "SELECT MIN(date) FROM {vocabcoach_activitylog} WHERE cmid = {$cmid} AND type = {$type};";
+    //        $DB->get_records_sql()
+    //    }
+    //}
 }

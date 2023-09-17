@@ -14,6 +14,12 @@
         <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Activity description."/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The format of the intro field."/>
         <FIELD NAME="year" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Year of the corresponding course."/>
+        <FIELD NAME="move_undue" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether checked undue vocab will be moved to the next box."/>
+        <FIELD NAME="boxtime_1" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 1."/>
+        <FIELD NAME="boxtime_2" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 2."/>
+        <FIELD NAME="boxtime_3" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 3."/>
+        <FIELD NAME="boxtime_4" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 4."/>
+        <FIELD NAME="boxtime_5" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 5."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -21,7 +27,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="mod_vocabcoach_vocab" COMMENT="Contains the vocabulary items.">
+    <TABLE NAME="vocabcoach_vocab" COMMENT="Contains the vocabulary items.">
       <FIELDS>
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
         <FIELD NAME="front" SEQUENCE="false" TYPE="text" NOTNULL="true" />
@@ -33,7 +39,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="mod_vocabcoach_vocabdata" COMMENT="Assigns the vocabulary to the users and keeps track of the last check.">
+    <TABLE NAME="vocabcoach_vocabdata" COMMENT="Assigns the vocabulary to the users and keeps track of the last check.">
       <FIELDS>
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
         <FIELD NAME="userid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
@@ -44,11 +50,14 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk-vocab" TYPE="foreign" FIELDS="vocabid" REFTABLE="vocabcoach_vocab" REFFIELDS="id" />
+        <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
+        <KEY NAME="fk-user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
       </KEYS>
     </TABLE>
 
 
-    <TABLE NAME="mod_vocabcoach_list_contains" COMMENT="Matches the lists with the vocab items.">
+    <TABLE NAME="vocabcoach_list_contains" COMMENT="Matches the lists with the vocab items.">
       <FIELDS>
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
         <FIELD NAME="listid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
@@ -56,10 +65,12 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk-list" TYPE="foreign" FIELDS="listid" REFTABLE="vocabcoach_lists" REFFIELDS="id" />
+        <KEY NAME="fk-vocab" TYPE="foreign" FIELDS="vocabid" REFTABLE="vocabcoach_vocab" REFFIELDS="id" />
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="mod_vocabcoach_activitylog" COMMENT="Logs user activity.">
+    <TABLE NAME="vocabcoach_activitylog" COMMENT="Logs user activity.">
       <FIELDS>
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
         <FIELD NAME="userid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
@@ -69,10 +80,12 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
+        <KEY NAME="fk-user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="mod_vocabcoach_lists" COMMENT="Contains information about the vocab lists available.">
+    <TABLE NAME="vocabcoach_lists" COMMENT="Contains information about the vocab lists available.">
       <FIELDS>
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
         <FIELD NAME="title" SEQUENCE="false" TYPE="text" NOTNULL="true"  />
@@ -84,6 +97,22 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
+        <KEY NAME="fk-user" TYPE="foreign" FIELDS="createdby" REFTABLE="user" REFFIELDS="id" />
+      </KEYS>
+    </TABLE>
+
+    <TABLE NAME="vocabcoach_feedback" COMMENT="Contains feedback to be given to students.">
+      <FIELDS>
+        <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
+        <FIELD NAME="message" SEQUENCE="false" TYPE="text" NOTNULL="true"  />
+        <FIELD NAME="type" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
+        <FIELD NAME="createdby" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
+        <FIELD NAME="cmid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
       </KEYS>
     </TABLE>
   </TABLES>

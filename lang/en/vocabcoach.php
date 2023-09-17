@@ -37,7 +37,11 @@ $string['vocabcoachname'] = 'Vokabelkasten';
 $string['vocabcoachname_help'] = 'Hilfe';
 $string['vocabcoachnameplural'] = 'Vokabelkasten';
 
-
+$string['boxtimes'] = 'Wiederholungszeiten';
+$string['info_boxtimes'] = 'Setze hier die Zeiten, nach denen Vokabeln in den verschiedenen Fächern wiederholt werden sollen und wieder als "fällig" erscheinen.';
+$string['boxtime'] = "Zeit für Box";
+$string['move_undue'] = 'Vokabeln, die vor Ablauf der Wiederholungszeit abgefragt werden, ins nächste Fach bewegen.';
+$string['move_undue_help'] = 'Vokabeln können jederzeit wiederholt werden. Ist dieses Feld aktiviert, werden auch Vokabeln, die noch vor Ablauf der Wiederholungszeit abgefragt werden, in die nächste Box verschoben. Andernfalls verbleiben diese in der aktuellen Box.';
 
 $string['add_vocab_title'] = 'Vokabeln hinzufügen';
 $string['front'] = 'Vorderseite';
@@ -49,7 +53,7 @@ $string['add_vocab_info_lines'] = 'Weitere Zeilen werden automatisch ergänzt.';
 $string['add_vocab_add_to_user_database'] = 'Sofort zum eigenen Karteikasten hinzufügen.';
 $string['edit_vocab_instructions'] = 'Um eine Vokabeln zu löschen, lass beide Seiten leer.';
 $string['edit_list_not_allowed'] = 'Du hast nicht die Berechtigung, diese Liste zu ändern.';
-$string['add_vocab_add_to_user_database_help'] = 'Wird dies nicht geklickt, so wird nur die List generiert, die Vokabeln landen aber nicht direkt in deinem Karteikasten. Du kannst sie aber später hinzufügen.';
+$string['add_vocab_add_to_user_database_help'] = 'Wenn du diesen Haken nicht setzt, wird nur die Liste angelegt, die Vokabeln landen aber nicht direkt in deinem Kasten. Du kannst sie aber jederzeit später hinzufügen.';
 
 
 $string['vocab'] = 'Vokabel';

@@ -32,7 +32,7 @@ class box_manager {
     private int $cmid, $userid;
 
     public function __construct(int $cmid, int $userid) {
-        $this->vocabhelper = new vocabhelper();
+        $this->vocabhelper = new vocabhelper($cmid);
         $this->cmid = $cmid;
         $this->userid = $userid;
     }
@@ -43,10 +43,10 @@ class box_manager {
         $output = array();
         for ($i=1; $i<=$this->vocabhelper->BOX_NUMBER; $i++) {
             try {
-                $total = $DB->count_records_select('mod_vocabcoach_vocabdata', 'userid = ? AND cmid = ? AND stage = ?', [$this->userid, $this->cmid, $i]);
+                $total = $DB->count_records_select('vocabcoach_vocabdata', 'userid = ? AND cmid = ? AND stage = ?', [$this->userid, $this->cmid, $i]);
 
                 $min_days_since_check = $this->vocabhelper->BOXES_TIMES[$i];
-                $due = $DB->count_records_select('mod_vocabcoach_vocabdata',
+                $due = $DB->count_records_select('vocabcoach_vocabdata',
                     'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?', [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($min_days_since_check)]);
             } catch (\dml_exception $e) {
                 die ($e->getMessage());
@@ -54,7 +54,7 @@ class box_manager {
 
             if ($due === 0) {
                 $query = "SELECT MIN(vd.lastchecked) AS recent 
-                            FROM {mod_vocabcoach_vocabdata} vd
+                            FROM {vocabcoach_vocabdata} vd
                             WHERE userid = {$this->userid} AND cmid = {$this->cmid} AND stage = {$i}
                             ";
                 try {

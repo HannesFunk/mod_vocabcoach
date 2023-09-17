@@ -46,4 +46,18 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
+    'mod_vocabcoach_distribute_list' => [
+        'classname' => 'mod_vocabcoach\external\manage_lists_api',
+        'methodname' => 'distribute_list',
+        'description' => 'Add all the new vocab from one list to dbs owned by any student of the course.',
+        'type' => 'write',
+        'ajax' => true,
+    ],
+    'mod_vocabcoach_get_feedback_line' => [
+        'classname' => 'mod_vocabcoach\external\feedback_api',
+        'methodname' => 'get_feedback_line',
+        'description' => 'Gets a feedback line, depending on the achievement.',
+        'type' => 'write',
+        'ajax' => true,
+    ],
 ];

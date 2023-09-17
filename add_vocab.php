@@ -71,7 +71,7 @@ if ($mode === 'edit') {
     $listapi = new check_vocab_api();
     $old_vocab_array = $listapi->get_list_vocabs($editlistid);
     $mform = new add_vocab_form(null, ['mode'=>$mode, 'old'=>$old_vocab_array, 'listid'=>$editlistid, 'year'=>$moduleinstance->year]);
-    $listinfo = $DB->get_record('mod_vocabcoach_lists', ['id'=>$editlistid],
+    $listinfo = $DB->get_record('vocabcoach_lists', ['id'=>$editlistid],
         'title AS list_title, 
         book AS list_book, 
         unit AS list_unit, 

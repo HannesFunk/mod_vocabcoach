@@ -19,16 +19,13 @@ Programming:
 
 Mobile Stuff:
 - ListView zu breit
-- Don't capitalize Englisch --> done, check
-- input-type-area: mit Enter bestätigen
-- Zufalls-Lob
 
 Features:
 - Gamification
 - Stalking-Tools
-- Übersicht: how is my class doing?
 
 OUT OF SCOPE:
+- Übersicht: how is my class doing?
 - Vokabeln mit Bildern
 - Tippen/ etc. als Standardeinstellung
 

@@ -35,12 +35,12 @@ class check_vocab_api extends external_api {
         self::validate_parameters(self::update_vocab_parameters(), ['dataid'=>$dataid, 'userid'=>$userid, 'known'=>$known]);
 
         try {
-            $record = $DB->get_record_sql("SELECT * FROM {mod_vocabcoach_vocabdata} WHERE id = ?;", [$dataid], MUST_EXIST);
+            $record = $DB->get_record_sql("SELECT * FROM {vocabcoach_vocabdata} WHERE id = ?;", [$dataid], MUST_EXIST);
 
-            $record->stage = $known ? $record->stage + 1 : 1;
+            $record->stage = $known ? max($record->stage + 1, 5) : 1;
             $record->lastchecked = time();
 
-            $DB->update_record('mod_vocabcoach_vocabdata', $record);
+            $DB->update_record('vocabcoach_vocabdata', $record);
         } catch (\dml_exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -65,13 +65,13 @@ class check_vocab_api extends external_api {
         global $DB;
         self::validate_parameters(self::get_user_vocabs_parameters(), ['userid'=>$userid, 'cmid'=>$cmid, 'stage'=>$stage, 'force' => $force]);
 
-        $vocabhelper = new vocabhelper();
+        $vocabhelper = new vocabhelper($cmid);
         $days = $vocabhelper->BOXES_TIMES[$stage];
         $min_timestamp = $vocabhelper->old_timestamp($days);
 
         $query = "SELECT vd.ID AS dataid, front, back 
-                FROM {mod_vocabcoach_vocab} vocab 
-                JOIN {mod_vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID 
+                FROM {vocabcoach_vocab} vocab 
+                JOIN {vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID 
                WHERE vd.userID= ? AND vd.stage = ? AND vd.cmid = ?";
         if (!$force) {
             $query .= "AND vd.lastchecked < ?;";
@@ -108,8 +108,8 @@ class check_vocab_api extends external_api {
 
         global $DB;
 
-        $query = "SELECT vocab.ID AS dataid, front, back FROM {mod_vocabcoach_vocab} vocab 
-            INNER JOIN {mod_vocabcoach_list_contains} list_contains ON  list_contains.vocabID = vocab.ID
+        $query = "SELECT vocab.ID AS dataid, front, back FROM {vocabcoach_vocab} vocab 
+            INNER JOIN {vocabcoach_list_contains} list_contains ON  list_contains.vocabID = vocab.ID
             WHERE list_contains.listID = $listid;";
         try {
             $output =  $DB->get_records_sql($query);

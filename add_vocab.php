@@ -32,7 +32,7 @@ global $CFG;
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/classes/forms/add_vocab_form.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
-
+include_once(__DIR__.'/classes/activity_tracker.php');
 
 // Course module id.
 $id = required_param('id', PARAM_INT);
@@ -89,7 +89,7 @@ if ($mform->is_cancelled()) {
     $redirect = true;
     $vocabmanager = new vocab_manager($userid);
 
-    // Step 0: construct $vocab_array directly from $_POST - this is a dirty hack, but all I can think of right now.
+    // Step 0a: construct $vocab_array directly from $_POST - this is a dirty hack, but all I can think of right now.
     $vocabarray = array();
     for ($i=0; $i<count($_POST['front']); $i++) {
         if ($_POST['front'][$i] === '' || $_POST['back'][$i] === '' ) {
@@ -111,25 +111,33 @@ if ($mform->is_cancelled()) {
                 notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
             }
         }
+        $at = new activity_tracker($USER->id, $id);
+        $at->log($at->types_always['ACT_ENTERED_VOCAB'], count($vocabarray));
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('add_vocab_successful', 'mod_vocabcoach'));
     }
 
+    // Step 0b: Gather list information
+    $listkeys = ['title', 'book', 'unit', 'year'];
+    $listinfo = ['createdby'=> $userid, 'cmid' => $cm->id];
+    foreach ($listkeys as $key) {
+        $listinfo[$key] = $formdata->{'list_' . $key};
+    }
+
     if ($mode === 'edit') {
+        $listinfo['id'] = $editlistid;
+        $DB->update_record('vocabcoach_lists', (object) $listinfo);
         $vocabmanager->edit_list($editlistid, $vocabarray);
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('edit_vocab_successful', 'mod_vocabcoach'));
     }
 
     // Step 1: Generate List
-    $listkeys = ['title', 'book', 'unit', 'year'];
-    $listinfo = ['createdby' => $userid, 'cmid' => $cm->id];
-    foreach ($listkeys as $key) {
-        $listinfo[$key] = $formdata->{'list_' . $key};
-    }
+
     $listid = $vocabmanager->add_list($listinfo);
-    if ($listid ==  -1) {
+    if ($listid == -1) {
         notification::add('Fehler beim Anlegen der Liste. ', notification::ERROR);
         $redirect = false;
     }
+    $listinfo['id'] = $listid;
 
     // Step 2: Add all the vocabulary, find their ID and link them to the list
     foreach ($vocabarray as $vocab) {
@@ -138,6 +146,8 @@ if ($mform->is_cancelled()) {
             notification::add('Fehler beim Eintragen der Vokabeln in die Liste. ', notification::ERROR);
             $redirect = false;
         }
+        $at = new activity_tracker($USER->id, $id);
+        $at->log($at->types_always['ACT_CREATED_LIST'], $listid);
     }
 
     // Step 3: add list to user (if necessary)

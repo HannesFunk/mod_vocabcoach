@@ -43,7 +43,7 @@ function checkBox(cmid, box, force = false) {
             message: 'In dieser Box sind zur Zeit keine Vokabeln enthalten.'
         };
         notification.addNotification(msgData).then(null);
-    } else if (parseInt(box.getAttribute('data-due')) > 0) {
+    } else if (force && parseInt(box.getAttribute('data-due')) > 0) {
         notification.addNotification({type: 'info',
             message: 'Wiederhole zuerst die aktuell fälligen Vokabeln in dieser Box. ' +
                 'Erst danach kannst du auch die anderen abfragen.'}).then(null);

@@ -1,43 +1,43 @@
-import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX, updateVocabAJAX} from "./repository";
+import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX, logCheckedVocabsAJAX, updateVocabAJAX} from "./repository";
 import mustache from 'core/mustache';
 import {showElement, showElements} from "./general";
 
 let vocabArrayJSON = null;
-let modid = -1;
 let knownCount = 0;
 let unknownCount = 0;
 let mode = 'back';
-let force = false;
+let config = {};
 
-export const init = (userid, addInfo, moduleid, force_init = false) => {
-    modid = moduleid;
-    userid = parseInt(userid);
-    force = force_init;
-    if (userid === -1) {
-        getListArrayAJAX(addInfo).then(response => {
+export const init = (configuration) => {
+    config = JSON.parse(configuration);
+    config.userid = parseInt(config.userid);
+    if (config.mode === 'list') {
+        getListArrayAJAX(config.listid).then(response => {
             vocabArrayJSON = response;
+            initDots();
             showNext(false);
             }
         );
-    } else {
-        getBoxArrayAJAX(userid, modid, addInfo, force).then(response => {
+    } else if(config.mode === 'user') {
+        getBoxArrayAJAX(config.userid, config.cmid, config.stage, config.force).then(response => {
             vocabArrayJSON = response;
+            initDots();
             showNext(false);
             }
         );
     }
-    addListeners(userid);
+    addListeners();
 };
 
-function addListeners(userid) {
+function addListeners() {
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.checkTypedVocab)) {
-            checkTypedVocab(userid);
+            checkTypedVocab(config.userid);
         } else if (e.target.closest(Selectors.actions.revealCard) && mode !== 'type') {
             const label = e.target.closest(Selectors.actions.revealCard).getElementsByClassName('vc-check-label')[0];
             showElement(label, true);
         } else if (e.target.closest(Selectors.actions.updateVocab)) {
-            checkDone(vocabArrayJSON[0].dataid, userid, e.target.getAttribute('data-vocabcoach-known') === 'true');
+            checkDone(vocabArrayJSON[0].dataid, e.target.getAttribute('data-vocabcoach-known') === 'true');
         } else if (e.target.closest(Selectors.actions.endCheck)) {
             endCheck();
         } else if (e.target.closest(Selectors.actions.revealTypedVocab)) {
@@ -53,7 +53,10 @@ function addListeners(userid) {
             document.getElementById('input-vocab-front').value = '';
             document.getElementById('input-vocab-front').disabled = false;
 
-            updateVocabAJAX(vocabArrayJSON[0].dataid, userid, false).then(() => { showNext();});
+            updateVocabAJAX(vocabArrayJSON[0].dataid, config.userid, false).then(() => {
+                updateCount(false);
+                showNext();
+            });
         }
     });
 
@@ -72,7 +75,7 @@ function addListeners(userid) {
     document.addEventListener('keyup', e => {
         if (e.target.closest(Selectors.formElements.typedVocab) &&
             e.key === 'Enter') {
-                checkTypedVocab(userid);
+                checkTypedVocab(config.userid);
         }
     });
 }
@@ -92,6 +95,23 @@ const Selectors = {
         typedVocab: '[id="input-vocab-front"]',
     },
 };
+
+function initDots() {
+    const progressBar = document.getElementById('progress-bar');
+    const totalVocab = vocabArrayJSON.length;
+    const greyDotContainer = document.createElement('div');
+    const greyDot = document.createElement('div');
+    greyDot.classList.add('vocab-dot');
+    greyDot.classList.add('unchecked');
+    greyDotContainer.appendChild(greyDot);
+
+    for (let i= 0; i<totalVocab; i++) {
+        let newDot = greyDotContainer.cloneNode(true);
+        newDot.style.transform = 'translateX(calc(100% - ' + (i+1)*12 + 'px))';
+        newDot.setAttribute('data-new-shift', (totalVocab-i)*12);
+        progressBar.appendChild(newDot);
+    }
+}
 
 export function changeMode() {
     mode = document.getElementById('check-mode').value;
@@ -115,19 +135,19 @@ export function changeMode() {
         });
 }
 
-function checkTypedVocab (userid) {
+function checkTypedVocab () {
     const typed = document.getElementById('input-vocab-front').value;
     const correct = vocabArrayJSON[0].front;
 
-    if (typed === correct && !force) {
-        updateVocabAJAX(vocabArrayJSON[0].dataid, userid, true).then(
+    if (typed === correct && !config.force) {
+        updateVocabAJAX(vocabArrayJSON[0].dataid, config.userid, true).then(
             () => {
-                knownCount++;
+                updateCount(true);
                 showNext();
             }
         );
     } else if (typed === correct) {
-        knownCount++;
+        updateCount(true);
         showNext();
     } else {
         document.getElementById('input-vocab-front').classList.add('wrong');
@@ -185,7 +205,7 @@ function resetCheckFields() {
 }
 
 function endCheck() {
-    location.href = '../../mod/vocabcoach/view.php?id=' + modid;
+    location.href = '../../mod/vocabcoach/view.php?id=' + config.cmid;
 }
 
 function showSummary() {
@@ -209,7 +229,18 @@ function showSummary() {
         (text) => {template = text; }
     );
 
-    Promise.all([getMsg, getTemplate]).then(() => {
+    const logDetails = {
+        total: knownCount + unknownCount,
+        known: knownCount,
+        force: config.force,
+        mode: config.mode
+    };
+    if (config.mode === 'user') {
+        logDetails.stage = config.stage;
+    }
+    const logNumber = logCheckedVocabsAJAX(config.userid, config.cmid, JSON.stringify(logDetails));
+
+    Promise.all([getMsg, getTemplate, logNumber]).then(() => {
         const summaryContainer = document.getElementsByClassName('check-summary')[0];
         summaryContainer.innerHTML = mustache.render(template, templateData);
         showElement(summaryContainer, true);
@@ -236,13 +267,13 @@ function getSummaryAchievement() {
 }
 
 
-function checkDone(vocabId, userId, known) {
-    if (userId === -1 || force) {
+function checkDone(vocabId, known) {
+    if (config.mode === 'list' || config.force) {
         updateCount(known);
         showNext();
     }
     else {
-    updateVocabAJAX(vocabId, userId, known).then(
+        updateVocabAJAX(vocabId, config.userid, known).then(
             () => {
                 updateCount(known);
                 showNext();
@@ -257,6 +288,13 @@ function updateCount(known) {
     } else {
         unknownCount++;
     }
+
+    let bullets = document.querySelectorAll('.vocab-dot.unchecked');
+    let bullet = bullets[bullets.length - 1];
+    const newShift = bullet.parentNode.getAttribute('data-new-shift');
+    bullet.parentNode.style.transform = 'translateX(' + newShift + 'px)';
+    bullet.classList.add(known ? 'dot-green' : 'dot-red');
+    bullet.classList.remove('unchecked');
 }
 
 function shuffle(array) {

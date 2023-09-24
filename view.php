@@ -63,15 +63,15 @@ $box_manager = new box_manager($id, $USER->id);
 $box_data = $box_manager->get_box_details();
 
 $al = new activity_tracker($USER->id, $id);
-$al->log($al->types['ACT_LOGGED_IN']);
+$al->log($al->types_daily['ACT_LOGGED_IN']);
 if ($al->is_all_done($box_data)) {
-    $al->log($al->types['ACT_CHECKED_ALL']);
+    $al->log($al->types_daily['ACT_CHECKED_ALL']);
 }
 
 $templatecontext = [
     'boxdata'=> $box_data,
-    'days_logged_in' => $al->get_continuous_days($al->types['ACT_LOGGED_IN']),
-    'days_checked_all' => $al->get_continuous_days($al->types['ACT_CHECKED_ALL']),
+    'days_logged_in' => $al->get_continuous_days($al->types_daily['ACT_LOGGED_IN']),
+    'days_checked_all' => $al->get_continuous_days($al->types_daily['ACT_CHECKED_ALL']),
 ];
 
 echo $OUTPUT->header();

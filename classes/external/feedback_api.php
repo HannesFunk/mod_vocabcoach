@@ -25,8 +25,6 @@ class feedback_api extends external_api {
     }
 
     public static function get_feedback_line($achievement): array {
-        global $DB;
-
         self::validate_parameters(self::get_feedback_line_parameters(), ['achievement' => $achievement]);
 
         global $DB;

@@ -2,10 +2,12 @@
 
 class activity_tracker {
     private int $userid, $cmid;
-    public array $types = [
+    public array $types_daily = [
         "ACT_LOGGED_IN" => 1,
         "ACT_CHECKED_ALL" => 2,
-        "ACT_STUDIED_LIST" => 3,
+    ];
+    public array $types_always = [
+        "ACT_CHECKED_VOCAB" => 3,
         "ACT_ENTERED_VOCAB" => 4,
         "ACT_CREATED_LIST" => 5,
     ];
@@ -22,8 +24,8 @@ class activity_tracker {
      * @param string $date Date of the log entry.
      * @return bool Whether the log was successful
      */
-    function log(int $type, string $date = 'today') : bool {
-        if (! in_array($type, $this->types)) {
+    function log(int $type, string $details = "", string $date = 'today') : bool {
+        if (!in_array($type, $this->types_daily) && !in_array($type, $this->types_always)) {
             return false;
         }
 
@@ -33,9 +35,11 @@ class activity_tracker {
         $log->cmid = $this->cmid;
         $log->type = $type;
         $log->date = $this->formatDate($date);
+        $log->details = $details;
 
         try {
-            if ($DB->count_records('vocabcoach_activitylog', ['userid' => $log->userid, 'cmid' => $log->cmid, 'type' => $log->type, 'date' => $log->date]) > 0) {
+            if (in_array($type, $this->types_daily) &&
+                $DB->count_records('vocabcoach_activitylog', ['userid' => $log->userid, 'cmid' => $log->cmid, 'type' => $log->type, 'date' => $log->date]) > 0) {
                 return true;
             }
 

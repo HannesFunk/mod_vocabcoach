@@ -51,7 +51,7 @@ class add_vocab_form extends moodleform {
 
             $mform->addElement('text', 'list_book', 'Buch');
             $mform->setType('list_book', PARAM_TEXT);
-            $mform->addRule('list_book', 'Darf nicht leer sein.', 'required');
+            //$mform->addRule('list_book', 'Darf nicht leer sein.', 'required');
 
             $years = [];
             for ($i=5; $i<=13; $i++) {
@@ -63,7 +63,7 @@ class add_vocab_form extends moodleform {
 
             $mform->addElement('text', 'list_unit', 'Unit');
             $mform->setType('list_unit', PARAM_TEXT);
-            $mform->addRule('list_unit', 'Darf nicht leer sein.', 'required');
+            //$mform->addRule('list_unit', 'Darf nicht leer sein.', 'required');
 
             $mform->addElement('checkbox', 'add_to_user_database', get_string('add_vocab_add_to_user_database', 'mod_vocabcoach'));
             $mform->addHelpButton('add_to_user_database', 'add_vocab_add_to_user_database', 'mod_vocabcoach');
@@ -75,7 +75,7 @@ class add_vocab_form extends moodleform {
             $text = get_string('add_vocab_info_lines', 'mod_vocabcoach').' '.get_string('edit_vocab_instructions', 'mod_vocabcoach');
             $mform->addElement('static', 'info_lines', '', $text);
         } else {
-            $mform->addElement('static', 'info_lines', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
+            $mform->addElement('static', 'info_lines', '', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
         }
 
         $vocabrow = array();

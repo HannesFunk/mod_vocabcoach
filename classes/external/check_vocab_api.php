@@ -4,7 +4,8 @@ namespace mod_vocabcoach\external;
 
 global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
-require(__DIR__.'/../vocabhelper.php');
+require_once(__DIR__.'/../vocabhelper.php');
+require_once(__DIR__.'/../activity_tracker.php');
 
 use external_api;
 use external_function_parameters;
@@ -37,7 +38,7 @@ class check_vocab_api extends external_api {
         try {
             $record = $DB->get_record_sql("SELECT * FROM {vocabcoach_vocabdata} WHERE id = ?;", [$dataid], MUST_EXIST);
 
-            $record->stage = $known ? max($record->stage + 1, 5) : 1;
+            $record->stage = $known ? min($record->stage + 1, 5) : 1;
             $record->lastchecked = time();
 
             $DB->update_record('vocabcoach_vocabdata', $record);
@@ -117,5 +118,31 @@ class check_vocab_api extends external_api {
         } catch(\dml_exception) {
             return [];
         }
+    }
+
+    public static function log_checked_vocabs_parameters() : external_function_parameters {
+        return new external_function_parameters([
+                'cmid'=> new external_value(PARAM_INT),
+                'userid' => new external_value(PARAM_INT),
+                'details' => new external_value(PARAM_TEXT),
+        ]);
+    }
+
+    public static function log_checked_vocabs_returns() : external_single_structure {
+        return new external_single_structure([
+                'success' => new external_value(PARAM_BOOL, 'whether the update was successful.'),
+                'message' => new external_value(PARAM_TEXT, 'a message'),
+        ]);
+    }
+
+    public static function log_checked_vocabs(int $cmid, int $userid, $details) :array {
+        self::validate_parameters(self::log_checked_vocabs_parameters(),
+                ['cmid' => $cmid,'userid' => $userid, 'details' => $details]);
+
+        $at = new \activity_tracker($userid, $cmid);
+        $at->log($at->types_always['ACT_CHECKED_VOCAB'], $details);
+
+        return ['success'=> true, 'message'=>'Logged successfully.'];
+
     }
 }

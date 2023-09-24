@@ -110,39 +110,59 @@ input.wrong {
 }
 
 #check-area.animation-slide-out {
-    animation: slideOut .3s linear;
+    animation: fadeOut .3s linear;
 }
 #check-area.animation-slide-in {
-    animation: slideIn .3s linear;
+    animation: fadeIn .3s linear;
 }
 
-/* Keyframes for the animation */
-@keyframes slideOut {
+@keyframes fadeOut {
     0% {
-        transform: translateX(0);
         opacity: 1;
     }
-    99% {
-        transform: translateX(-100%);
-        opacity: 1;
+    50% {
+        opacity: 0;
     }
     100% {
-        transform: translateX(-100%);
         opacity: 0;
     }
 }
 
-@keyframes slideIn {
+@keyframes fadeIn {
     0% {
-        transform: translateX(100%);
         opacity: 0;
     }
-    1% {
-        transform: translateX(100%);
-        opacity: 1;
+    50% {
+        opacity: 0;
     }
     100% {
-        transform: translateX(0);
         opacity: 1;
     }
+}
+
+#progress-bar {
+    height: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+#progress-bar > div {
+    transition: all .5s;
+    width: 100%;
+    position: absolute;
+}
+
+.vocab-dot {
+    height: 100%;
+    border: 5px solid #dddbd9;
+    border-radius: 50%;
+    width: .5rem;
+}
+
+.vocab-dot.dot-green {
+    border-color: #0a0;
+}
+
+.vocab-dot.dot-red {
+    border-color: #d11e15;
 }

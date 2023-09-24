@@ -15,26 +15,16 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 
 TODO:
 Programming:
-- check-type-Bug?!
-
-Mobile Stuff:
-- ListView zu breit
+- Check: reward after nn correct
+- activity logger: prüfen! --> müsste funktionieren
+- Tippen/ etc. als Standardeinstellung --> ist oben!
+- Zusammenfassung nach Abfrage
+- ListView zu breit für mobile Anzeige
+- dritte Spalte!
 
 Features:
-- Gamification
 - Stalking-Tools
 
 OUT OF SCOPE:
 - Übersicht: how is my class doing?
 - Vokabeln mit Bildern
-- Tippen/ etc. als Standardeinstellung
-
-Improvements
-- Zusammenfassung nach Abfrage
-
-Erstmal ned
-- Buch-Liste
-
-Meta:
-- Elternbrief
-- Modul für Unterricht

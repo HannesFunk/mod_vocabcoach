@@ -77,6 +77,7 @@
         <FIELD NAME="cmid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
         <FIELD NAME="date" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
         <FIELD NAME="type" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
+        <FIELD NAME="details" SEQUENCE="false" TYPE="text" NOTNULL="true" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

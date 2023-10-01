@@ -70,7 +70,7 @@ class check_vocab_api extends external_api {
         $days = $vocabhelper->BOXES_TIMES[$stage];
         $min_timestamp = $vocabhelper->old_timestamp($days);
 
-        $query = "SELECT vd.ID AS dataid, front, back 
+        $query = "SELECT vd.ID AS dataid, front, back, third 
                 FROM {vocabcoach_vocab} vocab 
                 JOIN {vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID 
                WHERE vd.userID= ? AND vd.stage = ? AND vd.cmid = ?";
@@ -79,7 +79,11 @@ class check_vocab_api extends external_api {
         } else {
             $query .= ';';
         }
-        $output =  $DB->get_records_sql($query, [$userid, $stage, $cmid, $min_timestamp]);
+        try {
+            $output = $DB->get_records_sql($query, [$userid, $stage, $cmid, $min_timestamp]);
+        } catch (\dml_exception $e) {
+            return [$e->getMessage()];
+        }
 
         return array_values($output);
     }
@@ -100,6 +104,7 @@ class check_vocab_api extends external_api {
                 'dataid' => new external_value(PARAM_INT),
                 'front' => new external_value(PARAM_TEXT),
                 'back' => new external_value(PARAM_TEXT),
+                'third' => new external_value(PARAM_TEXT),
             ])
         );
     }
@@ -109,7 +114,7 @@ class check_vocab_api extends external_api {
 
         global $DB;
 
-        $query = "SELECT vocab.ID AS dataid, front, back FROM {vocabcoach_vocab} vocab 
+        $query = "SELECT vocab.ID AS dataid, front, back, third FROM {vocabcoach_vocab} vocab 
             INNER JOIN {vocabcoach_list_contains} list_contains ON  list_contains.vocabID = vocab.ID
             WHERE list_contains.listID = $listid;";
         try {

@@ -5,24 +5,24 @@ import {showElement, showElements} from "./general";
 let vocabArrayJSON = null;
 let knownCount = 0;
 let unknownCount = 0;
-let mode = 'back';
+let mode = '';
 let config = {};
 
 export const init = (configuration) => {
     config = JSON.parse(configuration);
     config.userid = parseInt(config.userid);
-    if (config.mode === 'list') {
+    if (config.source === 'list') {
         getListArrayAJAX(config.listid).then(response => {
             vocabArrayJSON = response;
             initDots();
-            showNext(false);
+            changeMode();
             }
         );
-    } else if(config.mode === 'user') {
+    } else if(config.source === 'user') {
         getBoxArrayAJAX(config.userid, config.cmid, config.stage, config.force).then(response => {
             vocabArrayJSON = response;
             initDots();
-            showNext(false);
+            changeMode();
             }
         );
     }
@@ -35,7 +35,7 @@ function addListeners() {
             checkTypedVocab(config.userid);
         } else if (e.target.closest(Selectors.actions.revealCard) && mode !== 'type') {
             const label = e.target.closest(Selectors.actions.revealCard).getElementsByClassName('vc-check-label')[0];
-            showElement(label, true);
+            showElements([label, 'check-third'], true);
         } else if (e.target.closest(Selectors.actions.updateVocab)) {
             checkDone(vocabArrayJSON[0].dataid, e.target.getAttribute('data-vocabcoach-known') === 'true');
         } else if (e.target.closest(Selectors.actions.endCheck)) {
@@ -44,7 +44,7 @@ function addListeners() {
             document.getElementById('input-vocab-front').value = vocabArrayJSON[0].front;
             document.getElementById('input-vocab-front').disabled = true;
 
-            showElements(['button-typed-vocab-next'], true);
+            showElements(['button-typed-vocab-next', 'check-third'], true);
             showElements(['button-typed-vocab-check', 'button-typed-vocab-reveal'], false);
         } else if (e.target.closest(Selectors.actions.typedVocabUnknown)) {
             showElements(['button-typed-vocab-next'], false);
@@ -181,10 +181,12 @@ function showNext(removeShown = true) {
 function updateLabels () {
     document.getElementById('check-front').innerHTML = vocabArrayJSON[0].front;
     document.getElementById('check-back').innerHTML = vocabArrayJSON[0].back;
+    document.getElementById('check-third').innerHTML = vocabArrayJSON[0].third;
     document.getElementById('check-container').setAttribute('data-vocab-data-id', vocabArrayJSON[0].dataid);
 }
 
 function resetCheckFields() {
+    showElement('check-third', false);
     switch (mode) {
         case 'random': {
             const random = Math.floor(Math.random() * 2);
@@ -233,9 +235,9 @@ function showSummary() {
         total: knownCount + unknownCount,
         known: knownCount,
         force: config.force,
-        mode: config.mode
+        mode: config.source
     };
-    if (config.mode === 'user') {
+    if (config.source === 'user') {
         logDetails.stage = config.stage;
     }
     const logNumber = logCheckedVocabsAJAX(config.userid, config.cmid, JSON.stringify(logDetails));
@@ -244,7 +246,10 @@ function showSummary() {
         const summaryContainer = document.getElementsByClassName('check-summary')[0];
         summaryContainer.innerHTML = mustache.render(template, templateData);
         showElement(summaryContainer, true);
-        showElements(['check-box-front', 'check-box-back', 'check-type-area'], false);
+        showElements(['check-box-front', 'check-box-back', 'check-type-area', 'check-box-third', 'check-buttons'], false);
+        const instructionElement = document.getElementsByClassName('instruction-front-back-random')[0];
+        instructionElement.innerHTML = "Klicke in das Feld, um die Abfrage zu beenden.";
+        showElement(instructionElement, true);
     });
 }
 
@@ -268,7 +273,7 @@ function getSummaryAchievement() {
 
 
 function checkDone(vocabId, known) {
-    if (config.mode === 'list' || config.force) {
+    if (config.source === 'list' || config.force) {
         updateCount(known);
         showNext();
     }

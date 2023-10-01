@@ -1,21 +1,34 @@
-
-<h3>Vokabellisten</h3>
-
-<div class="btn btn-secondary btn-close m-2"
-     data-action="mod_vocabcoach/close_page">X</div>
-<div class="clearfix"></div>
+<h2>Vokabellisten</h2>
 
 <p>Du siehst hier alle Vokabellisten, die andere Schüler:innen in diesem Kurs angelegt haben. Du kannst entweder direkt von diesen Listen lernen, oder die ganze Liste in deinen Vokabelkasten übernehmen.</p>
 
+<div class="user-switch-container mb-3" data-action="mod_vocabcoach/toggle-user-switch">
+    <label class="mr-2 mb-0{{#onlyOwnLists}} text-primary{{/onlyOwnLists}}" for="userswitch">
+        Nur eigene anzeigen
+    </label>
+    <div class="custom-control custom-switch" style="display: inline;">
+        <input type="checkbox"{{!
+                }} class="custom-control-input"{{!
+                }} id="userswitch"{{!
+                }} {{#onlyOwnLists}} {{!
+                    }} checked {{!
+                }}
+                {{/onlyOwnLists}} {{!
+        }}>
+        <span class="custom-control-label">&nbsp;</span>
+    </div>
+</div>
+
 <table id="table-list" class="table generaltable">
+
 
 
 <tbody>
 <tr data-list-id="{{id}}">
     <th>Name</th>
-    <th>Jgst.</th>
-    <th>Buch</th>
-    <th>Kapitel</th>
+    <th class="secondary">Jgst.</th>
+    <th class="secondary">Buch</th>
+    <th class="secondary">Kapitel</th>
     <th>Anzahl Vokabeln</th>
     <th>Ersteller:in</th>
     <th>Aktionen</th>
@@ -27,10 +40,10 @@
 {{/emptyList}}
 {{#lists}}
 <tr data-list-id="{{id}}">
-    <td>{{title}}</td>
-    <td>{{year}}</td>
-    <td>{{book}}</td>
-    <td>{{unit}}</td>
+    <td><a href="viewlist.php?id={{cmid}}&listid={{id}}">{{title}}</a></td>
+    <td class="secondary">{{year}}</td>
+    <td class="secondary">{{book}}</td>
+    <td class="secondary">{{unit}}</td>
     <td>{{number}}</td>
     <td>{{creator}}</td>
     <td>

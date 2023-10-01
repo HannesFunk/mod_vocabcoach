@@ -28,12 +28,9 @@ require_once("$CFG->libdir/formslib.php");
 class add_vocab_form extends moodleform {
     //Add elements to form
     public function definition() :void {
-
         $mform = $this->_form; // Don't forget the underscore!
-
         $mode = $this->_customdata['mode'];
-
-        $id = optional_param('id', 0, PARAM_INT);
+        $id = $this->_customdata['id'];
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
@@ -51,7 +48,6 @@ class add_vocab_form extends moodleform {
 
             $mform->addElement('text', 'list_book', 'Buch');
             $mform->setType('list_book', PARAM_TEXT);
-            //$mform->addRule('list_book', 'Darf nicht leer sein.', 'required');
 
             $years = [];
             for ($i=5; $i<=13; $i++) {
@@ -63,7 +59,6 @@ class add_vocab_form extends moodleform {
 
             $mform->addElement('text', 'list_unit', 'Unit');
             $mform->setType('list_unit', PARAM_TEXT);
-            //$mform->addRule('list_unit', 'Darf nicht leer sein.', 'required');
 
             $mform->addElement('checkbox', 'add_to_user_database', get_string('add_vocab_add_to_user_database', 'mod_vocabcoach'));
             $mform->addHelpButton('add_to_user_database', 'add_vocab_add_to_user_database', 'mod_vocabcoach');
@@ -80,8 +75,9 @@ class add_vocab_form extends moodleform {
 
         $vocabrow = array();
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
-        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off');
-        $vocabrow[] =& $mform->createElement('text', 'back[]');
+        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="Englisch"');
+        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="Deutsch"');
+        $vocabrow[] =& $mform->createElement('text', 'third[]', '', 'placeholder="Zusatzinformation"');
         $mform->addGroup(
             $vocabrow,
             'vocabrow',
@@ -92,6 +88,7 @@ class add_vocab_form extends moodleform {
         $mform->setType('vocabid[]', PARAM_INT);
         $mform->setType('front[]', PARAM_TEXT);
         $mform->setType('back[]', PARAM_TEXT);
+        $mform->setType('third[]', PARAM_TEXT);
 
 
         $this->add_action_buttons();

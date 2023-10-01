@@ -50,7 +50,7 @@ class vocablist_pdf extends TCPDF {
     function set_header_user() : void{
         global $USER;
         $header = 'Erstellt für '.$USER->firstname.' '.$USER->lastname.' am '.date('d.m.Y');
-        $this->SetHeaderData('', 0, 'Vokabelliste', $header);
+        $this->SetHeaderData('', 0, 'Vokabelliste (Box '.$_GET['stage'].')', $header);
         $this->set_header();
     }
 
@@ -70,25 +70,30 @@ class vocablist_pdf extends TCPDF {
         $this->SetLineWidth(0.3);
         $this->SetFont('', 'B');
         // Header
-        $w = array(60, 60);
+        $w = array(50, 50, 0);
         $num_headers = count($header);
         for($i = 0; $i < $num_headers; ++$i) {
-            $this->Cell($w[$i], 7, $header[$i], false, 0, 'C', 1);
+            $this->Cell($w[$i], 7, $header[$i], false, 0, 'L', 1);
         }
         $this->Ln();
         // Color and font restoration
         $this->SetFillColor(224, 235, 255);
         $this->SetTextColor(0);
         $this->SetFont('');
+        $this->setCellPadding(2);
         // Data
         $fill = true;
         foreach($data as $vocab) {
-            $this->Cell($w[0], 9, $vocab->front, false, 0, 'L', $fill);
-            $this->Cell($w[1], 9, $vocab->back, false, 0, 'L', $fill);
-            $this->Ln();
-            $fill=!$fill;
+            $this->Cell($w[0], 5, $vocab->front, false, 0, 'L', $fill);
+            $this->Cell($w[1], 5, $vocab->back, false, 0, 'L', $fill);
+            if ($vocab->third === null) {
+                $vocab->third = 'blubb';
+            }
+            $this->MultiCell($w[2], 9, $vocab->third, 0, 'L', $fill, 1,
+                    null, null, true, 0, false, true , 0, 'M');
+            $fill = !$fill;
         }
-        $this->Cell(array_sum($w), 0, '', 'T');
+        $this->Cell(0, 0, '', 'T');
     }
 }
 
@@ -122,7 +127,7 @@ $pdf->SetFont('helvetica', '', 12);
 $pdf->AddPage();
 
 // column titles
-$header = array('Englisch', 'Deutsch');
+$header = array('Englisch', 'Deutsch', '');
 
 // data loading
 if (isset($_GET['listid'])) {

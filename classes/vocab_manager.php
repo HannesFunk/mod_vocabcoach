@@ -36,40 +36,36 @@ class vocab_manager {
     /**
      * @throws dml_exception
      */
-    public function insert_vocab($vocab, int $userid) : int {
-        $front = $vocab->front;
-        $back = $vocab->back;
-        if($this->does_vocab_exist($front, $back)) {
-            return $this->determine_id($front, $back);
+    public function insert_vocab($vocab) : int {
+        if($this->does_vocab_exist($vocab)) {
+            return $this->determine_id($vocab);
         } else {
-            return $this->create_record($front, $back, $userid);
+            $vocab->createdby = $this->userid;
+            return $this->create_record($vocab);
         }
     }
 
-    function does_vocab_exist(string $front, string $back) : bool {
+    function does_vocab_exist(object $vocab) : bool {
         global $DB;
         $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
         $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
-
-        $query = "SELECT COUNT(*) FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2";
+        $condition3 = $DB->sql_compare_text('third') . ' = ' . $DB->sql_compare_text(':third');
+        $query = "SELECT COUNT(*) FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2 AND $condition3";
         try {
-            $count = $DB->count_records_sql($query, array('front' => $front, 'back' => $back));
+            $count = $DB->count_records_sql($query,
+                    array('front' => $vocab->front, 'back' => $vocab->back, 'third' => $vocab->third));
             return $count > 0;
         } catch (dml_exception) {
             return false;
         }
     }
 
-    function create_record ($front, $back, $userid) : int {
+    function create_record ($vocab) : int {
         global $DB;
-        $new_vocab = new stdClass();
-        $new_vocab->front = $front;
-        $new_vocab->back = $back;
-        $new_vocab->createdby = $userid;
 
         try {
-            return $DB->insert_record('vocabcoach_vocab', $new_vocab);
-        } catch (dml_exception) {
+            return $DB->insert_record('vocabcoach_vocab', $vocab);
+        } catch (dml_exception $e) {
             return -1;
         }
     }
@@ -77,28 +73,30 @@ class vocab_manager {
     /**
      * @throws dml_exception
      */
-    function determine_id($front, $back) : int {
+    function determine_id($vocab) : int {
         global $DB;
-        $condition1 = $DB->sql_compare_text('front') . ' = ' . $DB->sql_compare_text(':front');
-        $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
 
-        $query = "SELECT id FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2";
-        $records = $DB->get_records_sql($query, array('front'=>$front, 'back'=>$back), 0,1);
+        $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
+        $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
+        $condition3 = $DB->sql_compare_text('third') . ' = ' . $DB->sql_compare_text(':third');
+
+        $query = "SELECT id FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2 AND $condition3";
+        $records = $DB->get_records_sql($query, array('front'=>$vocab->front, 'back'=>$vocab->back, 'third' => $vocab->third), 0,1);
         return array_values($records)[0]->id;
     }
 
     /**
      * @throws dml_exception
      */
-    function add_vocab_to_user(int $vocabid, int $userid, int $cmid) : bool {
+    function add_vocab_to_user(int $vocabid, int $cmid) : bool {
         global $DB;
 
         if ($DB->count_records_select('vocabcoach_vocabdata',
-                "vocabid = ? AND userid = ? AND cmid = ?", [$vocabid, $userid, $cmid]) > 0) {
+                "vocabid = ? AND userid = ? AND cmid = ?", [$vocabid, $this->userid, $cmid]) > 0) {
             return true; // user already has this vocab -> we're done
         } else {
             $new_vocabdata = new stdClass();
-            $new_vocabdata->userid = $userid;
+            $new_vocabdata->userid = $this->userid;
             $new_vocabdata->vocabid = $vocabid;
             $new_vocabdata->cmid = $cmid;
             $new_vocabdata->stage = 1;
@@ -152,7 +150,7 @@ class vocab_manager {
         return true;
    }
 
-   function add_list_to_user_database (int $listid, int $userid, int $cmid) : bool {
+   function add_list_to_user_database (int $listid, int $cmid) : bool {
         global $DB;
 
         $time = strtotime('2000-01-01 00:00:00');
@@ -160,7 +158,7 @@ class vocab_manager {
         $query = "SELECT id, vocabid FROM {vocabcoach_list_contains} list_contains 
                                 WHERE list_contains.listid = $listid 
                                 AND list_contains.vocabid NOT IN
-       (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
+       (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $this->userid AND cmid = $cmid)";
 
         try {
             $records = $DB->get_records_sql($query);
@@ -168,7 +166,7 @@ class vocab_manager {
             foreach (array_values($records) as $record) {
                 $insert = new stdClass();
                 $insert->vocabid = $record->vocabid;
-                $insert->userid = $userid;
+                $insert->userid = $this->userid;
                 $insert->cmid = $cmid;
                 $insert->stage = 1;
                 $insert->lastchecked = $time;

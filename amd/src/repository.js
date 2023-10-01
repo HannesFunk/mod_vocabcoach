@@ -35,11 +35,15 @@ export const getListArrayAJAX = (
     },
 }])[0];
 export const getListsAJAX = (
-    cmid
+    cmid,
+    userid,
+    onlyOwnLists
 ) => fetchMany([{
     methodname: 'mod_vocabcoach_get_lists',
     args: {
-        'cmid': cmid
+        'cmid': cmid,
+        'userid': userid,
+        'onlyOwnLists': onlyOwnLists
     },
 }])[0];
 

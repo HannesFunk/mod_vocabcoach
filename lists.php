@@ -32,6 +32,8 @@ $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 $moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
 
+$PAGE->requires->css('/mod/vocabcoach/styles/lists.css');
+
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
@@ -44,6 +46,7 @@ $PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/lists.php', ['id' => $id]);
 $PAGE->set_title('Vokabelcoach - Vokabellisten');
 $PAGE->set_heading('Vokabelcoach - Vokabellisten');
+$PAGE->navbar->add('Vokabellisten');
 
 $PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init',
         [$id, $USER->id, json_encode($info)]);

@@ -5,8 +5,11 @@
     margin: auto;
 }
 
-#check-box-front,
-#check-box-back {
+#check-buttons.hidden {
+    display: none;
+}
+
+.check-box {
     border: 1px solid grey;
     border-radius: 10px;
     width: 85%;
@@ -18,16 +21,13 @@
     align-items: center;
 }
 
-#check-box-front.hidden,
-#check-box-back.hidden {
+.check-box.hidden {
     display: none;
 }
 
-#check-front,
-#check-back {
+.check-box > div {
     font-size: xx-large;
 }
-
 
 .check-summary {
     height: calc(40vh + 30px);

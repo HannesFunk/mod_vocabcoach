@@ -1,0 +1,51 @@
+<h2>Vokabelliste {{title}}</h2>
+
+<form action="#" method="post" class="mform">
+<table id="table-list" class="table generaltable">
+<tbody>
+<tr>
+    <td></td>
+    <td>Englisch</td>
+    <td>Deutsch</td>
+    <td>Zusatzinfo</td>
+</tr>
+{{#vocabarray}}
+<tr>
+    <td><input type="checkbox" name="vocab-{{dataid}}" /></td>
+    <td>{{front}}</td>
+    <td>{{back}}</td>
+    <td>{{third}}</td>
+</tr>
+{{/vocabarray}}
+</tbody>
+</table>
+
+    <div id="fgroup_id_buttonar" class="form-group row fitem femptylabel" data-groupname="buttonar">
+        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">
+            <div class="form-label-addon d-flex align-items-center align-self-start">
+            </div>
+        </div>
+        <div class="col-md-9 form-inline align-items-start felement" data-fieldtype="group">
+            <fieldset class="w-100 m-0 p-0 border-0">
+                <div class="d-flex flex-wrap align-items-center">
+                    <div class="form-group fitem">
+    <span data-fieldtype="submit">
+        <input type="submit" class="btn btn-primary" name="submitbutton" id="id_submitbutton" value="Zum eigenen Vokabelkasten hinzufügen">
+    </span>
+        <div class="form-control-feedback invalid-feedback" id="id_error_submitbutton"></div>
+                    </div>
+                    <div class="form-group  fitem   btn-cancel">
+    <span data-fieldtype="submit">
+        <input type="submit" class="btn btn-secondary" name="cancel" id="id_cancel" value="Cancel" data-skip-validation="1" data-cancel="1" onclick="skipClientValidation = true; return true;">
+    </span>
+            <div class="form-control-feedback invalid-feedback" id="id_error_cancel">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-control-feedback invalid-feedback" id="fgroup_id_error_buttonar">
+            </div>
+        </div>
+    </div>
+
+</form>

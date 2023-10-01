@@ -98,28 +98,13 @@ class activity_tracker {
         $i = 1;
         while (1) {
             if (!isset($activities[$i])) {
-                return ($i - 1);
+                return $i;
             }
             if ($activities[$i]->date != $day) {
-                return ($i - 1);
+                return $i;
             }
             $i++;
             $day = $this->day_before($day);
         }
     }
-
-
-
-    //function get_class_log ($cmid) {
-    //    global $DB;
-    //    $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
-    //    $context = context_course::instance($cm->course);
-    //
-    //    $students = get_enrolled_users($context);
-    //
-    //    foreach ($this->types as $type) {
-    //        $query = "SELECT MIN(date) FROM {vocabcoach_activitylog} WHERE cmid = {$cmid} AND type = {$type};";
-    //        $DB->get_records_sql()
-    //    }
-    //}
 }

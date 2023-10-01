@@ -20,7 +20,7 @@ export function init(cmid, userid) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
         } else if (e.target.closest(Selectors.actions.showPdfUser)) {
             const stage = e.target.closest(Selectors.actions.showPdfUser).getAttribute('data-stage');
-            window.open('pages/vocablist_pdf.php?userid=' + userid + '&cmid=' +
+            window.open('vocablist_pdf.php?userid=' + userid + '&cmid=' +
                 cmid + '&stage=' + stage);
         } else if (e.target.closest(Selectors.elements.dropdown)) {
             return false;

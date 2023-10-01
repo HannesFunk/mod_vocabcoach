@@ -67,10 +67,14 @@ $PAGE->set_heading(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init', [$editlistid ?? -1]);
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 
+$form_parameters = [
+        'mode'=>$mode,
+        'id'=>$id,
+        'year'=>$moduleinstance->year
+];
 if ($mode === 'edit') {
-    $listapi = new check_vocab_api();
-    $old_vocab_array = $listapi->get_list_vocabs($editlistid);
-    $mform = new add_vocab_form(null, ['mode'=>$mode, 'old'=>$old_vocab_array, 'listid'=>$editlistid, 'year'=>$moduleinstance->year]);
+    $form_parameters['listid'] = $editlistid;
+    $mform = new add_vocab_form(null, $form_parameters);
     $listinfo = $DB->get_record('vocabcoach_lists', ['id'=>$editlistid],
         'title AS list_title, 
         book AS list_book, 
@@ -78,11 +82,11 @@ if ($mode === 'edit') {
         year AS list_year');
     $mform->set_data($listinfo);
 } else {
-    $mform = new add_vocab_form(null, ['mode' => $mode, 'old' => null, 'year'=>$moduleinstance->year]);
+    $mform = new add_vocab_form(null, $form_parameters);
 }
 
 if ($mform->is_cancelled()) {
-    redirect($CFG->wwwroot.'/mod/vocabcoach/view.php?id='.$cm->id, '');
+    redirect($CFG->wwwroot.'/mod/vocabcoach/view.php?id='.$cm->id);
 } else if ($formdata = $mform->get_data()) {
     global $USER;
     $userid = $USER->id;
@@ -92,22 +96,23 @@ if ($mform->is_cancelled()) {
     // Step 0a: construct $vocab_array directly from $_POST - this is a dirty hack, but all I can think of right now.
     $vocabarray = array();
     for ($i=0; $i<count($_POST['front']); $i++) {
-        if ($_POST['front'][$i] === '' || $_POST['back'][$i] === '' ) {
+        if ($_POST['front'][$i] === '' && $_POST['back'][$i] === '' ) {
             continue;
         }
         $vocab = new stdClass();
         $vocab->id = $_POST['vocabid'][$i] ?? '0';
         $vocab->correct_everywhere = false;
-        $vocab->front = $_POST['front'][$i];
-        $vocab->back = $_POST['back'][$i];
+        $vocab->front = trim($_POST['front'][$i]);
+        $vocab->back = trim($_POST['back'][$i]);
+        $vocab->third = trim($_POST['third'][$i]);
         $vocabarray[] = $vocab;
     }
 
     // If mode is user, don't bother about lists
     if ($mode === 'user') {
         foreach ($vocabarray as $vocab) {
-            $vocabid = $vocabmanager->insert_vocab($vocab, $userid);
-            if (!$vocabmanager->add_vocab_to_user($vocabid, $userid, $id)) {
+            $vocabid = $vocabmanager->insert_vocab($vocab);
+            if (!$vocabmanager->add_vocab_to_user($vocabid, $id)) {
                 notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
             }
         }
@@ -141,7 +146,7 @@ if ($mform->is_cancelled()) {
 
     // Step 2: Add all the vocabulary, find their ID and link them to the list
     foreach ($vocabarray as $vocab) {
-        $vocabid = $vocabmanager->insert_vocab($vocab, $userid);
+        $vocabid = $vocabmanager->insert_vocab($vocab);
         if (!$vocabmanager->add_vocab_to_list($vocabid, $listid)) {
             notification::add('Fehler beim Eintragen der Vokabeln in die Liste. ', notification::ERROR);
             $redirect = false;
@@ -152,7 +157,7 @@ if ($mform->is_cancelled()) {
 
     // Step 3: add list to user (if necessary)
     if (isset($formdata->add_to_user_database) && $formdata->add_to_user_database == 1) {
-        if (!$vocabmanager->add_list_to_user_database($listid, $userid, $id)) {
+        if (!$vocabmanager->add_list_to_user_database($listid, $id)) {
             notification::add('Fehler beim Eintragen der Vokabeln. ', notification::ERROR);
             notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
             $redirect = false;

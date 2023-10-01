@@ -32,6 +32,7 @@
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
         <FIELD NAME="front" SEQUENCE="false" TYPE="text" NOTNULL="true" />
         <FIELD NAME="back" SEQUENCE="false" TYPE="text" NOTNULL="true" />
+        <FIELD NAME="third" SEQUENCE="false" TYPE="text" NOTNULL="true" />
         <FIELD NAME="createdby" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
       </FIELDS>
       <KEYS>

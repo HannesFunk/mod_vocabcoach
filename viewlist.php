@@ -28,10 +28,15 @@ global $USER;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
+require_once(__DIR__.'/classes/external/check_vocab_api.php');
+require_once(__DIR__.'/classes/forms/view_list_form.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
-require_once(__DIR__.'/classes/forms/check_settings_form.php');
 
 $id = required_param('id', PARAM_INT);
+$userid = $USER->id;
+$listid = required_param('listid', PARAM_INT);
+$list_info = $DB->get_record('vocabcoach_lists', ['id'=>$listid],
+        'title, book, unit, year');
 
 $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -41,38 +46,37 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_context($modulecontext);
-$PAGE->set_url('/mod/vocabcoach/view.php');
-$PAGE->set_title('Vokabelcoach - Abfrage');
-$PAGE->set_heading('Vokabelcoach - Abfrage');
-$PAGE->navbar->add('Abfrage');
-
-$check_settings_form = new check_settings_form();
-$form_html = $check_settings_form->toHtml();
-
-
+$PAGE->set_url('/mod/vocabcoach/viewlist.php');
+$PAGE->set_title('Vokabelcoach - Liste');
+$PAGE->set_heading('Vokabelcoach - Liste');
+$PAGE->navbar->add($list_info->title);
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
-$PAGE->requires->css('/mod/vocabcoach/styles/style.css');
-$source = optional_param('source', 'user', PARAM_TEXT);
 
-$js_data = [
-    'userid'=>$USER->id,
-    'force'=>optional_param('force', false, PARAM_BOOL),
-    'cmid'=>$id,
-    'source'=>$source,
+$check_api = new \mod_vocabcoach\external\check_vocab_api();
+$vocab_array = $check_api->get_list_vocabs($listid);
+
+$templateParameters = [
+    'title'=>$list_info->title,
+    'vocabarray'=>$vocab_array
 ];
-if ($source === 'user') {
-    $js_data['stage'] = required_param('stage', PARAM_INT);
 
-} else if ($source === 'list') {
-    $js_data['listid'] = required_param('listid', PARAM_INT);
+$mform = new view_list_form(null, ['vocabdata' => json_encode($vocab_array), 'id' => $id, 'listid' => $listid]);
+
+if ($mform->is_cancelled()) {
+    redirect(new moodle_url('/mod/vocabcoach/lists.php', ['id'=>$id]));
+} else if ($formdata = $mform->get_data()) {
+    $vm = new \mod_vocabcoach\vocab_manager($userid);
+    foreach (array_keys((array) $formdata) as $key) {
+        if (!str_contains($key, "vocab-")) {
+            continue;
+        }
+        $vocabid = substr($key, strlen("vocab-"));
+        $vm->add_vocab_to_user($vocabid, $id);
+    }
+    redirect(new moodle_url('/mod/vocabcoach/view.php', ['id'=>$id]));
 }
 
-$PAGE->requires->js_call_amd(
-        'mod_vocabcoach/check',
-        'init',
-        array(json_encode($js_data))
-);
-
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('mod_vocabcoach/check', ['check-settings-form'=>$form_html]);
+echo $OUTPUT->heading('Vokabelliste '.$list_info->title);
+$mform->display();
 echo $OUTPUT->footer();

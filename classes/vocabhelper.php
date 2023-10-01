@@ -29,9 +29,9 @@ class vocabhelper {
     function __construct($cmid) {
         global $DB;
         $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
-        $boxtimes = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
+        $instance_info = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
         for ($i=1; $i<=5; $i++) {
-            $this->BOXES_TIMES[$i] = $boxtimes->{'boxtime_'.$i};
+            $this->BOXES_TIMES[$i] = $instance_info->{'boxtime_'.$i};
         }
     }
 
@@ -52,9 +52,11 @@ class vocabhelper {
         $next_due = time() + $box_time * 60 * 60 * 24;
         $seconds_left = $next_due - $last_checked;
         if ($seconds_left > 60 * 60 * 24) {
-            return floor($seconds_left / (60 * 60 * 24)).' Tagen';
+            $time = floor($seconds_left / (60 * 60 * 24));
+            return $time.($time > 1 ? ' Tagen' : ' Tag');
         } else {
-            return floor ($seconds_left / (60 * 60)).' Stunden';
+            $time = floor ($seconds_left / (60 * 60));
+            return $time.($time > 1 ? ' Stunden' : ' Stunde');
         }
 
     }

@@ -15,12 +15,9 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 
 TODO:
 Programming:
-- Check: reward after nn correct
 - activity logger: prüfen! --> müsste funktionieren
-- Tippen/ etc. als Standardeinstellung --> ist oben!
 - Zusammenfassung nach Abfrage
-- ListView zu breit für mobile Anzeige
-- dritte Spalte!
+- dritte Spalte! --> Done!
 
 Features:
 - Stalking-Tools

@@ -1,0 +1,11 @@
+@media (max-width: 650px) {
+    .generaltable td.secondary,
+    .generaltable th.secondary {
+        display: none;
+    }
+}
+
+.user-switch-container {
+    display: inline-block;
+    float: right;
+}

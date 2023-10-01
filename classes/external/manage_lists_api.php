@@ -17,7 +17,9 @@ use stdClass;
 class manage_lists_api extends external_api {
     public static function get_lists_parameters() : external_function_parameters {
         return new external_function_parameters([
-            'cmid' => new external_value(PARAM_INT, VALUE_OPTIONAL)
+            'cmid' => new external_value(PARAM_INT, VALUE_OPTIONAL),
+            'userid' => new external_value(PARAM_INT, VALUE_OPTIONAL),
+            'onlyOwnLists' => new external_value(PARAM_BOOL, VALUE_OPTIONAL)
         ]);
     }
 
@@ -36,14 +38,18 @@ class manage_lists_api extends external_api {
         );
     }
 
-    public static function get_lists ($cmid = 0) : array|null{
+    public static function get_lists ($cmid, $userid, $bOnlyOwnUser = false) : array|null{
 
-        self::validate_parameters(self::get_lists_parameters(), ['cmid' => $cmid]);
+        self::validate_parameters(self::get_lists_parameters(), ['cmid' => $cmid, 'userid' => $userid, 'onlyOwnLists' => $bOnlyOwnUser]);
 
         global $DB;
 
         try {
-            $records = $DB->get_records('vocabcoach_lists', ['cmid'=>$cmid], '', 'id, title, year, book, unit, createdby');
+            $conditions = ['cmid'=>$cmid];
+            if ($bOnlyOwnUser) {
+                $conditions['createdby'] = $userid;
+            }
+            $records = $DB->get_records('vocabcoach_lists', $conditions, '', 'id, title, year, book, unit, createdby');
             $output = array();
             foreach ($records as $record) {
                 $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_contains} WHERE listid = ".$record->id.";";

@@ -42,12 +42,13 @@ class add_vocab_form extends moodleform {
         if ($mode === 'list' || $mode === 'edit') {
             $mform->addElement('header', 'listsectionheader', get_string('listprops', 'mod_vocabcoach'));
 
-            $mform->addElement('text', 'list_title', 'Name');
+            $mform->addElement('text', 'list_title', 'Name der Liste');
             $mform->setType('list_title', PARAM_TEXT);
             $mform->addRule('list_title', 'Darf nicht leer sein.', 'required');
 
-            $mform->addElement('text', 'list_book', 'Buch');
+            $mform->addElement('text', 'list_book', 'Schulbuch');
             $mform->setType('list_book', PARAM_TEXT);
+            $mform->setDefault('list_book', 'Access');
 
             $years = [];
             for ($i=5; $i<=13; $i++) {
@@ -62,6 +63,10 @@ class add_vocab_form extends moodleform {
 
             $mform->addElement('checkbox', 'add_to_user_database', get_string('add_vocab_add_to_user_database', 'mod_vocabcoach'));
             $mform->addHelpButton('add_to_user_database', 'add_vocab_add_to_user_database', 'mod_vocabcoach');
+
+            $mform->addElement('advcheckbox', 'list_private', get_string('list_private', 'mod_vocabcoach'), '', null, array(false, true));
+            $mform->addHelpButton('list_private', 'list_private', 'mod_vocabcoach');
+
         }
 
         $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));

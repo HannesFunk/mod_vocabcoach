@@ -27,7 +27,7 @@ use dml_exception;
 use stdClass;
 
 class vocab_manager {
-    private int $userid;
+    private $userid;
 
     public function __construct($userid) {
         $this->userid = $userid;
@@ -55,7 +55,7 @@ class vocab_manager {
             $count = $DB->count_records_sql($query,
                     array('front' => $vocab->front, 'back' => $vocab->back, 'third' => $vocab->third));
             return $count > 0;
-        } catch (dml_exception) {
+        } catch (dml_exception $e) {
             return false;
         }
     }

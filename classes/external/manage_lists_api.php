@@ -45,11 +45,12 @@ class manage_lists_api extends external_api {
         global $DB;
 
         try {
-            $conditions = ['cmid'=>$cmid];
+            $conditions = 'cmid = '.$cmid.' AND (private = 0 OR createdby = '.$userid.')';
             if ($bOnlyOwnUser) {
-                $conditions['createdby'] = $userid;
+                $conditions .= ' AND createdby = '.$userid;
             }
-            $records = $DB->get_records('vocabcoach_lists', $conditions, '', 'id, title, year, book, unit, createdby');
+            $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby FROM {vocabcoach_lists} WHERE ".$conditions);
+            //$records = $DB->get_records('vocabcoach_lists', $conditions, '', 'id, title, year, book, unit, createdby');
             $output = array();
             foreach ($records as $record) {
                 $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_contains} WHERE listid = ".$record->id.";";

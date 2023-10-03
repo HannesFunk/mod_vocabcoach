@@ -79,7 +79,8 @@ if ($mode === 'edit') {
         'title AS list_title, 
         book AS list_book, 
         unit AS list_unit, 
-        year AS list_year');
+        year AS list_year,
+        private AS list_private');
     $mform->set_data($listinfo);
 } else {
     $mform = new add_vocab_form(null, $form_parameters);
@@ -122,7 +123,7 @@ if ($mform->is_cancelled()) {
     }
 
     // Step 0b: Gather list information
-    $listkeys = ['title', 'book', 'unit', 'year'];
+    $listkeys = ['title', 'book', 'unit', 'year', 'private'];
     $listinfo = ['createdby'=> $userid, 'cmid' => $cm->id];
     foreach ($listkeys as $key) {
         $listinfo[$key] = $formdata->{'list_' . $key};

@@ -61,6 +61,9 @@ $string['vocabplural'] = 'Vokabeln';
 $string['list'] = 'Liste';
 $string['listplural'] = 'Listen';
 $string['listprops'] = 'Listeneigenschaften';
+$string['list_private'] = 'Private Liste';
+$string['list_private_help'] = 'Wenn du diesen Haken setzt, kannst nur du selbst diese Liste sehen. Andernfalls können die anderen Teilnehmer aus dem Kurs die Liste sehen, aber nicht bearbeiten.';
+
 
 $string['type_vocab_label'] = 'Vokabeln tippen';
 $string['mode'] = 'Abfragemodus';

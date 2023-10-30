@@ -41,11 +41,9 @@ if ($mode === 'edit') {
     $editlistid = required_param('listid', PARAM_INT);
 }
 
-if ($id) {
-    $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
-}
+$cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+$moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
@@ -67,11 +65,15 @@ $PAGE->set_heading(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init', [$editlistid ?? -1]);
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 
+$instance_info = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
+
 $form_parameters = [
-        'mode'=>$mode,
-        'id'=>$id,
-        'year'=>$moduleinstance->year
+        'mode' => $mode,
+        'id' => $id,
+        'year' => $moduleinstance->year,
+        'third_active' => $instance_info->thirdactive
 ];
+
 if ($mode === 'edit') {
     $form_parameters['listid'] = $editlistid;
     $mform = new add_vocab_form(null, $form_parameters);

@@ -15,6 +15,7 @@
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The format of the intro field."/>
         <FIELD NAME="year" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Year of the corresponding course."/>
         <FIELD NAME="move_undue" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether checked undue vocab will be moved to the next box."/>
+        <FIELD NAME="thirdactive" TYPE="int" LENGTH="11" NOTNULL="false" SEQUENCE="false" COMMENT="Whether a third column should be active for vocab items."/>
         <FIELD NAME="boxtime_1" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 1."/>
         <FIELD NAME="boxtime_2" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 2."/>
         <FIELD NAME="boxtime_3" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 3."/>

@@ -31,6 +31,7 @@ class add_vocab_form extends moodleform {
         $mform = $this->_form; // Don't forget the underscore!
         $mode = $this->_customdata['mode'];
         $id = $this->_customdata['id'];
+        $third_active = $this->_customdata['third_active'] == true;
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
@@ -82,7 +83,11 @@ class add_vocab_form extends moodleform {
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
         $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="Englisch"');
         $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="Deutsch"');
-        $vocabrow[] =& $mform->createElement('text', 'third[]', '', 'placeholder="Zusatzinformation"');
+        if ($third_active) {
+            $vocabrow[] =& $mform->createElement('text', 'third[]', '', 'placeholder="Zusatzinformation"');
+        } else {
+            $vocabrow[] =& $mform->createElement('hidden', 'third[]', '');
+        }
         $mform->addGroup(
             $vocabrow,
             'vocabrow',

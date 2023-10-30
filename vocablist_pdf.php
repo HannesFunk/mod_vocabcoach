@@ -62,7 +62,7 @@ class vocablist_pdf extends TCPDF {
     }
 
    // Colored table
-    public function ColoredTable($header,$data) {
+    public function ColoredTable($header, $data, $uses_third) {
         // Colors, line width and bold font
         $this->SetFillColor(15,108,191);
         $this->SetTextColor(255);
@@ -86,11 +86,15 @@ class vocablist_pdf extends TCPDF {
         foreach($data as $vocab) {
             $this->Cell($w[0], 5, $vocab->front, false, 0, 'L', $fill);
             $this->Cell($w[1], 5, $vocab->back, false, 0, 'L', $fill);
-            if ($vocab->third === null) {
-                $vocab->third = 'blubb';
+
+            if ($uses_third) {
+                if ($vocab->third === null) {
+                    $vocab->third = '';
+                }
+                $this->MultiCell($w[2], 9, $vocab->third, 0, 'L', $fill, 1,
+                        null, null, true, 0, false, true , 0, 'M');
             }
-            $this->MultiCell($w[2], 9, $vocab->third, 0, 'L', $fill, 1,
-                    null, null, true, 0, false, true , 0, 'M');
+
             $fill = !$fill;
         }
         $this->Cell(0, 0, '', 'T');
@@ -127,6 +131,7 @@ $pdf->SetFont('helvetica', '', 12);
 $pdf->AddPage();
 
 // column titles
+$uses_third = true;
 $header = array('Englisch', 'Deutsch', '');
 
 // data loading
@@ -141,7 +146,7 @@ else if (isset($_GET['userid'])) {
 }
 
 // print colored table
-$pdf->ColoredTable($header, $data);
+$pdf->ColoredTable($header, $data, $uses_third);
 
 // ---------------------------------------------------------
 

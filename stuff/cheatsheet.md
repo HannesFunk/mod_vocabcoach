@@ -19,9 +19,24 @@ Programming:
 - Zusammenfassung nach Abfrage
 - dritte Spalte! --> Done!
 
+- dritte Spalte als Option für die Aktivität
+- private Listen (done, glaube ich)
+- rules for implementation (JS)
+- erstes Fach mit Vokabel-tinder
+- Vokabeln korrigieren
+- Option "Hey, das hab ich getippt!"
+- Symbole für öffentliche / private Listen
+
+
 Features:
 - Stalking-Tools
 
 OUT OF SCOPE:
 - Übersicht: how is my class doing?
 - Vokabeln mit Bildern
+
+
+CODING:
+- refactor add_vocab.php
+- refactor pdf-output
+

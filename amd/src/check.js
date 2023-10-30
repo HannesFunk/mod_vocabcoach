@@ -35,7 +35,7 @@ function addListeners() {
             checkTypedVocab(config.userid);
         } else if (e.target.closest(Selectors.actions.revealCard) && mode !== 'type') {
             const label = e.target.closest(Selectors.actions.revealCard).getElementsByClassName('vc-check-label')[0];
-            showElements([label, 'check-third'], true);
+            showElements([label, 'check-third'], config.thirdActive);
         } else if (e.target.closest(Selectors.actions.updateVocab)) {
             checkDone(vocabArrayJSON[0].dataid, e.target.getAttribute('data-vocabcoach-known') === 'true');
         } else if (e.target.closest(Selectors.actions.endCheck)) {
@@ -44,7 +44,8 @@ function addListeners() {
             document.getElementById('input-vocab-front').value = vocabArrayJSON[0].front;
             document.getElementById('input-vocab-front').disabled = true;
 
-            showElements(['button-typed-vocab-next', 'check-third'], true);
+            showElement('button-typed-vocab-next', true);
+            showElement('check-third', config.thirdActive);
             showElements(['button-typed-vocab-check', 'button-typed-vocab-reveal'], false);
         } else if (e.target.closest(Selectors.actions.typedVocabUnknown)) {
             showElements(['button-typed-vocab-next'], false);
@@ -218,7 +219,8 @@ function showSummary() {
             templateData = {
                 known: knownCount,
                 total: knownCount + unknownCount,
-                message: result.line
+                message: result.line,
+                thirdActive: config.thirdActive,
             };
         }
     );

@@ -54,11 +54,14 @@ $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 $source = optional_param('source', 'user', PARAM_TEXT);
 
+$instance_info = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
+
 $js_data = [
     'userid'=>$USER->id,
     'force'=>optional_param('force', false, PARAM_BOOL),
     'cmid'=>$id,
     'source'=>$source,
+    'thirdActive' => $instance_info->thirdactive
 ];
 if ($source === 'user') {
     $js_data['stage'] = required_param('stage', PARAM_INT);

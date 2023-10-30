@@ -42,6 +42,7 @@ $string['info_boxtimes'] = 'Setze hier die Zeiten, nach denen Vokabeln in den ve
 $string['boxtime'] = "Zeit für Box";
 $string['move_undue'] = 'Vokabeln, die vor Ablauf der Wiederholungszeit abgefragt werden, ins nächste Fach bewegen.';
 $string['move_undue_help'] = 'Vokabeln können jederzeit wiederholt werden. Ist dieses Feld aktiviert, werden auch Vokabeln, die noch vor Ablauf der Wiederholungszeit abgefragt werden, in die nächste Box verschoben. Andernfalls verbleiben diese in der aktuellen Box.';
+$string['third_active'] = 'Dritte Spalte für zusätzliche Informationen aktivieren.';
 
 $string['add_vocab_title'] = 'Vokabeln hinzufügen';
 $string['front'] = 'Vorderseite';

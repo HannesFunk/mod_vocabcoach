@@ -26,42 +26,12 @@
 
 // Include the main TCPDF library (search for installation path).
 //global $CFG;
-require_once('../../../lib/tcpdf/tcpdf.php');
+require_once('../../lib/tcpdf/tcpdf.php');
 
-require(__DIR__ . '/../../../config.php');
+require(__DIR__ . '/../../config.php');
 
 class vocablist_pdf extends TCPDF {
-
-    function set_header_list($id) : void {
-        global $DB, $USER;
-        $list = $DB->get_record('vocabcoach_lists', ['id'=>$id]);
-        $header = $list->title.' ('.$list->book.', '.$list->unit.'). Erstellt für '
-        .$USER->firstname.' '.$USER->lastname.' am '.date('d.m.Y');
-        $this->SetHeaderData('', 0, 'Vokabelliste', $header);
-
-        $this->set_header();
-
-
-// set header and footer fonts
-        $this->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $this->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-    }
-
-    function set_header_user() : void{
-        global $USER;
-        $header = 'Erstellt für '.$USER->firstname.' '.$USER->lastname.' am '.date('d.m.Y');
-        $this->SetHeaderData('', 0, 'Vokabelliste (Box '.$_GET['stage'].')', $header);
-        $this->set_header();
-    }
-
-    function set_header() :void {
-        $this->SetCreator(PDF_CREATOR);
-        $this->SetAuthor('Moodle / Vocabcoach');
-        $this->SetTitle('Vokabelliste');
-        $this->SetSubject('Vokabelliste');
-    }
-
-   // Colored table
+       // Colored table
     public function ColoredTable($header, $data, $uses_third) {
         // Colors, line width and bold font
         $this->SetFillColor(15,108,191);
@@ -70,7 +40,11 @@ class vocablist_pdf extends TCPDF {
         $this->SetLineWidth(0.3);
         $this->SetFont('', 'B');
         // Header
-        $w = array(50, 50, 0);
+        if ($uses_third) {
+            $w = array(50, 50, 0);
+        } else {
+            $w = array(80, 80);
+        }
         $num_headers = count($header);
         for($i = 0; $i < $num_headers; ++$i) {
             $this->Cell($w[$i], 7, $header[$i], false, 0, 'L', 1);
@@ -93,22 +67,26 @@ class vocablist_pdf extends TCPDF {
                 }
                 $this->MultiCell($w[2], 9, $vocab->third, 0, 'L', $fill, 1,
                         null, null, true, 0, false, true , 0, 'M');
+            } else {
+                $this->Ln();
             }
 
             $fill = !$fill;
         }
-        $this->Cell(0, 0, '', 'T');
+        $this->Cell($uses_third ? 0 : array_sum($w), 0, '', 'T');
     }
 }
 
 // create new PDF document
 $pdf = new vocablist_pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-if (isset($_GET['listid'])) {
-    $pdf->set_header_list($_GET['listid']);
-} else if (isset($_GET['userid'])) {
-    $pdf->set_header_user();
-}
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Moodle / Vocabcoach');
+$pdf->SetTitle('Vokabelliste');
+$pdf->SetSubject('Vokabelliste');
+
+$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -121,6 +99,17 @@ $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 // set auto page breaks
 $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
+global $DB, $USER;
+
+if (isset($_GET['listid'])) {
+    $list = $DB->get_record('vocabcoach_lists', ['id'=>$_GET['listid']]);
+    $header = $list->title.' ('.$list->book.', '.$list->unit.'). Erstellt für '
+            .$USER->firstname.' '.$USER->lastname.' am '.date('d.m.Y');
+    $pdf->SetHeaderData('', 0, 'Vokabelliste', $header);
+} else if (isset($_GET['userid'])) {
+    $header = 'Erstellt für '.$USER->firstname.' '.$USER->lastname.' am '.date('d.m.Y');
+    $pdf->SetHeaderData('', 0, 'Vokabelliste (Box '.$_GET['stage'].')', $header);
+}
 
 // ---------------------------------------------------------
 
@@ -131,8 +120,16 @@ $pdf->SetFont('helvetica', '', 12);
 $pdf->AddPage();
 
 // column titles
-$uses_third = true;
-$header = array('Englisch', 'Deutsch', '');
+$cmid = required_param('cmid', PARAM_INT);
+$cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
+$instance_info = $DB->get_record('vocabcoach', ['id'=>$cm->instance], 'thirdactive');
+$uses_third = $instance_info->thirdactive == 1;
+
+if ($uses_third) {
+    $table_header = array('Englisch', 'Deutsch', '');
+} else {
+    $table_header = array('Englisch', 'Deutsch');
+}
 
 // data loading
 if (isset($_GET['listid'])) {
@@ -145,14 +142,12 @@ else if (isset($_GET['userid'])) {
     $data = $check_api->get_user_vocabs($_GET['userid'], $_GET['cmid'], $_GET['stage'], true);
 }
 
-// print colored table
-$pdf->ColoredTable($header, $data, $uses_third);
+else {
+    $data = null;
+}
 
-// ---------------------------------------------------------
+// print colored table
+$pdf->ColoredTable($table_header, $data, $uses_third);
 
 // close and output PDF document
-$pdf->Output('example_011.pdf', 'I');
-
-//============================================================+
-// END OF FILE
-//============================================================+
+$pdf->Output('vokabelliste.pdf');

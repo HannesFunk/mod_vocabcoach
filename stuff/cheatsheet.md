@@ -38,5 +38,4 @@ OUT OF SCOPE:
 
 CODING:
 - refactor add_vocab.php
-- refactor pdf-output
 

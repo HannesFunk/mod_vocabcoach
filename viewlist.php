@@ -57,7 +57,8 @@ $vocab_array = $check_api->get_list_vocabs($listid);
 
 $templateParameters = [
     'title'=>$list_info->title,
-    'vocabarray'=>$vocab_array
+    'vocabarray'=>$vocab_array,
+    'third_active' => $moduleinstance->thirdactive,
 ];
 
 $mform = new view_list_form(null, ['vocabdata' => json_encode($vocab_array), 'id' => $id, 'listid' => $listid]);

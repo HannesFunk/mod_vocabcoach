@@ -31,7 +31,7 @@ export function init(moduleId, userIdString, capabilitiesInfo) {
             location.href = 'check.php?id=' + cmid + '&source=list&listid=' + e.target.getAttribute('data-list-id');
         } else if (e.target.closest(Selectors.actions.showPdf)) {
             const menuItem = e.target.closest(Selectors.actions.showPdf);
-            window.open('vocablist_pdf.php?listid=' + menuItem.getAttribute('data-list-id'), '_blank').focus();
+            window.open('vocablist_pdf.php?listid=' + menuItem.getAttribute('data-list-id')+"&cmid="+cmid, '_blank').focus();
         } else if (e.target.closest(Selectors.actions.editList)) {
             const menuItem = e.target.closest(Selectors.actions.editList);
             location.href = 'add_vocab.php?id=' + cmid + '&mode=edit&listid=' + menuItem.getAttribute('data-list-id');

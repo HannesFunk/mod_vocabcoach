@@ -32,29 +32,35 @@ class view_list_form extends moodleform {
 
         $mform = $this->_form; // Don't forget the underscore!
         $vocab_array = json_decode($this->_customdata['vocabdata']);
+
         $id = $this->_customdata['id'];
+        $third_active = $this->_customdata['third_active'] == 1;
+
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
         $listid = $this->_customdata['listid'];
         $mform->addElement('hidden', 'listid', $listid);
         $mform->setType('listid', PARAM_INT);
 
-        $mform->addElement('html', '<table id="table-list" class="table generaltable">
+
+        $table_header_html = '<table id="table-list" class="table generaltable">
         <tbody>
         <tr>
             <th></th>
             <th>Englisch</th>
-            <th>Deutsch</th>
-            <th>Zusatzinfo</th>
-        </tr>');
+            <th>Deutsch</th>'.($third_active ? '<th>Zusatzinfo</th>' : '').'</tr>';
+        $mform->addElement('html', $table_header_html);
 
         foreach ($vocab_array as $vocab) {
             $vocabrow = array();
             $vocabrow[] =& $mform->createElement('html', '<tr><td>');
             $vocabrow[] =& $mform->createElement('checkbox', 'vocab-'.$vocab->dataid);
-            $vocabrow[] =& $mform->createElement('html', '</td>
-            <td>'.$vocab->front.'</td><td>'.$vocab->back.'</td><td>'.$vocab->third.'</td></tr>'
-            );
+            $vocabrow[] =& $mform->createElement('html', '</td>');
+            $vocab_item_html = '<td>'.$vocab->front.'</td><td>'.$vocab->back.'</td>';
+            if ($third_active == true) {
+                $vocab_item_html .= '<td>' . $vocab->third . '</td>';
+            }
+            $vocabrow[] =& $mform->createElement('html', $vocab_item_html.'</tr>');
             $mform->addGroup(
                     $vocabrow,
                     'vocabrow',

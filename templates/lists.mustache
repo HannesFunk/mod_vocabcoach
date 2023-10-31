@@ -33,14 +33,16 @@
     <th>Ersteller:in</th>
     <th>Aktionen</th>
 </tr>
-{{#emptyList}}
+{{^lists}}
     <td colspan="7" class="text-center">
         <span>Keine Vokabelliste gefunden.</span>
     </td>
-{{/emptyList}}
+{{/lists}}
 {{#lists}}
 <tr data-list-id="{{id}}">
-    <td><a href="viewlist.php?id={{cmid}}&listid={{id}}">{{title}}</a></td>
+    <td>
+        {{#private}}<i class="fa fa-user-secret pr-2" aria-hidden="true"></i>{{/private}}
+        <a href="viewlist.php?id={{cmid}}&listid={{id}}">{{title}}</a></td>
     <td class="secondary">{{year}}</td>
     <td class="secondary">{{book}}</td>
     <td class="secondary">{{unit}}</td>

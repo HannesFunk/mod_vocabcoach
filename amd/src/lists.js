@@ -73,24 +73,20 @@ const Selectors = {
 };
 
 export function printLists(capInfo, onlyOwnLists = false) {
-    let json = null;
-    const getData = getListsAJAX(cmid, userId, onlyOwnLists).then(
-        res => {
+
+    getListsAJAX(cmid, userId, onlyOwnLists).then(
+        (res) => {
             res.forEach(list => {
                 list.editable = capInfo.canEdit || list.createdby === userId;
                 list.distributable = capInfo.canDistribute;
             });
-            json = {'lists': res, 'loading': false, 'cmid': cmid, 'onlyOwnLists': onlyOwnLists};
-            if (res.length === 0) {
-                json.emptyList = true;
-            }
+            let json = {'lists': res, 'loading': false, 'cmid': cmid, 'onlyOwnLists': onlyOwnLists};
+            return json;
         }
-    );
-
-    Promise.all([getData]).then(() => {
-        Template.renderForPromise('mod_vocabcoach/lists', json).then((res) => {
-            document.querySelectorAll('[role="main"]')[0].innerHTML = res.html;
-        });
+    ).then(
+        (json) => { return Template.renderForPromise('mod_vocabcoach/lists', json); }
+    ).then((res) => {
+        document.querySelectorAll('[role="main"]')[0].innerHTML = res.html;
     });
 }
 

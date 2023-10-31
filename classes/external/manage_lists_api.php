@@ -34,6 +34,7 @@ class manage_lists_api extends external_api {
             'number' => new external_value(PARAM_INT),
             'createdby' => new external_value(PARAM_INT),
             'creator' => new external_value(PARAM_TEXT),
+            'private' => new external_value(PARAM_BOOL),
             ])
         );
     }
@@ -49,7 +50,7 @@ class manage_lists_api extends external_api {
             if ($bOnlyOwnUser) {
                 $conditions .= ' AND createdby = '.$userid;
             }
-            $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby FROM {vocabcoach_lists} WHERE ".$conditions);
+            $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby, private FROM {vocabcoach_lists} WHERE ".$conditions);
             //$records = $DB->get_records('vocabcoach_lists', $conditions, '', 'id, title, year, book, unit, createdby');
             $output = array();
             foreach ($records as $record) {

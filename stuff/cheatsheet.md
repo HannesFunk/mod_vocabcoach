@@ -19,8 +19,6 @@ Programming:
 - Zusammenfassung nach Abfrage
 - dritte Spalte! --> Done!
 
-- dritte Spalte als Option für die Aktivität
-- private Listen (done, glaube ich)
 - rules for implementation (JS)
 - erstes Fach mit Vokabel-tinder
 - Vokabeln korrigieren

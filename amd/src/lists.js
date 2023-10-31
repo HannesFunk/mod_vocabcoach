@@ -1,5 +1,5 @@
 import {addListToUserAJAX, deleteListAJAX, distributeListAJAX, getListsAJAX} from "./repository";
-import mustache from 'core/mustache';
+import Template from 'core/templates';
 import notification, {saveCancel} from 'core/notification';
 import Log from 'core/log';
 
@@ -74,7 +74,6 @@ const Selectors = {
 
 export function printLists(capInfo, onlyOwnLists = false) {
     let json = null;
-    let template = null;
     const getData = getListsAJAX(cmid, userId, onlyOwnLists).then(
         res => {
             res.forEach(list => {
@@ -88,19 +87,11 @@ export function printLists(capInfo, onlyOwnLists = false) {
         }
     );
 
-    const templateSource =  '../../mod/vocabcoach/templates/lists.mustache';
-    const fetchTemplate = fetch(templateSource).then(
-        (res) => { return res.text(); }
-    ).then(
-        (text) => { template = text; }
-    );
-
-    Promise.all([getData, fetchTemplate]).then(() => {
-            mustache.parse(template);
-            document.querySelectorAll('[role="main"]')[0].innerHTML = mustache.render(template, json);
-            return true;
-        }
-    );
+    Promise.all([getData]).then(() => {
+        Template.renderForPromise('mod_vocabcoach/lists', json).then((res) => {
+            document.querySelectorAll('[role="main"]')[0].innerHTML = res.html;
+        });
+    });
 }
 
 function deleteList(listid) {

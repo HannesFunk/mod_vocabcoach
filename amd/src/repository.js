@@ -101,4 +101,14 @@ export const logCheckedVocabsAJAX = (
     },
 }])[0];
 
+export const removeVocabFromUserAJAX = (
+    dataid) =>
+    fetchMany([{
+        methodname: 'mod_vocabcoach_remove_vocab_from_user',
+        args: {
+            'dataid': dataid
+        },
+    }])[0];
+
+
 

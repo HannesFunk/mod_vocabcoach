@@ -40,6 +40,9 @@ class add_vocab_form extends moodleform {
         $mform->addElement('hidden', 'listid', $this->_customdata['listid'] ?? 0);
         $mform->setType('listid', PARAM_TEXT);
 
+        $mform->addElement('header', 'instructionsheader', get_string('instructions', 'mod_vocabcoach'));
+        $mform->addElement('html', $this->instructions);
+
         if ($mode === 'list' || $mode === 'edit') {
             $mform->addElement('header', 'listsectionheader', get_string('listprops', 'mod_vocabcoach'));
 
@@ -106,6 +109,27 @@ class add_vocab_form extends moodleform {
 
     //Custom validation should be added here
     function validation($data, $files) {
-    return array();
+        return array();
     }
+
+private string $instructions = ' 
+ <style>.vocabcoach-instructions li {
+    margin-bottom: 7px;
+ }
+ .vocabcoach-instructions {
+    list-style-type: square;
+    margin-bottom: 20px;
+ }
+ </style>
+ <div class="pl-5 pr-3"><p>Beachte folgende Hinweise, wenn du neue Vokabeln eintippst, damit alle ähnliche Form haben. Wenn du weitere Vorschläge hast, lass es mich jederzeit wissen.</p>
+<ul class="vocabcoach-instructions">
+    <li><b>Verben:</b> im Englischen mit <i>to</i> einleiten (ohne Klammern etc.): <i>to go - gehen.</i></li>
+    <li><b>Abkürzungen:</b> Normalerweise wie im Schulbuch verwenden, z. B. nicht <s>somebody</s> oder <s>sbd</s>, sondern <i>sb.</i> (mit Punkt). Hier eine Liste gängiger Abkürzungen: <br />
+    Englisch: <i>sb. - sth. </i><br />
+    Deutsch: <i>etw. - jmd.</i> (für jemandem, jemanden, jemand)
+    </li>
+    <li><b>Klammern vermeiden:</b> Präpositionen etc. einfach ohne Klammern übernehmen, im Deutschen wie im Englischen: <i>fear of - Angst vor</i>.</li>
+</ul>
+</div>
+';
 }

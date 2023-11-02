@@ -64,7 +64,6 @@
                             data-targetstate="0"
                             title="Nicht fällige abfragen"
                             href="#"
-                            data-list-id="{{id}}"
                             data-action="mod_vocabcoach/force_check_all"
                     >
                         <i class="fa fa-question-circle-o text-dark  pr-2" aria-hidden="true"></i>
@@ -76,9 +75,21 @@
                             tabindex="-1"
                             data-targetstate="0"
                             data-stage="{{stage}}"
+                            title="Fehlerhafte entfernen"
+                            href="#"
+                            data-action="mod_vocabcoach/view_box"
+                    >
+                        <i class="fa fa-edit text-dark  pr-2" aria-hidden="true"></i>
+                        <span class="menu-action-text">Fehlerhafte entfernen</span>
+                    </a>
+                    <a
+                            class="dropdown-item menu-action"
+                            role="menuitem"
+                            tabindex="-1"
+                            data-targetstate="0"
+                            data-stage="{{stage}}"
                             title="Als PDF exportieren"
                             href="#"
-                            data-list-id="{{id}}"
                             data-action="mod_vocabcoach/show_pdf_user"
                     >
                         <i class="fa fa-copy text-dark  pr-2" aria-hidden="true"></i>

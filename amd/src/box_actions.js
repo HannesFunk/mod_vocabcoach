@@ -8,6 +8,7 @@ const Selectors = {
         showLists: '[data-action="mod_vocabcoach/show_lists"]',
         forceCheck: '[data-action="mod_vocabcoach/force_check_all"]',
         showPdfUser: '[data-action="mod_vocabcoach/show_pdf_user"]',
+        viewBox: '[data-action="mod_vocabcoach/view_box"]',
     },
     elements: {
         dropdown: '.dropdown',
@@ -22,6 +23,9 @@ export function init(cmid, userid) {
             const stage = e.target.closest(Selectors.actions.showPdfUser).getAttribute('data-stage');
             window.open('vocablist_pdf.php?userid=' + userid + '&cmid=' +
                 cmid + '&stage=' + stage);
+        } else if (e.target.closest(Selectors.actions.viewBox)) {
+            const stage = e.target.closest(Selectors.actions.viewBox).getAttribute('data-stage');
+            location.href = 'viewbox.php?id=' + cmid + '&stage=' + stage;
         } else if (e.target.closest(Selectors.elements.dropdown)) {
             return false;
         }  else if (e.target.closest(Selectors.actions.checkBox)) {

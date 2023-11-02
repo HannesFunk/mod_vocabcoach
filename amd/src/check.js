@@ -44,24 +44,17 @@ function addListeners() {
             document.getElementById('input-vocab-front').value = vocabArrayJSON[0].front;
             document.getElementById('input-vocab-front').disabled = true;
 
-            showElement('button-typed-vocab-next', true);
+            showElements(['button-typed-vocab-next', 'button-typed-vocab-override'], true);
             showElement('check-third', config.thirdActive);
             showElements(['button-typed-vocab-check', 'button-typed-vocab-reveal'], false);
+        } else if (e.target.closest(Selectors.actions.typedVocabOverride)) {
+            checkDone(vocabArrayJSON[0].dataid, true);
         } else if (e.target.closest(Selectors.actions.typedVocabUnknown)) {
-            showElements(['button-typed-vocab-next'], false);
-            showElements(['button-typed-vocab-reveal', 'button-typed-vocab-check'], true);
-
-            document.getElementById('input-vocab-front').value = '';
-            document.getElementById('input-vocab-front').disabled = false;
-
-            updateVocabAJAX(vocabArrayJSON[0].dataid, config.userid, false).then(() => {
-                updateCount(false);
-                showNext();
-            });
+            checkDone(vocabArrayJSON[0].dataid, false);
         }
     });
 
-    document.addEventListener('change', e => {
+    document.addEventListener('change', (e) => {
         if (e.target.closest(Selectors.formElements.mode)) {
             changeMode();
         }
@@ -90,6 +83,7 @@ const Selectors = {
         checkTypedVocab: '[data-action="mod-vocabcoach/typed-vocab-check"]',
         revealTypedVocab: '[data-action="mod-vocabcoach/typed-vocab-reveal"]',
         typedVocabUnknown: '[data-action="mod-vocabcoach/typed-vocab-unknown"]',
+        typedVocabOverride: '[data-action="mod-vocabcoach/typed-vocab-override"]',
     },
     formElements : {
         mode: '[id="check-mode"]',
@@ -202,7 +196,11 @@ function resetCheckFields() {
             break;
 
         case 'type':
+            showElements(['button-typed-vocab-next', 'button-typed-vocab-override'], false);
+            showElements(['button-typed-vocab-reveal', 'button-typed-vocab-check'], true);
+
             document.getElementById('input-vocab-front').value = '';
+            document.getElementById('input-vocab-front').disabled = false;
             break;
     }
 }
@@ -273,7 +271,6 @@ function getSummaryAchievement() {
     return 0;
 }
 
-
 function checkDone(vocabId, known) {
     if (config.source === 'list' || config.force) {
         updateCount(known);
@@ -287,6 +284,7 @@ function checkDone(vocabId, known) {
             }
         );
     }
+    resetCheckFields();
 }
 
 function updateCount(known) {

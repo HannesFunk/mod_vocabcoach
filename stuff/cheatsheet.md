@@ -15,16 +15,11 @@ $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 
 TODO:
 Programming:
-- activity logger: prüfen! --> müsste funktionieren
-- Zusammenfassung nach Abfrage
-- dritte Spalte! --> Done!
 
-- rules for implementation (JS)
-- erstes Fach mit Vokabel-tinder
-- Vokabeln korrigieren
-- Option "Hey, das hab ich getippt!"
-- Symbole für öffentliche / private Listen
+- Vokabeln korrigieren (oder löschen!)
+- CSV-Export
 
+- Oscar: Zugangsdaten!
 
 Features:
 - Stalking-Tools
@@ -32,6 +27,8 @@ Features:
 OUT OF SCOPE:
 - Übersicht: how is my class doing?
 - Vokabeln mit Bildern
+- rules for implementation (JS) --> verworfen!
+- erstes Fach mit Vokabel-tinder
 
 
 CODING:

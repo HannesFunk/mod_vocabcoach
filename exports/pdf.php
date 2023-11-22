@@ -26,11 +26,11 @@
 
 // Include the main TCPDF library (search for installation path).
 //global $CFG;
-require_once('../../lib/tcpdf/tcpdf.php');
+require_once('../../../lib/tcpdf/tcpdf.php');
 
-require(__DIR__ . '/../../config.php');
+require(__DIR__ . '/../../../config.php');
 
-class vocablist_pdf extends TCPDF {
+class _pdf extends TCPDF {
        // Colored table
     public function ColoredTable($header, $data, $uses_third) {
         // Colors, line width and bold font
@@ -78,7 +78,7 @@ class vocablist_pdf extends TCPDF {
 }
 
 // create new PDF document
-$pdf = new vocablist_pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new _pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Moodle / Vocabcoach');

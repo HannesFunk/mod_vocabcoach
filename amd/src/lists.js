@@ -29,9 +29,12 @@ export function init(moduleId, userIdString, capabilitiesInfo) {
             deleteList(e.target.getAttribute('data-list-id'));
         } else if (e.target.closest(Selectors.actions.checkList)) {
             location.href = 'check.php?id=' + cmid + '&source=list&listid=' + e.target.getAttribute('data-list-id');
+        } else if (e.target.closest(Selectors.actions.showCsv)) {
+            const menuItem = e.target.closest(Selectors.actions.showCsv);
+            window.open('exports/csv.php?mode=list&listid=' + menuItem.getAttribute('data-list-id'), '_blank').focus();
         } else if (e.target.closest(Selectors.actions.showPdf)) {
             const menuItem = e.target.closest(Selectors.actions.showPdf);
-            window.open('vocablist_pdf.php?listid=' + menuItem.getAttribute('data-list-id')+"&cmid="+cmid, '_blank').focus();
+            window.open('exports/pdf.php?listid=' + menuItem.getAttribute('data-list-id')+"&cmid="+cmid, '_blank').focus();
         } else if (e.target.closest(Selectors.actions.editList)) {
             const menuItem = e.target.closest(Selectors.actions.editList);
             location.href = 'add_vocab.php?id=' + cmid + '&mode=edit&listid=' + menuItem.getAttribute('data-list-id');
@@ -64,6 +67,7 @@ const Selectors = {
         deleteList: '[data-action="mod_vocabcoach/delete_list"]',
         checkList: '[data-action="mod_vocabcoach/check_list"]',
         showPdf: '[data-action="mod_vocabcoach/show_pdf"]',
+        showCsv: '[data-action="mod_vocabcoach/show_csv"]',
         editList: '[data-action="mod_vocabcoach/edit_list"]',
         addListToUser: '[data-action="mod_vocabcoach/add_list_to_user"]',
         closePage: '[data-action="mod_vocabcoach/close_page"]',

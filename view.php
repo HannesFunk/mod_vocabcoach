@@ -57,7 +57,7 @@ $PAGE->set_context($modulecontext);
 
 $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/activity.css');
-$PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', array($id, $USER->id));
+$PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', array($id, $USER->id, $course->id));
 
 $box_manager = new box_manager($id, $USER->id);
 $box_data = $box_manager->get_box_details();
@@ -76,4 +76,7 @@ $templatecontext = [
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecontext);
+if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
+    echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object) ['total'=>""]);
+}
 echo $OUTPUT->footer();

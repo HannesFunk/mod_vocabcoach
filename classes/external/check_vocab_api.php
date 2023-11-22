@@ -176,4 +176,46 @@ class check_vocab_api extends external_api {
         return ['success'=> true, 'message'=>'Removed successfully.'];
 
     }
+
+    public static function get_class_total_parameters() : external_function_parameters {
+        return new external_function_parameters([
+                'cmid' => new external_value(PARAM_INT),
+                'courseid' => new external_value(PARAM_INT),
+        ]);
+    }
+
+    public static function get_class_total_returns() : external_single_structure {
+        return new external_single_structure([
+                'success' => new external_value(PARAM_BOOL, 'whether the removal was successful.'),
+                'message' => new external_value(PARAM_TEXT, 'a message'),
+                'total' => new external_value(PARAM_INT, 'the total number of due vocab'),
+        ]);
+    }
+
+    public static function get_class_total(int $cmid, int $courseid) :array {
+        self::validate_parameters(self::get_class_total_parameters(),
+                ['cmid' => $cmid, 'courseid'=>$courseid]);
+
+        global $DB;
+        $vocabhelper = new vocabhelper($cmid);
+
+        $total = 0;
+
+        for ($i = 1; $i <=$vocabhelper->BOX_NUMBER; $i++) {
+            $min_days_since_check = $vocabhelper->BOXES_TIMES[$i];
+            $subquery = "SELECT userid FROM {user_enrolments} ue JOIN {enrol} en ON ue.enrolid = en.id
+                JOIN {user} uu ON uu.id = ue.userid WHERE en.courseid = $courseid";
+            $query =
+                    "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} WHERE userid IN ($subquery) AND cmid = $cmid AND stage = $i AND lastchecked < " .
+                    $vocabhelper->old_timestamp($min_days_since_check) . ";";
+            $record = $DB->get_record_sql($query);
+            $total_box = $record->number;
+            $total = $total + $total_box;
+        }
+
+        return ['success'=> true, 'message'=>'Removed successfully.', 'total'=>$total];
+
+    }
+
+
 }

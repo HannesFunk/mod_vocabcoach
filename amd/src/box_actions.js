@@ -1,4 +1,5 @@
 import notification from 'core/notification';
+import {getClassTotalAJAX} from "./repository";
 
 const Selectors = {
     actions: {
@@ -15,13 +16,13 @@ const Selectors = {
     }
 };
 
-export function init(cmid, userid) {
+export function init(cmid, userid, courseid) {
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.forceCheck)) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
         } else if (e.target.closest(Selectors.actions.showPdfUser)) {
             const stage = e.target.closest(Selectors.actions.showPdfUser).getAttribute('data-stage');
-            window.open('vocablist_pdf.php?userid=' + userid + '&cmid=' +
+            window.open('exorts/pdf.php?userid=' + userid + '&cmid=' +
                 cmid + '&stage=' + stage);
         } else if (e.target.closest(Selectors.actions.viewBox)) {
             const stage = e.target.closest(Selectors.actions.viewBox).getAttribute('data-stage');
@@ -38,6 +39,19 @@ export function init(cmid, userid) {
             location.href = 'lists.php?id=' + cmid;
         }
     });
+
+    getClassTotalAJAX(cmid, courseid).then(
+        (result) => {
+            document.getElementById('vocabcoach-class-total').innerHTML = result.total;
+        }
+    );
+    setInterval( () => {
+        getClassTotalAJAX(cmid, courseid).then(
+            (result) => {
+                document.getElementById('vocabcoach-class-total').innerHTML = result.total;
+            }
+        );
+    }, 1000);
 }
 
 function checkBox(cmid, box, force = false) {

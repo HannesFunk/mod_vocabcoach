@@ -71,6 +71,9 @@ class add_vocab_form extends moodleform {
             $mform->addElement('advcheckbox', 'list_private', get_string('list_private', 'mod_vocabcoach'), '', null, array(false, true));
             $mform->addHelpButton('list_private', 'list_private', 'mod_vocabcoach');
 
+            $mform->addElement('advcheckbox', 'list_distribute_now', get_string('list_distribute_now', 'mod_vocabcoach'), '', null, array(false, true));
+            $mform->addHelpButton('list_distribute_now', 'list_distribute_now', 'mod_vocabcoach');
+            $mform->setDefault('list_distribute_now', 1);
         }
 
         $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));

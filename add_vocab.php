@@ -167,6 +167,12 @@ if ($mform->is_cancelled()) {
         }
     }
 
+    // Step 4: If selected, distribute the list to all users
+    if (isset($formdata->list_distribute_now) && $formdata->list_distribute_now == 1) {
+        $listsAPI = new \mod_vocabcoach\external\manage_lists_api();
+        $listsAPI->distribute_list($listid, $id);
+    }
+
     if ($redirect) {
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('add_vocab_successful', 'mod_vocabcoach'));
     }

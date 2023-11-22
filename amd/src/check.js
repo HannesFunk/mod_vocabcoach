@@ -131,8 +131,8 @@ export function changeMode() {
 }
 
 function checkTypedVocab () {
-    const typed = document.getElementById('input-vocab-front').value;
-    const correct = vocabArrayJSON[0].front;
+    const typed = cleanString(document.getElementById('input-vocab-front').value);
+    const correct = cleanString(vocabArrayJSON[0].front);
 
     if (typed === correct && !config.force) {
         updateVocabAJAX(vocabArrayJSON[0].dataid, config.userid, true).then(
@@ -176,7 +176,10 @@ function showNext(removeShown = true) {
 function updateLabels () {
     document.getElementById('check-front').innerHTML = vocabArrayJSON[0].front;
     document.getElementById('check-back').innerHTML = vocabArrayJSON[0].back;
-    document.getElementById('check-third').innerHTML = vocabArrayJSON[0].third;
+    const thirdBox = document.getElementById('check-third');
+    if (thirdBox !== null) {
+        thirdBox.innerHTML = vocabArrayJSON[0].third;
+    }
     document.getElementById('check-container').setAttribute('data-vocab-data-id', vocabArrayJSON[0].dataid);
 }
 
@@ -321,3 +324,14 @@ let startAnimation = (el, animation) => {
         el.classList.add(animation);
     });
 };
+
+function cleanString (input) {
+    const ignoreChars = [/\(/, /\)/, /\./];
+    let output = input;
+    ignoreChars.forEach(
+        (char) => {
+            output = output.replace(char, '');
+        }
+    );
+    return output.trim();
+}

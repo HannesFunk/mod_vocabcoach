@@ -56,7 +56,6 @@ $string['edit_vocab_instructions'] = 'Um eine Vokabeln zu löschen, lass beide S
 $string['edit_list_not_allowed'] = 'Du hast nicht die Berechtigung, diese Liste zu ändern.';
 $string['add_vocab_add_to_user_database_help'] = 'Wenn du diesen Haken nicht setzt, wird nur die Liste angelegt, die Vokabeln landen aber nicht direkt in deinem Kasten. Du kannst sie aber jederzeit später hinzufügen.';
 
-
 $string['vocab'] = 'Vokabel';
 $string['vocabplural'] = 'Vokabeln';
 $string['list'] = 'Liste';
@@ -65,7 +64,8 @@ $string['listprops'] = 'Listeneigenschaften';
 $string['instructions'] = 'Hinweise zum Eintippen von Vokabeln';
 $string['list_private'] = 'Private Liste';
 $string['list_private_help'] = 'Wenn du diesen Haken setzt, kannst nur du selbst diese Liste sehen. Andernfalls können die anderen Teilnehmer aus dem Kurs die Liste sehen, aber nicht bearbeiten.';
-
+$string['list_distribute_now'] = 'An alle verteilen';
+$string['list_distribute_now_help'] = 'Wenn du diesen Haken setzt, werden die Vokabeln direkt bei allen anderen Schüler:innen in diesem Kurs hinzugefügt. Für vocab duties (in-class oder homework) bitte setzen.';
 
 $string['type_vocab_label'] = 'Vokabeln tippen';
 $string['mode'] = 'Abfragemodus';

@@ -110,5 +110,15 @@ export const removeVocabFromUserAJAX = (
         },
     }])[0];
 
+export const getClassTotalAJAX = (
+    cmid, courseid) =>
+    fetchMany([{
+        methodname: 'mod_vocabcoach_get_class_total',
+        args: {
+            'cmid': cmid,
+            'courseid': courseid
+        },
+    }])[0];
+
 
 

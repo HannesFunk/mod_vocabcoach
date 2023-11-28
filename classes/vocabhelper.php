@@ -60,4 +60,17 @@ class vocabhelper {
         }
 
     }
+
+    function get_sql_box_conditions() {
+        $box_conditions = "";
+        for ($i = 1; $i <=$this->BOX_NUMBER; $i++) {
+            if ($i != 1) {
+                $box_conditions .= " OR ";
+            }
+            $min_days_since_check = $this->BOXES_TIMES[$i];
+
+            $box_conditions .= " (vd.stage = $i AND lastchecked < " . $this->old_timestamp($min_days_since_check).")";
+        }
+        return $box_conditions;
+    }
 }

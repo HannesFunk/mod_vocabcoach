@@ -11,3 +11,16 @@
     background-color: #f5f9fc;
     border: 1px solid #3584c9;
 }
+
+.leaderboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.leaderboard.header-leader {
+    font-weight: bold;
+}
+
+.leaderboard:nth-child(odd) {
+    background-color: #f5f9fc;
+}

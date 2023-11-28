@@ -7,6 +7,7 @@ require_once("{$CFG->libdir}/externallib.php");
 require_once(__DIR__.'/../vocabhelper.php');
 require_once(__DIR__.'/../activity_tracker.php');
 
+use block_stash\external;
 use external_api;
 use external_function_parameters;
 use external_value;
@@ -196,26 +197,19 @@ class check_vocab_api extends external_api {
         self::validate_parameters(self::get_class_total_parameters(),
                 ['cmid' => $cmid, 'courseid'=>$courseid]);
 
-        global $DB;
-        $vocabhelper = new vocabhelper($cmid);
-
-        $total = 0;
-
-        for ($i = 1; $i <=$vocabhelper->BOX_NUMBER; $i++) {
-            $min_days_since_check = $vocabhelper->BOXES_TIMES[$i];
-            $subquery = "SELECT userid FROM {user_enrolments} ue JOIN {enrol} en ON ue.enrolid = en.id
+        $subquery = "SELECT userid FROM {user_enrolments} ue JOIN {enrol} en ON ue.enrolid = en.id
                 JOIN {user} uu ON uu.id = ue.userid WHERE en.courseid = $courseid";
-            $query =
-                    "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} WHERE userid IN ($subquery) AND cmid = $cmid AND stage = $i AND lastchecked < " .
-                    $vocabhelper->old_timestamp($min_days_since_check) . ";";
-            $record = $DB->get_record_sql($query);
-            $total_box = $record->number;
-            $total = $total + $total_box;
-        }
-
+        $total = self::get_due_count($cmid, $subquery);
         return ['success'=> true, 'message'=>'Removed successfully.', 'total'=>$total];
-
     }
 
+    private static function get_due_count (int $cmid, string $userid_list) : int {
+        global $DB;
+        $vocabhelper = new vocabhelper($cmid);
+        $box_conditions = $vocabhelper->get_sql_box_conditions();
 
+        $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd WHERE userid IN ($userid_list) AND cmid = $cmid AND ($box_conditions)";
+        $record = $DB->get_record_sql($query);
+        return $record->total;
+    }
 }

@@ -47,3 +47,8 @@
 .box.box-faded .box-bottom-line {
     opacity: 0.3;
 }
+
+
+.leader.self {
+    color: #0f6cbf;
+}

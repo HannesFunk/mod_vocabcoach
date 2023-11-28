@@ -74,9 +74,13 @@ $templatecontext = [
     'days_checked_all' => $al->get_continuous_days($al->types_daily['ACT_CHECKED_ALL']),
 ];
 
+$cf = new \mod_vocabcoach\course_features($course->id, $id, $USER->id);
+$leaderboard_data = $cf->get_leaderboard();
+
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecontext);
 if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
     echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object) ['total'=>""]);
 }
+echo $OUTPUT->render_from_template('mod_vocabcoach/leaderboard', (object) ['leaders'=>$leaderboard_data]);
 echo $OUTPUT->footer();

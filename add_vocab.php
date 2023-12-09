@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-global $PAGE, $OUTPUT, $DB, $USER;
 
 /**
  * Prints an instance of mod_vocabcoach.
@@ -28,11 +27,12 @@ use mod_vocabcoach\external\check_vocab_api;
 use mod_vocabcoach\vocab_manager;
 
 require(__DIR__.'/../../config.php');
-global $CFG;
+global $PAGE, $OUTPUT, $DB, $USER, $CFG;
+
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/classes/forms/add_vocab_form.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
-include_once(__DIR__.'/classes/activity_tracker.php');
+require_once(__DIR__.'/classes/activity_tracker.php');
 
 // Course module id.
 $id = required_param('id', PARAM_INT);
@@ -42,50 +42,51 @@ if ($mode === 'edit') {
 }
 
 $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-$moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+$moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 if ($mode === 'edit') {
     $vocabmanager = new vocab_manager($USER->id);
-    $has_edit_superpower = has_capability('mod/vocabcoach:delete_lists', $modulecontext);
-    $canedit = $has_edit_superpower || $vocabmanager->user_owns_list($USER->id, $editlistid);
+    $canedit = has_capability('mod/vocabcoach:delete_lists', $modulecontext) ||
+        $vocabmanager->user_owns_list($USER->id, $editlistid);
     if (!$canedit) {
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('edit_list_not_allowed', 'mod_vocabcoach'),
+        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+            get_string('edit_list_not_allowed', 'mod_vocabcoach'),
             notification::ERROR);
     }
 }
 
-$PAGE->set_url(new moodle_url('/mod/vocabcoach/add_vocab.php', ['id'=>$cm->id]));
+$PAGE->set_url(new moodle_url('/mod/vocabcoach/add_vocab.php', ['id' => $cm->id]));
 $PAGE->set_context($modulecontext);
 $PAGE->set_title(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init', [$editlistid ?? -1]);
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 
-$instance_info = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
+$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
 
-$form_parameters = [
+$formparameters = [
         'mode' => $mode,
         'id' => $id,
         'year' => $moduleinstance->year,
-        'third_active' => $instance_info->thirdactive
+        'third_active' => $instanceinfo->thirdactive,
 ];
 
 if ($mode === 'edit') {
-    $form_parameters['listid'] = $editlistid;
-    $mform = new add_vocab_form(null, $form_parameters);
-    $listinfo = $DB->get_record('vocabcoach_lists', ['id'=>$editlistid],
-        'title AS list_title, 
-        book AS list_book, 
-        unit AS list_unit, 
+    $formparameters['listid'] = $editlistid;
+    $mform = new add_vocab_form(null, $formparameters);
+    $listinfo = $DB->get_record('vocabcoach_lists', ['id' => $editlistid],
+        'title AS list_title,
+        book AS list_book,
+        unit AS list_unit,
         year AS list_year,
         private AS list_private');
     $mform->set_data($listinfo);
 } else {
-    $mform = new add_vocab_form(null, $form_parameters);
+    $mform = new add_vocab_form(null, $formparameters);
 }
 
 if ($mform->is_cancelled()) {
@@ -97,8 +98,8 @@ if ($mform->is_cancelled()) {
     $vocabmanager = new vocab_manager($userid);
 
     // Step 0a: construct $vocab_array directly from $_POST - this is a dirty hack, but all I can think of right now.
-    $vocabarray = array();
-    for ($i=0; $i<count($_POST['front']); $i++) {
+    $vocabarray = [];
+    for ($i = 0; $i < count($_POST['front']); $i++) {
         if ($_POST['front'][$i] === '' && $_POST['back'][$i] === '' ) {
             continue;
         }
@@ -111,7 +112,7 @@ if ($mform->is_cancelled()) {
         $vocabarray[] = $vocab;
     }
 
-    // If mode is user, don't bother about lists
+    // If mode is user, don't bother about lists.
     if ($mode === 'user') {
         foreach ($vocabarray as $vocab) {
             $vocabid = $vocabmanager->insert_vocab($vocab);
@@ -121,12 +122,13 @@ if ($mform->is_cancelled()) {
         }
         $at = new activity_tracker($USER->id, $id);
         $at->log($at->types_always['ACT_ENTERED_VOCAB'], count($vocabarray));
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('add_vocab_successful', 'mod_vocabcoach'));
+        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+            get_string('add_vocab_successful', 'mod_vocabcoach'));
     }
 
-    // Step 0b: Gather list information
+    // Step 0b: Gather list information.
     $listkeys = ['title', 'book', 'unit', 'year', 'private'];
-    $listinfo = ['createdby'=> $userid, 'cmid' => $cm->id];
+    $listinfo = ['createdby' => $userid, 'cmid' => $cm->id];
     foreach ($listkeys as $key) {
         $listinfo[$key] = $formdata->{'list_' . $key};
     }
@@ -135,10 +137,11 @@ if ($mform->is_cancelled()) {
         $listinfo['id'] = $editlistid;
         $DB->update_record('vocabcoach_lists', (object) $listinfo);
         $vocabmanager->edit_list($editlistid, $vocabarray);
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('edit_vocab_successful', 'mod_vocabcoach'));
+        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+            get_string('edit_vocab_successful', 'mod_vocabcoach'));
     }
 
-    // Step 1: Generate List
+    // Step 1: Generate List.
 
     $listid = $vocabmanager->add_list($listinfo);
     if ($listid == -1) {
@@ -147,7 +150,7 @@ if ($mform->is_cancelled()) {
     }
     $listinfo['id'] = $listid;
 
-    // Step 2: Add all the vocabulary, find their ID and link them to the list
+    // Step 2: Add all the vocabulary, find their ID and link them to the list.
     foreach ($vocabarray as $vocab) {
         $vocabid = $vocabmanager->insert_vocab($vocab);
         if (!$vocabmanager->add_vocab_to_list($vocabid, $listid)) {
@@ -158,7 +161,7 @@ if ($mform->is_cancelled()) {
         $at->log($at->types_always['ACT_CREATED_LIST'], $listid);
     }
 
-    // Step 3: add list to user (if necessary)
+    // Step 3: add list to user (if necessary).
     if (isset($formdata->add_to_user_database) && $formdata->add_to_user_database == 1) {
         if (!$vocabmanager->add_list_to_user_database($listid, $id)) {
             notification::add('Fehler beim Eintragen der Vokabeln. ', notification::ERROR);
@@ -167,14 +170,15 @@ if ($mform->is_cancelled()) {
         }
     }
 
-    // Step 4: If selected, distribute the list to all users
+    // Step 4: If selected, distribute the list to all users.
     if (isset($formdata->list_distribute_now) && $formdata->list_distribute_now == 1) {
-        $listsAPI = new \mod_vocabcoach\external\manage_lists_api();
-        $listsAPI->distribute_list($listid, $id);
+        $listsapi = new \mod_vocabcoach\external\manage_lists_api();
+        $listsapi->distribute_list($listid, $id);
     }
 
     if ($redirect) {
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]), get_string('add_vocab_successful', 'mod_vocabcoach'));
+        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+            get_string('add_vocab_successful', 'mod_vocabcoach'));
     }
 }
 

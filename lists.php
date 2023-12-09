@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-global $PAGE, $OUTPUT, $DB, $USER;
 
 /**
  * Prints an instance of mod_vocabcoach.
@@ -24,13 +23,14 @@ global $PAGE, $OUTPUT, $DB, $USER;
  */
 
 require(__DIR__.'/../../config.php');
+global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__.'/lib.php');
 
 $id = required_param('id', PARAM_INT);
 
 $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-$moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+$moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
 $PAGE->requires->css('/mod/vocabcoach/styles/lists.css');
 

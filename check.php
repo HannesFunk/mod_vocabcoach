@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-global $PAGE, $OUTPUT, $DB;
 
 /**
  * Prints an instance of mod_vocabcoach.
@@ -23,10 +22,8 @@ global $PAGE, $OUTPUT, $DB;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-global $USER;
-
 require(__DIR__.'/../../config.php');
+global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
 require_once(__DIR__.'/classes/forms/check_settings_form.php');
@@ -34,8 +31,8 @@ require_once(__DIR__.'/classes/forms/check_settings_form.php');
 $id = required_param('id', PARAM_INT);
 
 $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-$moduleinstance = $DB->get_record('vocabcoach', array('id' => $cm->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+$moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
@@ -46,36 +43,35 @@ $PAGE->set_title('Vokabelcoach - Abfrage');
 $PAGE->set_heading('Vokabelcoach - Abfrage');
 $PAGE->navbar->add('Abfrage');
 
-$check_settings_form = new check_settings_form();
-$form_html = $check_settings_form->toHtml();
-
+$checksettingsform = new check_settings_form();
+$formhtml = $checksettingsform->toHtml();
 
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 $source = optional_param('source', 'user', PARAM_TEXT);
 
-$instance_info = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
+$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
 
-$js_data = [
-    'userid'=>$USER->id,
-    'force'=>optional_param('force', false, PARAM_BOOL),
-    'cmid'=>$id,
-    'source'=>$source,
-    'thirdActive' => $instance_info->thirdactive
+$jsdata = [
+    'userid' => $USER->id,
+    'force' => optional_param('force', false, PARAM_BOOL),
+    'cmid' => $id,
+    'source' => $source,
+    'thirdActive' => $instanceinfo->thirdactive,
 ];
 if ($source === 'user') {
-    $js_data['stage'] = required_param('stage', PARAM_INT);
+    $jsdata['stage'] = required_param('stage', PARAM_INT);
 
 } else if ($source === 'list') {
-    $js_data['listid'] = required_param('listid', PARAM_INT);
+    $jsdata['listid'] = required_param('listid', PARAM_INT);
 }
 
 $PAGE->requires->js_call_amd(
         'mod_vocabcoach/check',
         'init',
-        array(json_encode($js_data))
+        [json_encode($jsdata)]
 );
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('mod_vocabcoach/check', ['check-settings-form'=>$form_html]);
+echo $OUTPUT->render_from_template('mod_vocabcoach/check', ['check-settings-form' => $formhtml]);
 echo $OUTPUT->footer();

@@ -48,7 +48,7 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('vocabcoachname', 'mod_vocabcoach'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('vocabcoachname', 'mod_vocabcoach'), ['size' => '64']);
 
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -68,7 +68,7 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         }
 
         $years = [];
-        for ($i=5; $i<=13; $i++) {
+        for ($i = 5; $i <= 13; $i++) {
             $years[$i] = $i;
         }
         $mform->addElement('select', 'year', 'Jahrgangsstufe', $years);
@@ -77,11 +77,11 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'boxtimes', get_string('boxtimes', 'mod_vocabcoach'));
         $mform->addElement('static', 'info_boxtimes', '', get_string('info_boxtimes', 'mod_vocabcoach'));
-        $default_boxtimes = [0, 1, 2, 5, 10, 30];
-        for ($i=1; $i<=5; $i++) {
+        $defaultboxtimes = [0, 1, 2, 5, 10, 30];
+        for ($i = 1; $i <= 5; $i++) {
             $mform->addElement('text', 'boxtime_'.$i, get_string('boxtime', 'mod_vocabcoach').' '.$i);
             $mform->setType('boxtime_'.$i, PARAM_INT);
-            $mform->setDefault('boxtime_'.$i, $default_boxtimes[$i]);
+            $mform->setDefault('boxtime_'.$i, $defaultboxtimes[$i]);
         }
 
         $mform->addElement('checkbox', 'move_undue', get_string('move_undue', 'vocabcoach'));

@@ -88,12 +88,12 @@ function vocabcoach_update_instance($moduleinstance, $mform = null) {
 function vocabcoach_delete_instance($id) {
     global $DB;
 
-    $exists = $DB->get_record('vocabcoach', array('id' => $id));
+    $exists = $DB->get_record('vocabcoach', ['id' => $id]);
     if (!$exists) {
         return false;
     }
 
-    $DB->delete_records('vocabcoach', array('id' => $id));
+    $DB->delete_records('vocabcoach', ['id' => $id]);
 
     return true;
 }

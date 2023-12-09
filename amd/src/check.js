@@ -326,12 +326,24 @@ let startAnimation = (el, animation) => {
 };
 
 function cleanString (input) {
-    const ignoreChars = [/\(/, /\)/, /\./];
+    const replacements = [
+        {'search': /\(/g, 'replace': ''},
+        {'search': /\)/g, 'replace': ''},
+        {'search': /\./g, 'replace': ''},
+        {'search': /, /g, 'replace': ','},
+        {'search': / ,/g, 'replace': ','},
+        {'search': /something/g, 'replace': 'sth'},
+        {'search': / smt /g, 'replace': 'sth'},
+        {'search': / somebody /g, 'replace': 'sb'},
+        {'search': / someone /g, 'replace': 'sb'},
+        {'search': / smb /g, 'replace': 'sb'},
+    ];
     let output = input;
-    ignoreChars.forEach(
-        (char) => {
-            output = output.replace(char, '');
+    replacements.forEach(
+        (replacement) => {
+            output = output.replace(replacement.search, replacement.replace);
         }
     );
+
     return output.trim();
 }

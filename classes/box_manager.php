@@ -16,9 +16,12 @@
 
 
 /**
+ * Manages the vocab boxes for a user.
+ *
  * @package     mod_vocabcoach
  * @author      J. Funk
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright   Johannes Funk
  */
 
 namespace mod_vocabcoach;
@@ -27,16 +30,44 @@ use vocabhelper;
 defined('MOODLE_INTERNAL') || die();
 require('vocabhelper.php');
 
+/**
+ * Box manager class
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class box_manager {
+    /**
+     * @var vocabhelper The instance of vocabhelper to do basic vocab operations
+     */
     private vocabhelper $vocabhelper;
+    /**
+     * @var int cmid Course Module id
+     */
+    /**
+     * @var int userid  User id
+     */
     private int $cmid, $userid;
 
+    /**
+     * Construct the class.
+     * @param int $cmid Course module id
+     * @param int $userid User id
+     */
     public function __construct(int $cmid, int $userid) {
         $this->vocabhelper = new vocabhelper($cmid);
         $this->cmid = $cmid;
         $this->userid = $userid;
     }
 
+    /**
+     *
+     * Returns an array to display all the information used on the first page
+     *
+     * @return array
+     */
     public function get_box_details() : array {
         global $DB;
 

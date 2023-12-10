@@ -23,7 +23,6 @@
  */
 
 use core\notification;
-use mod_vocabcoach\external\check_vocab_api;
 use mod_vocabcoach\vocab_manager;
 
 require(__DIR__.'/../../config.php');
@@ -121,7 +120,7 @@ if ($mform->is_cancelled()) {
             }
         }
         $at = new activity_tracker($USER->id, $id);
-        $at->log($at->types_always['ACT_ENTERED_VOCAB'], count($vocabarray));
+        $at->log($at->typesalways['ACT_ENTERED_VOCAB'], count($vocabarray));
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
             get_string('add_vocab_successful', 'mod_vocabcoach'));
     }
@@ -158,7 +157,7 @@ if ($mform->is_cancelled()) {
             $redirect = false;
         }
         $at = new activity_tracker($USER->id, $id);
-        $at->log($at->types_always['ACT_CREATED_LIST'], $listid);
+        $at->log($at->typesalways['ACT_CREATED_LIST'], $listid);
     }
 
     // Step 3: add list to user (if necessary).

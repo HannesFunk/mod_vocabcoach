@@ -44,7 +44,7 @@ $PAGE->set_heading('Vokabelcoach - Abfrage');
 $PAGE->navbar->add('Abfrage');
 
 $checksettingsform = new check_settings_form();
-$formhtml = $checksettingsform->toHtml();
+$formhtml = $checksettingsform->to_html();
 
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');

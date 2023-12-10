@@ -22,6 +22,7 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
@@ -30,21 +31,20 @@ class check_settings_form extends moodleform {
         $mform = $this->_form;
         $mform->disable_form_change_checker();
 
-        $mode_options = [
-            'type'=>'Englische Vokabeln tippen',
-            'back'=>'Nach Englisch fragen',
-            'front'=>'Nach Deutsch fragen',
-            'random'=>'Zufällig',
+        $modeoptions = [
+            'type' => 'Englische Vokabeln tippen',
+            'back' => 'Nach Englisch fragen',
+            'front' => 'Nach Deutsch fragen',
+            'random' => 'Zufällig',
         ];
         $mform->addElement('select', 'mode',
             get_string('mode', 'mod_vocabcoach'),
-            $mode_options,
-            array('id'=>'check-mode')
+            $modeoptions,
+            ['id' => 'check-mode']
         );
-
     }
 
-    public function toHtml() : string {
+    public function to_html() : string {
         return $this->_form->toHtml();
     }
 }

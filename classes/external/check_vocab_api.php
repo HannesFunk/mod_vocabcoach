@@ -1,13 +1,27 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_vocabcoach\external;
 
+defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 require_once(__DIR__.'/../vocabhelper.php');
 require_once(__DIR__.'/../activity_tracker.php');
 
-use block_stash\external;
 use external_api;
 use external_function_parameters;
 use external_value;
@@ -18,7 +32,7 @@ use vocabhelper;
 class check_vocab_api extends external_api {
     public static function update_vocab_parameters() : external_function_parameters {
         return new external_function_parameters([
-            'dataid'=> new external_value(PARAM_INT),
+            'dataid' => new external_value(PARAM_INT),
             'userid' => new external_value(PARAM_INT),
             'known' => new external_value(PARAM_BOOL),
         ]);
@@ -34,7 +48,7 @@ class check_vocab_api extends external_api {
     public static function update_vocab($dataid, $userid, $known) : array {
         global $DB;
 
-        self::validate_parameters(self::update_vocab_parameters(), ['dataid'=>$dataid, 'userid'=>$userid, 'known'=>$known]);
+        self::validate_parameters(self::update_vocab_parameters(), ['dataid' => $dataid, 'userid' => $userid, 'known' => $known]);
 
         try {
             $record = $DB->get_record_sql("SELECT * FROM {vocabcoach_vocabdata} WHERE id = ?;", [$dataid], MUST_EXIST);
@@ -47,7 +61,7 @@ class check_vocab_api extends external_api {
             return ['success' => false, 'message' => $e->getMessage()];
         }
 
-        return ['success'=>true, 'message'=>'That worked.'];
+        return ['success' => true, 'message' => 'That worked.'];
     }
 
     public static function get_user_vocabs_parameters() : external_function_parameters {
@@ -65,15 +79,16 @@ class check_vocab_api extends external_api {
 
     public static function get_user_vocabs($userid, $cmid, $stage, $force) : array {
         global $DB;
-        self::validate_parameters(self::get_user_vocabs_parameters(), ['userid'=>$userid, 'cmid'=>$cmid, 'stage'=>$stage, 'force' => $force]);
+        self::validate_parameters(self::get_user_vocabs_parameters(),
+            ['userid' => $userid, 'cmid' => $cmid, 'stage' => $stage, 'force' => $force]);
 
         $vocabhelper = new vocabhelper($cmid);
-        $days = $vocabhelper->BOXES_TIMES[$stage];
-        $min_timestamp = $vocabhelper->old_timestamp($days);
+        $days = $vocabhelper->boxtimes[$stage];
+        $mintimestamp = $vocabhelper->old_timestamp($days);
 
-        $query = "SELECT vd.ID AS dataid, front, back, third 
-                FROM {vocabcoach_vocab} vocab 
-                JOIN {vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID 
+        $query = "SELECT vd.ID AS dataid, front, back, third
+                FROM {vocabcoach_vocab} vocab
+                JOIN {vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID
                WHERE vd.userID= ? AND vd.stage = ? AND vd.cmid = ?";
         if (!$force) {
             $query .= "AND vd.lastchecked < ?;";
@@ -81,7 +96,7 @@ class check_vocab_api extends external_api {
             $query .= ';';
         }
         try {
-            $output = $DB->get_records_sql($query, [$userid, $stage, $cmid, $min_timestamp]);
+            $output = $DB->get_records_sql($query, [$userid, $stage, $cmid, $mintimestamp]);
         } catch (\dml_exception $e) {
             return [$e->getMessage()];
         }
@@ -111,24 +126,24 @@ class check_vocab_api extends external_api {
     }
 
     public static function get_list_vocabs(int $listid) : array {
-        self::validate_parameters(self::get_list_vocabs_parameters(), ['listid'=>$listid]);
+        self::validate_parameters(self::get_list_vocabs_parameters(), ['listid' => $listid]);
 
         global $DB;
 
-        $query = "SELECT vocab.ID AS dataid, front, back, third FROM {vocabcoach_vocab} vocab 
+        $query = "SELECT vocab.ID AS dataid, front, back, third FROM {vocabcoach_vocab} vocab
             INNER JOIN {vocabcoach_list_contains} list_contains ON  list_contains.vocabID = vocab.ID
             WHERE list_contains.listID = $listid;";
         try {
-            $output =  $DB->get_records_sql($query);
+            $output = $DB->get_records_sql($query);
             return array_values($output);
-        } catch(\dml_exception) {
+        } catch (\dml_exception $e) {
             return [];
         }
     }
 
     public static function log_checked_vocabs_parameters() : external_function_parameters {
         return new external_function_parameters([
-                'cmid'=> new external_value(PARAM_INT),
+                'cmid' => new external_value(PARAM_INT),
                 'userid' => new external_value(PARAM_INT),
                 'details' => new external_value(PARAM_TEXT),
         ]);
@@ -143,15 +158,13 @@ class check_vocab_api extends external_api {
 
     public static function log_checked_vocabs(int $cmid, int $userid, $details) :array {
         self::validate_parameters(self::log_checked_vocabs_parameters(),
-                ['cmid' => $cmid,'userid' => $userid, 'details' => $details]);
+                ['cmid' => $cmid, 'userid' => $userid, 'details' => $details]);
 
         $at = new \activity_tracker($userid, $cmid);
-        $at->log($at->types_always['ACT_CHECKED_VOCAB'], $details);
+        $at->log($at->typesalways['ACT_CHECKED_VOCAB'], $details);
 
-        return ['success'=> true, 'message'=>'Logged successfully.'];
-
+        return ['success' => true, 'message' => 'Logged successfully.'];
     }
-
 
     public static function remove_vocab_from_user_parameters() : external_function_parameters {
         return new external_function_parameters([
@@ -172,9 +185,9 @@ class check_vocab_api extends external_api {
 
         global $DB;
 
-        $DB->delete_records('vocabcoach_vocabdata', ['id'=>$dataid]);
+        $DB->delete_records('vocabcoach_vocabdata', ['id' => $dataid]);
 
-        return ['success'=> true, 'message'=>'Removed successfully.'];
+        return ['success' => true, 'message' => 'Removed successfully.'];
 
     }
 
@@ -195,20 +208,21 @@ class check_vocab_api extends external_api {
 
     public static function get_class_total(int $cmid, int $courseid) :array {
         self::validate_parameters(self::get_class_total_parameters(),
-                ['cmid' => $cmid, 'courseid'=>$courseid]);
+                ['cmid' => $cmid, 'courseid' => $courseid]);
 
         $subquery = "SELECT userid FROM {user_enrolments} ue JOIN {enrol} en ON ue.enrolid = en.id
                 JOIN {user} uu ON uu.id = ue.userid WHERE en.courseid = $courseid";
         $total = self::get_due_count($cmid, $subquery);
-        return ['success'=> true, 'message'=>'Removed successfully.', 'total'=>$total];
+        return ['success' => true, 'message' => 'Removed successfully.', 'total' => $total];
     }
 
-    private static function get_due_count (int $cmid, string $userid_list) : int {
+    private static function get_due_count (int $cmid, string $useridlist) : int {
         global $DB;
         $vocabhelper = new vocabhelper($cmid);
-        $box_conditions = $vocabhelper->get_sql_box_conditions();
+        $boxconditions = $vocabhelper->get_sql_box_conditions();
 
-        $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd WHERE userid IN ($userid_list) AND cmid = $cmid AND ($box_conditions)";
+        $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd
+             WHERE userid IN ($useridlist) AND cmid = $cmid AND ($boxconditions)";
         $record = $DB->get_record_sql($query);
         return $record->total;
     }

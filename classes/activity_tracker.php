@@ -1,18 +1,32 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 class activity_tracker {
     private int $userid, $cmid;
-    public array $types_daily = [
+    public array $typesdaily = [
         "ACT_LOGGED_IN" => 1,
         "ACT_CHECKED_ALL" => 2,
     ];
-    public array $types_always = [
+    public array $typesalways = [
         "ACT_CHECKED_VOCAB" => 3,
         "ACT_ENTERED_VOCAB" => 4,
         "ACT_CREATED_LIST" => 5,
     ];
 
-    function __construct($userid, $cmid) {
+    public function __construct($userid, $cmid) {
         $this->userid = $userid;
         $this->cmid = $cmid;
     }
@@ -24,8 +38,8 @@ class activity_tracker {
      * @param string $date Date of the log entry.
      * @return bool Whether the log was successful
      */
-    function log(int $type, string $details = "", string $date = 'today') : bool {
-        if (!in_array($type, $this->types_daily) && !in_array($type, $this->types_always)) {
+    public function log(int $type, string $details = "", string $date = 'today') : bool {
+        if (!in_array($type, $this->typesdaily) && !in_array($type, $this->typesalways)) {
             return false;
         }
 
@@ -34,45 +48,46 @@ class activity_tracker {
         $log->userid = $this->userid;
         $log->cmid = $this->cmid;
         $log->type = $type;
-        $log->date = $this->formatDate($date);
+        $log->date = $this->format_date($date);
         $log->details = $details;
 
         try {
-            if (in_array($type, $this->types_daily) &&
-                $DB->count_records('vocabcoach_activitylog', ['userid' => $log->userid, 'cmid' => $log->cmid, 'type' => $log->type, 'date' => $log->date]) > 0) {
+            if (in_array($type, $this->typesdaily) &&
+                $DB->count_records('vocabcoach_activitylog',
+                    ['userid' => $log->userid, 'cmid' => $log->cmid, 'type' => $log->type, 'date' => $log->date]) > 0) {
                 return true;
             }
 
             $DB->insert_record('vocabcoach_activitylog', $log);
             return true;
-        } catch (dml_exception) {
+        } catch (dml_exception $e) {
             return false;
         }
     }
 
-    function formatDate($date_string) : int {
-        if ($date_string === 'today') {
-            $date_string = date('d.m.Y');
+    public function format_date($datestring) : int {
+        if ($datestring === 'today') {
+            $datestring = date('d.m.Y');
         }
-        $date = date_create($date_string);
+        $date = date_create($datestring);
         $year = (int) date_format($date, 'y');
-        $day_of_year = (int) date_format($date, 'z');
-        return $year * 1000 + $day_of_year;
+        $dayofyear = (int) date_format($date, 'z');
+        return $year * 1000 + $dayofyear;
     }
 
-    function day_before(int $day_int) : int {
-        $day = $day_int % 1000;
-        $year = ($day_int - $day) / 1000;
+    private function day_before(int $dayint) : int {
+        $day = $dayint % 1000;
+        $year = ($dayint - $day) / 1000;
 
         if ($day !== 0) {
-            return $day_int - 1;
+            return $dayint - 1;
         }
 
-        $leap_year_correction = (($year -1) % 4 === 0) ? 1 : 0;
-        return ($year - 1) * 1000 + 365 + $leap_year_correction;
+        $leapyearcorrection = (($year - 1) % 4 === 0) ? 1 : 0;
+        return ($year - 1) * 1000 + 365 + $leapyearcorrection;
     }
 
-    function is_all_done (array $boxdata) : bool {
+    public function is_all_done (array $boxdata) : bool {
         foreach ($boxdata as $box) {
             if ($box['due'] != 0) {
                 return false;
@@ -81,7 +96,7 @@ class activity_tracker {
         return true;
     }
 
-    function get_continuous_days($type) : int {
+    public function get_continuous_days($type) : int {
         global $DB;
         $conditions = [
             'userid' => $this->userid,
@@ -90,11 +105,11 @@ class activity_tracker {
         ];
         try {
             $records = $DB->get_records('vocabcoach_activitylog', $conditions, 'date DESC');
-        } catch (dml_exception) {
+        } catch (dml_exception $e) {
             return -1;
         }
         $activities = array_values($records);
-        $day = $this->day_before($this->formatDate('today'));
+        $day = $this->day_before($this->format_date('today'));
         $i = 1;
         while (1) {
             if (!isset($activities[$i])) {

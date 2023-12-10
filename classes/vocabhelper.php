@@ -23,54 +23,51 @@
  */
 
 class vocabhelper {
-    public int $BOX_NUMBER = 5;
-    public array $BOXES_TIMES = [0, 1, 2, 5, 10, 30];
+    public int $boxnumber = 5;
+    public array $boxtimes = [0, 1, 2, 5, 10, 30];
 
-    function __construct($cmid) {
+    public function __construct($cmid) {
         global $DB;
         $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
-        $instance_info = $DB->get_record('vocabcoach', ['id'=>$cm->instance], '*');
-        for ($i=1; $i<=5; $i++) {
-            $this->BOXES_TIMES[$i] = $instance_info->{'boxtime_'.$i};
+        $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
+        for ($i = 1; $i <= 5; $i++) {
+            $this->boxtimes[$i] = $instanceinfo->{'boxtime_'.$i};
         }
     }
 
-    function old_timestamp($days_ago) : int {
+    public function old_timestamp($daysago) : int {
         $now = time();
-        return $now - ($days_ago - 0.5) * 60 * 60 * 24;
+        return $now - ($daysago - 0.5) * 60 * 60 * 24;
     }
 
     /**
-     * @param $last_checked
-     * @param $box_time
+     * @param $lastchecked
+     * @param $boxtime
      * @return string
      */
-    function compute_due_time_string ($last_checked, $box_time) : string {
-        if ($last_checked === null) {
+    public function compute_due_time_string ($lastchecked, $boxtime) : string {
+        if ($lastchecked === null) {
             return '-';
         }
-        $next_due = time() + $box_time * 60 * 60 * 24;
-        $seconds_left = $next_due - $last_checked;
-        if ($seconds_left > 60 * 60 * 24) {
-            $time = floor($seconds_left / (60 * 60 * 24));
+        $nextdue = time() + $boxtime * 60 * 60 * 24;
+        $secondsleft = $nextdue - $lastchecked;
+        if ($secondsleft > 60 * 60 * 24) {
+            $time = floor($secondsleft / (60 * 60 * 24));
             return $time.($time > 1 ? ' Tagen' : ' Tag');
         } else {
-            $time = floor ($seconds_left / (60 * 60));
+            $time = floor ($secondsleft / (60 * 60));
             return $time.($time > 1 ? ' Stunden' : ' Stunde');
         }
-
     }
 
-    function get_sql_box_conditions() {
-        $box_conditions = "";
-        for ($i = 1; $i <=$this->BOX_NUMBER; $i++) {
+    public function get_sql_box_conditions() {
+        $boxconditions = "";
+        for ($i = 1; $i <= $this->boxnumber; $i++) {
             if ($i != 1) {
-                $box_conditions .= " OR ";
+                $boxconditions .= " OR ";
             }
-            $min_days_since_check = $this->BOXES_TIMES[$i];
-
-            $box_conditions .= " (vd.stage = $i AND lastchecked < " . $this->old_timestamp($min_days_since_check).")";
+            $boxconditions .= " (vd.stage = $i AND lastchecked < " . $this->old_timestamp($this->boxtimes[$i]).")";
         }
-        return $box_conditions;
+        return $boxconditions;
     }
 }

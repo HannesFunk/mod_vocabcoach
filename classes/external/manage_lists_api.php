@@ -1,7 +1,22 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_vocabcoach\external;
 
+defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 
@@ -19,7 +34,7 @@ class manage_lists_api extends external_api {
         return new external_function_parameters([
             'cmid' => new external_value(PARAM_INT, VALUE_OPTIONAL),
             'userid' => new external_value(PARAM_INT, VALUE_OPTIONAL),
-            'onlyOwnLists' => new external_value(PARAM_BOOL, VALUE_OPTIONAL)
+            'onlyownlists' => new external_value(PARAM_BOOL, VALUE_OPTIONAL),
         ]);
     }
 
@@ -39,20 +54,21 @@ class manage_lists_api extends external_api {
         );
     }
 
-    public static function get_lists ($cmid, $userid, $bOnlyOwnUser = false) : array|null{
+    public static function get_lists($cmid, $userid, $onlyownlists = false) : array|null {
 
-        self::validate_parameters(self::get_lists_parameters(), ['cmid' => $cmid, 'userid' => $userid, 'onlyOwnLists' => $bOnlyOwnUser]);
+        self::validate_parameters(self::get_lists_parameters(),
+            ['cmid' => $cmid, 'userid' => $userid, 'onlyownlists' => $onlyownlists]);
 
         global $DB;
 
         try {
             $conditions = 'cmid = '.$cmid.' AND (private = 0 OR createdby = '.$userid.')';
-            if ($bOnlyOwnUser) {
+            if ($onlyownlists) {
                 $conditions .= ' AND createdby = '.$userid;
             }
-            $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby, private FROM {vocabcoach_lists} WHERE ".$conditions);
-            //$records = $DB->get_records('vocabcoach_lists', $conditions, '', 'id, title, year, book, unit, createdby');
-            $output = array();
+            $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby, private
+                FROM {vocabcoach_lists} WHERE ".$conditions);
+            $output = [];
             foreach ($records as $record) {
                 $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_contains} WHERE listid = ".$record->id.";";
                 $vocabnumber = $DB->count_records_sql($query);
@@ -69,13 +85,12 @@ class manage_lists_api extends external_api {
 
     public static function delete_list_parameters() : external_function_parameters {
         return new external_function_parameters([
-            'listid' => new external_value(PARAM_INT, VALUE_REQUIRED)
+            'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
         ]);
     }
 
 
-    public static function delete_list_returns() : external_single_structure
-    {
+    public static function delete_list_returns() : external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
@@ -86,13 +101,13 @@ class manage_lists_api extends external_api {
 
         global $DB;
         try {
-            $DB->delete_records('vocabcoach_lists', ['id'=>$listid]);
-            $DB->delete_records('vocabcoach_list_contains', ['listid'=>$listid]);
+            $DB->delete_records('vocabcoach_lists', ['id' => $listid]);
+            $DB->delete_records('vocabcoach_list_contains', ['listid' => $listid]);
         } catch (\dml_exception $e) {
             return ['success' => false];
         }
 
-        return ['success'=>true];
+        return ['success' => true];
     }
 
     public static function add_list_to_user_parameters() : external_function_parameters {
@@ -110,14 +125,14 @@ class manage_lists_api extends external_api {
 
         $time = strtotime('2000-01-01 00:00:00');
 
-        $query = "SELECT id, vocabid FROM {vocabcoach_list_contains} list_contains 
-                                WHERE list_contains.listid = $listid 
+        $query = "SELECT id, vocabid FROM {vocabcoach_list_contains} list_contains
+                                WHERE list_contains.listid = $listid
                                 AND list_contains.vocabid NOT IN
        (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
 
         try {
             $records = $DB->get_records_sql($query);
-            $insert_array = array();
+            $insertarray = [];
             foreach (array_values($records) as $record) {
                 $insert = new stdClass();
                 $insert->vocabid = $record->vocabid;
@@ -125,9 +140,9 @@ class manage_lists_api extends external_api {
                 $insert->cmid = $cmid;
                 $insert->stage = 1;
                 $insert->lastchecked = $time;
-                $insert_array[] = $insert;
+                $insertarray[] = $insert;
             }
-            $DB->insert_records('vocabcoach_vocabdata', $insert_array);
+            $DB->insert_records('vocabcoach_vocabdata', $insertarray);
             return ['success' => true];
         } catch (dml_exception $e) {
             return ['success' => false];
@@ -162,10 +177,9 @@ class manage_lists_api extends external_api {
         return ['success' => true];
     }
 
-        public static function distribute_list_returns() : external_single_structure {
+    public static function distribute_list_returns() : external_single_structure {
         return new external_single_structure([
-                'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
+            'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
     }
-
 }

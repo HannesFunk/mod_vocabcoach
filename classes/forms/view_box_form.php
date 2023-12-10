@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,41 +22,41 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//moodleform is defined in formslib.php
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
 class view_box_form extends moodleform {
-    //Add elements to form
     public function definition(): void {
 
-        $mform = $this->_form; // Don't forget the underscore!
-        $vocab_array = json_decode($this->_customdata['vocabdata']);
+        $mform = $this->_form;
+        $vocabarray = json_decode($this->_customdata['vocabdata']);
 
         $id = $this->_customdata['id'];
-        $third_active = $this->_customdata['third_active'] == 1;
+        $usesthird = $this->_customdata['third_active'] == 1;
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
-
-        $table_header_html = '<table id="table-list" class="table generaltable">
+        $tableheaderhtml = '<table id="table-list" class="table generaltable">
         <tbody>
         <tr>
             <th>Englisch</th>
-            <th>Deutsch</th>'.($third_active ? '<th>Zusatzinfo</th>' : '').'
+            <th>Deutsch</th>'.($usesthird ? '<th>Zusatzinfo</th>' : '').'
             <th></th>
             </tr>';
-        $mform->addElement('html', $table_header_html);
+        $mform->addElement('html', $tableheaderhtml);
 
-        foreach ($vocab_array as $vocab) {
-            $vocabrow = array();
+        foreach ($vocabarray as $vocab) {
+            $vocabrow = [];
             $vocabrow[] =& $mform->createElement('html', '<tr>');
-            $vocab_item_html = '<td>'.$vocab->front.'</td><td>'.$vocab->back.'</td>';
-            if ($third_active == true) {
-                $vocab_item_html .= '<td>' . $vocab->third . '</td>';
+            $vocabitemhtml = '<td>'.$vocab->front.'</td><td>'.$vocab->back.'</td>';
+            if ($usesthird == true) {
+                $vocabitemhtml .= '<td>' . $vocab->third . '</td>';
             }
-            $vocab_item_html .= '<td><input type="button" class="btn btn-secondary mb-1" value="Aus meinem Kasten entfernen" data-action="mod_vocabcoach/remove_vocab_from_user" data-dataid="'.$vocab->dataid.'"></button></td>';
-            $vocabrow[] =& $mform->createElement('html', $vocab_item_html.'</tr>');
+            $vocabitemhtml .= '<td><input type="button" class="btn btn-secondary mb-1" value="Aus meinem Kasten entfernen"
+                data-action="mod_vocabcoach/remove_vocab_from_user" data-dataid="'.$vocab->dataid.'"></button></td>';
+            $vocabrow[] =& $mform->createElement('html', $vocabitemhtml.'</tr>');
             $mform->addGroup(
                     $vocabrow,
                     'vocabrow',
@@ -70,8 +69,7 @@ class view_box_form extends moodleform {
         $mform->addElement('html', '</tbody></table>');
     }
 
-    //Custom validation should be added here
-    function validation($data, $files) {
-        return array();
+    public function validation($data, $files) {
+        return [];
     }
 }

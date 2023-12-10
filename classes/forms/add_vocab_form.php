@@ -22,16 +22,17 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//moodleform is defined in formslib.php
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
 class add_vocab_form extends moodleform {
-    //Add elements to form
     public function definition() :void {
-        $mform = $this->_form; // Don't forget the underscore!
+        $mform = $this->_form;
+
         $mode = $this->_customdata['mode'];
         $id = $this->_customdata['id'];
-        $third_active = $this->_customdata['third_active'] == true;
+        $usesthird = $this->_customdata['third_active'] == true;
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
@@ -55,7 +56,7 @@ class add_vocab_form extends moodleform {
             $mform->setDefault('list_book', 'Access');
 
             $years = [];
-            for ($i=5; $i<=13; $i++) {
+            for ($i = 5; $i <= 13; $i++) {
                 $years[$i] = $i;
             }
             $mform->addElement('select', 'list_year', 'Jahrgangsstufe', $years, ['disabled']);
@@ -68,10 +69,12 @@ class add_vocab_form extends moodleform {
             $mform->addElement('checkbox', 'add_to_user_database', get_string('add_vocab_add_to_user_database', 'mod_vocabcoach'));
             $mform->addHelpButton('add_to_user_database', 'add_vocab_add_to_user_database', 'mod_vocabcoach');
 
-            $mform->addElement('advcheckbox', 'list_private', get_string('list_private', 'mod_vocabcoach'), '', null, array(false, true));
+            $mform->addElement('advcheckbox', 'list_private',
+                    get_string('list_private', 'mod_vocabcoach'), '', null, [false, true]);
             $mform->addHelpButton('list_private', 'list_private', 'mod_vocabcoach');
 
-            $mform->addElement('advcheckbox', 'list_distribute_now', get_string('list_distribute_now', 'mod_vocabcoach'), '', null, array(false, true));
+            $mform->addElement('advcheckbox', 'list_distribute_now',
+                    get_string('list_distribute_now', 'mod_vocabcoach'), '', null, [false, true]);
             $mform->addHelpButton('list_distribute_now', 'list_distribute_now', 'mod_vocabcoach');
             $mform->setDefault('list_distribute_now', 1);
         }
@@ -79,17 +82,18 @@ class add_vocab_form extends moodleform {
         $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));
 
         if ($mode === 'edit') {
-            $text = get_string('add_vocab_info_lines', 'mod_vocabcoach').' '.get_string('edit_vocab_instructions', 'mod_vocabcoach');
+            $text = get_string('add_vocab_info_lines', 'mod_vocabcoach').
+                    ' '.get_string('edit_vocab_instructions', 'mod_vocabcoach');
             $mform->addElement('static', 'info_lines', '', $text);
         } else {
             $mform->addElement('static', 'info_lines', '', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
         }
 
-        $vocabrow = array();
+        $vocabrow = [];
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
         $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="Englisch"');
         $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="Deutsch"');
-        if ($third_active) {
+        if ($usesthird) {
             $vocabrow[] =& $mform->createElement('text', 'third[]', '', 'placeholder="Zusatzinformation"');
         } else {
             $vocabrow[] =& $mform->createElement('hidden', 'third[]', '');
@@ -106,33 +110,34 @@ class add_vocab_form extends moodleform {
         $mform->setType('back[]', PARAM_TEXT);
         $mform->setType('third[]', PARAM_TEXT);
 
-
         $this->add_action_buttons();
     }
 
-    //Custom validation should be added here
-    function validation($data, $files) {
-        return array();
+    public function validation($data, $files): array {
+        return [];
     }
 
-private string $instructions = ' 
- <style>.vocabcoach-instructions li {
-    margin-bottom: 7px;
- }
- .vocabcoach-instructions {
-    list-style-type: square;
-    margin-bottom: 20px;
- }
- </style>
- <div class="pl-5 pr-3"><p>Beachte folgende Hinweise, wenn du neue Vokabeln eintippst, damit alle ähnliche Form haben. Wenn du weitere Vorschläge hast, lass es mich jederzeit wissen.</p>
-<ul class="vocabcoach-instructions">
-    <li><b>Verben:</b> im Englischen mit <i>to</i> einleiten (ohne Klammern etc.): <i>to go - gehen.</i></li>
-    <li><b>Abkürzungen:</b> Normalerweise wie im Schulbuch verwenden, z. B. nicht <s>somebody</s> oder <s>sbd</s>, sondern <i>sb.</i> (mit Punkt). Hier eine Liste gängiger Abkürzungen: <br />
-    Englisch: <i>sb. - sth. </i><br />
-    Deutsch: <i>etw. - jmd.</i> (für jemandem, jemanden, jemand)
-    </li>
-    <li><b>Klammern vermeiden:</b> Präpositionen etc. einfach ohne Klammern übernehmen, im Deutschen wie im Englischen: <i>fear of - Angst vor</i>.</li>
-</ul>
-</div>
-';
+    private string $instructions = '
+     <style>.vocabcoach-instructions li {
+        margin-bottom: 7px;
+     }
+     .vocabcoach-instructions {
+        list-style-type: square;
+        margin-bottom: 20px;
+     }
+     </style>
+     <div class="pl-5 pr-3"><p>Beachte folgende Hinweise, wenn du neue Vokabeln eintippst, damit alle ähnliche Form haben.
+     Wenn du weitere Vorschläge hast, lass es mich jederzeit wissen.</p>
+    <ul class="vocabcoach-instructions">
+        <li><b>Verben:</b> im Englischen mit <i>to</i> einleiten (ohne Klammern etc.): <i>to go - gehen.</i></li>
+        <li><b>Abkürzungen:</b> Normalerweise wie im Schulbuch verwenden,
+        z. B. nicht <s>somebody</s> oder <s>sbd</s>, sondern <i>sb.</i> (mit Punkt). Hier eine Liste gängiger Abkürzungen: <br />
+        Englisch: <i>sb. - sth. </i><br />
+        Deutsch: <i>etw. - jmd.</i> (für jemandem, jemanden, jemand)
+        </li>
+        <li><b>Klammern vermeiden:</b> Präpositionen etc. einfach ohne Klammern übernehmen,
+        im Deutschen wie im Englischen: <i>fear of - Angst vor</i>.</li>
+    </ul>
+    </div>
+    ';
 }

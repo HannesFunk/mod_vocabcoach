@@ -62,15 +62,15 @@ $boxmanager = new box_manager($id, $USER->id);
 $boxdata = $boxmanager->get_box_details();
 
 $al = new activity_tracker($USER->id, $id);
-$al->log($al->types_daily['ACT_LOGGED_IN']);
+$al->log($al->typesdaily['ACT_LOGGED_IN']);
 if ($al->is_all_done($boxdata)) {
-    $al->log($al->types_daily['ACT_CHECKED_ALL']);
+    $al->log($al->typesdaily['ACT_CHECKED_ALL']);
 }
 
 $templatecontext = [
     'boxdata' => $boxdata,
-    'days_logged_in' => $al->get_continuous_days($al->types_daily['ACT_LOGGED_IN']),
-    'days_checked_all' => $al->get_continuous_days($al->types_daily['ACT_CHECKED_ALL']),
+    'days_logged_in' => $al->get_continuous_days($al->typesdaily['ACT_LOGGED_IN']),
+    'days_checked_all' => $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']),
 ];
 
 $cf = new \mod_vocabcoach\course_features($course->id, $id, $USER->id);

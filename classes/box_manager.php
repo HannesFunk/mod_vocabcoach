@@ -22,10 +22,10 @@
  */
 
 namespace mod_vocabcoach;
-
 use vocabhelper;
 
-require ('vocabhelper.php');
+defined('MOODLE_INTERNAL') || die();
+require('vocabhelper.php');
 
 class box_manager {
     private vocabhelper $vocabhelper;
@@ -40,39 +40,42 @@ class box_manager {
     public function get_box_details() : array {
         global $DB;
 
-        $output = array();
-        for ($i=1; $i<=$this->vocabhelper->BOX_NUMBER; $i++) {
+        $output = [];
+        for ($i = 1; $i <= $this->vocabhelper->boxnumber; $i++) {
             try {
-                $total = $DB->count_records_select('vocabcoach_vocabdata', 'userid = ? AND cmid = ? AND stage = ?', [$this->userid, $this->cmid, $i]);
+                $total = $DB->count_records_select('vocabcoach_vocabdata', 'userid = ? AND cmid = ? AND stage = ?',
+                    [$this->userid, $this->cmid, $i]);
 
-                $min_days_since_check = $this->vocabhelper->BOXES_TIMES[$i];
+                $mindayssincecheck = $this->vocabhelper->boxtimes[$i];
                 $due = $DB->count_records_select('vocabcoach_vocabdata',
-                    'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?', [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($min_days_since_check)]);
+                    'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?',
+                    [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($mindayssincecheck)]);
             } catch (\dml_exception $e) {
                 die ($e->getMessage());
             }
 
             if ($due === 0) {
-                $query = "SELECT MIN(vd.lastchecked) AS recent 
+                $query = "SELECT MIN(vd.lastchecked) AS recent
                             FROM {vocabcoach_vocabdata} vd
                             WHERE userid = {$this->userid} AND cmid = {$this->cmid} AND stage = {$i}
                             ";
                 try {
                     $record = $DB->get_record_sql($query);
-                    $next_due = $this->vocabhelper->compute_due_time_string($record->recent, $this->vocabhelper->BOXES_TIMES[$i]);
-                } catch (\dml_exception) {
-                    $next_due = '-';
+                    $nextdue = $this->vocabhelper->compute_due_time_string($record->recent, $this->vocabhelper->boxtimes[$i]);
+                } catch (\dml_exception $e) {
+                    $nextdue = '-';
                 }
             } else {
-                $next_due = 'Jetzt';
+                $nextdue = 'Jetzt';
             }
 
             $output[] = [
-                'stage'=>$i,
-                'due'=>$due,
-                'total'=>$total,
+                'stage' => $i,
+                'due' => $due,
+                'total' => $total,
                 'inactive' => $due == 0,
-                'next_due' => $next_due];
+                'next_due' => $nextdue,
+            ];
         }
         return $output;
     }

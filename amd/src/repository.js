@@ -43,7 +43,7 @@ export const getListsAJAX = (
     args: {
         'cmid': cmid,
         'userid': userid,
-        'onlyOwnLists': onlyOwnLists
+        'onlyownlists': onlyOwnLists
     },
 }])[0];
 

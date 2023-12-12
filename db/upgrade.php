@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Make DB upgradees.
+ * Make DB upgrades.
  *
  * @package   mod_vocabcoach
  * @copyright 2023 onwards, Johannes Funk

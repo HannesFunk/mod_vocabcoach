@@ -29,6 +29,18 @@ require_once(__DIR__.'/classes/external/check_vocab_api.php');
 require_once(__DIR__.'/classes/forms/view_list_form.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
 
+if (!function_exists('str_contains')) {
+    /**
+     * Replaces the str_contains - function (if not present).
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    function str_contains(string $haystack, string $needle): bool {
+        return '' === $needle || false !== strpos($haystack, $needle);
+    }
+}
+
 $id = required_param('id', PARAM_INT);
 $userid = $USER->id;
 $listid = required_param('listid', PARAM_INT);

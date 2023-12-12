@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once('../../../lib/tcpdf/tcpdf.php');
 require(__DIR__ . '/../../../config.php');
+require_login();
 
 /**
  * _pdf class. Creates a PDF

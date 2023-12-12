@@ -81,7 +81,7 @@ class manage_lists_api extends external_api {
      * @return array|null
      * @throws invalid_parameter_exception
      */
-    public static function get_lists(int $cmid, int $userid, bool $onlyownlists = false) : array|null {
+    public static function get_lists(int $cmid, int $userid, bool $onlyownlists = false) : array {
 
         self::validate_parameters(self::get_lists_parameters(),
             ['cmid' => $cmid, 'userid' => $userid, 'onlyownlists' => $onlyownlists]);
@@ -106,7 +106,7 @@ class manage_lists_api extends external_api {
             }
             return array_values($output);
         } catch (\dml_exception $e) {
-            return null;
+            return [];
         }
     }
 

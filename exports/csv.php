@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require(__DIR__ . '/../../../config.php');
+require_login();
 require("../classes/external/check_vocab_api.php");
 use mod_vocabcoach\external\check_vocab_api;
 

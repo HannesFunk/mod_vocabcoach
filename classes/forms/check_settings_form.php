@@ -14,19 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * The main mod_vocabcoach configuration form.
- *
- * @package     check_settings_form
- * @copyright   2023 J. Funk, johannesfunk@outlook.com
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
+/**
+ * Form to display settings during check.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class check_settings_form extends moodleform {
+    /**
+     * Defines the form.
+     * @return void
+     */
     public function definition() : void {
         $mform = $this->_form;
         $mform->disable_form_change_checker();
@@ -44,6 +48,10 @@ class check_settings_form extends moodleform {
         );
     }
 
+    /**
+     * Output HTML of the form.
+     * @return string
+     */
     public function to_html() : string {
         return $this->_form->toHtml();
     }

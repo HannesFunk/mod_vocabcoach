@@ -14,19 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * The main mod_vocabcoach configuration form.
- *
- * @package     mod_vocabcoach
- * @copyright   2023 J. Funk, johannesfunk@outlook.com
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
+/**
+ * Form to view a user box (and possibly delete elements).
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class view_box_form extends moodleform {
+    /**
+     * Defines the form.
+     * @return void
+     */
     public function definition(): void {
 
         $mform = $this->_form;
@@ -69,7 +73,13 @@ class view_box_form extends moodleform {
         $mform->addElement('html', '</tbody></table>');
     }
 
-    public function validation($data, $files) {
+    /**
+     * Validation of form data.
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function validation($data, $files) : array {
         return [];
     }
 }

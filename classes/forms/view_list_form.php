@@ -14,19 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * The main mod_vocabcoach configuration form.
- *
- * @package     mod_vocabcoach
- * @copyright   2023 J. Funk, johannesfunk@outlook.com
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
+/**
+ * Form to view a list (and possibly add elements to user box).
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class view_list_form extends moodleform {
+    /**
+     * Defines the form.
+     * @return void
+     */
     public function definition(): void {
 
         $mform = $this->_form;
@@ -73,7 +77,13 @@ class view_list_form extends moodleform {
         $this->add_action_buttons(true, "Zum eigenen Vokabelkasten hinzufügen");
     }
 
-    public function validation($data, $files) {
+    /**
+     * Validation of form data.
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function validation($data, $files): array {
         return [];
     }
 }

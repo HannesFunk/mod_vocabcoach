@@ -14,13 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-/**
- * @package     mod_vocabcoach
- * @author      J. Funk
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace mod_vocabcoach\external;
 
 defined('MOODLE_INTERNAL') || die();
@@ -33,20 +26,45 @@ use external_function_parameters;
 use external_value;
 use external_single_structure;
 
+/**
+ * Feedback API. Returns feedback strings.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class feedback_api extends external_api {
+    /**
+     * Returns description of get_feedback_line() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function get_feedback_line_parameters(): external_function_parameters {
         return new external_function_parameters([
                 'achievement' => new external_value(PARAM_INT),
         ]);
     }
 
+    /**
+     * Returns description of get_feedback_line() result value.
+     *
+     * @return external_single_structure
+     */
     public static function get_feedback_line_returns(): external_single_structure {
         return new external_single_structure([
                 'line' => new external_value(PARAM_TEXT, 'a message'),
         ]);
     }
 
-    public static function get_feedback_line($achievement): array {
+    /**
+     * Returns a display line for the user.
+     * @param int $achievement
+     * @return array
+     * @throws \dml_exception
+     * @throws \invalid_parameter_exception
+     */
+    public static function get_feedback_line(int $achievement): array {
         self::validate_parameters(self::get_feedback_line_parameters(), ['achievement' => $achievement]);
 
         global $DB;

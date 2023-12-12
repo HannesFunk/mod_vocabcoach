@@ -15,18 +15,29 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Prints an instance of mod_vocabcoach.
+ * Vocabhelper - several methods to deal with database-display interaction
  *
- * @package     mod_vocabcoach
- * @copyright   2023 J. Funk, johannesfunk@outlook.com
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
  */
-
 class vocabhelper {
+    /**
+     * @var int $boxnumber Number of boxes.
+     */
     public int $boxnumber = 5;
+    /**
+     * @var array|int[] $boxtimes Times (in days) after vocab in a box is revisited.
+     */
     public array $boxtimes = [0, 1, 2, 5, 10, 30];
 
-    public function __construct($cmid) {
+    /**
+     * Construct the class.
+     * @param int $cmid
+     * @throws dml_exception
+     */
+    public function __construct(int $cmid) {
         global $DB;
         $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
         $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
@@ -35,17 +46,23 @@ class vocabhelper {
         }
     }
 
-    public function old_timestamp($daysago) : int {
+    /**
+     * Returns a timestamp
+     * @param int $daysago Number of days before now
+     * @return int
+     */
+    public function old_timestamp(int $daysago) : int {
         $now = time();
         return $now - ($daysago - 0.5) * 60 * 60 * 24;
     }
 
     /**
-     * @param $lastchecked
-     * @param $boxtime
+     * Returns a string when the vocab is due next
+     * @param int $lastchecked
+     * @param int $boxtime
      * @return string
      */
-    public function compute_due_time_string ($lastchecked, $boxtime) : string {
+    public function compute_due_time_string ($lastchecked, int $boxtime) : string {
         if ($lastchecked === null) {
             return '-';
         }
@@ -60,7 +77,11 @@ class vocabhelper {
         }
     }
 
-    public function get_sql_box_conditions() {
+    /**
+     * Return SQL conditions for vocabs to be due in a box.
+     * @return string
+     */
+    public function get_sql_box_conditions() : string {
         $boxconditions = "";
         for ($i = 1; $i <= $this->boxnumber; $i++) {
             if ($i != 1) {

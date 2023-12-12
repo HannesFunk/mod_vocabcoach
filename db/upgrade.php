@@ -14,7 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-function xmldb_vocabcoach_upgrade($oldversion): bool {
+/**
+ * Make DB upgradees.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
+
+/**
+ * Make Database upgrades.
+ * @param int $oldversion
+ * @return bool
+ * @throws ddl_exception
+ * @throws ddl_table_missing_exception
+ * @throws downgrade_exception
+ * @throws moodle_exception
+ * @throws upgrade_exception
+ */
+function xmldb_vocabcoach_upgrade(int $oldversion): bool {
     global $DB;
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 

@@ -14,7 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Create CSV files.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
+
 defined('MOODLE_INTERNAL') || die();
+
 require(__DIR__ . '/../../../config.php');
 require("../classes/external/check_vocab_api.php");
 use mod_vocabcoach\external\check_vocab_api;

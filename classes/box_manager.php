@@ -14,16 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-/**
- * Manages the vocab boxes for a user.
- *
- * @package     mod_vocabcoach
- * @author      J. Funk
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @copyright   Johannes Funk
- */
-
 namespace mod_vocabcoach;
 use vocabhelper;
 
@@ -31,7 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 require('vocabhelper.php');
 
 /**
- * Box manager class
+ * Box manager class. Manages the vocab boxes for a user.
  *
  * @package   mod_vocabcoach
  * @copyright 2023 onwards, Johannes Funk
@@ -44,10 +34,8 @@ class box_manager {
      */
     private vocabhelper $vocabhelper;
     /**
-     * @var int cmid Course Module id
-     */
-    /**
-     * @var int userid  User id
+     * @var int $cmid Course Module ID
+     * @var int $userid  User ID
      */
     private int $cmid, $userid;
 
@@ -63,9 +51,7 @@ class box_manager {
     }
 
     /**
-     *
      * Returns an array to display all the information used on the first page
-     *
      * @return array
      */
     public function get_box_details() : array {

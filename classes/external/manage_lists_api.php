@@ -27,9 +27,23 @@ use external_value;
 use external_multiple_structure;
 use external_single_structure;
 use dml_exception;
+use invalid_parameter_exception;
 use stdClass;
 
+/**
+ * Manage-lists-API: manages lists.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class manage_lists_api extends external_api {
+    /**
+     * Returns description of get_lists() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function get_lists_parameters() : external_function_parameters {
         return new external_function_parameters([
             'cmid' => new external_value(PARAM_INT, VALUE_OPTIONAL),
@@ -38,6 +52,11 @@ class manage_lists_api extends external_api {
         ]);
     }
 
+    /**
+     * Returns description of get_lists() result value.
+     *
+     * @return external_multiple_structure
+     */
     public static function get_lists_returns() : external_multiple_structure {
         return new external_multiple_structure(
             new external_single_structure([
@@ -54,7 +73,15 @@ class manage_lists_api extends external_api {
         );
     }
 
-    public static function get_lists($cmid, $userid, $onlyownlists = false) : array|null {
+    /**
+     * Returns all lists in a course module.
+     * @param int $cmid
+     * @param int $userid
+     * @param bool $onlyownlists
+     * @return array|null
+     * @throws invalid_parameter_exception
+     */
+    public static function get_lists(int $cmid, int $userid, bool $onlyownlists = false) : array|null {
 
         self::validate_parameters(self::get_lists_parameters(),
             ['cmid' => $cmid, 'userid' => $userid, 'onlyownlists' => $onlyownlists]);
@@ -83,20 +110,35 @@ class manage_lists_api extends external_api {
         }
     }
 
+    /**
+     * Returns description of delete_list() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function delete_list_parameters() : external_function_parameters {
         return new external_function_parameters([
             'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
         ]);
     }
 
-
+    /**
+     * Returns description of delete_list() result value.
+     *
+     * @return external_single_structure
+     */
     public static function delete_list_returns() : external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
     }
 
-    public static function delete_list($listid) : array {
+    /**
+     * Deletes a list
+     * @param int $listid
+     * @return false[]|true[]
+     * @throws invalid_parameter_exception
+     */
+    public static function delete_list(int $listid) : array {
         self::validate_parameters(self::delete_list_parameters(), ['listid' => $listid]);
 
         global $DB;
@@ -110,6 +152,11 @@ class manage_lists_api extends external_api {
         return ['success' => true];
     }
 
+    /**
+     * Returns description of add_list_to_user() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function add_list_to_user_parameters() : external_function_parameters {
         return new external_function_parameters([
             'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
@@ -118,7 +165,15 @@ class manage_lists_api extends external_api {
         ]);
     }
 
-    public static function add_list_to_user($listid, $userid, $cmid) : array {
+    /**
+     * Adds vocabs from one list to user boxes.
+     * @param int $listid
+     * @param int $userid
+     * @param int $cmid
+     * @return false[]|true[]
+     * @throws invalid_parameter_exception
+     */
+    public static function add_list_to_user(int $listid, int $userid, int $cmid) : array {
         self::validate_parameters(self::add_list_to_user_parameters(), ['listid' => $listid, 'userid' => $userid, 'cmid' => $cmid]);
 
         global $DB;
@@ -149,12 +204,22 @@ class manage_lists_api extends external_api {
         }
     }
 
+    /**
+     * Returns description of add_list_to_user() result value.
+     *
+     * @return external_single_structure
+     */
     public static function add_list_to_user_returns() : external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
     }
 
+    /**
+     * Returns description of distribute_list() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function distribute_list_parameters() : external_function_parameters {
         return new external_function_parameters([
                 'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
@@ -162,7 +227,14 @@ class manage_lists_api extends external_api {
         ]);
     }
 
-    public static function distribute_list($listid, $cmid) : array {
+    /**
+     * Adds vocabs from a list to all user boxes in a course.
+     * @param int $listid
+     * @param int $cmid
+     * @return true[]
+     * @throws invalid_parameter_exception
+     */
+    public static function distribute_list(int $listid, int $cmid) : array {
         self::validate_parameters(self::distribute_list_parameters(), ['listid' => $listid, 'cmid' => $cmid]);
 
         $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
@@ -177,6 +249,11 @@ class manage_lists_api extends external_api {
         return ['success' => true];
     }
 
+    /**
+     * Returns description of distribute_list() result value.
+     *
+     * @return external_single_structure
+     */
     public static function distribute_list_returns() : external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),

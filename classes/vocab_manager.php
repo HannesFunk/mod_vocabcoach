@@ -14,29 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-/**
- * @package     mod_vocabcoach
- * @author      J. Funk
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace mod_vocabcoach;
 
 use dml_exception;
 use stdClass;
 
+/**
+ * Vocab-Manager. Manages database-user interactions.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class vocab_manager {
+    /**
+     * @var int $userid
+     */
     private int $userid;
 
-    public function __construct($userid) {
+    /**
+     * Construct the class.
+     * @param int $userid
+     */
+    public function __construct(int $userid) {
         $this->userid = $userid;
     }
 
     /**
+     * Inserts a new vocab item into the database.
+     *
+     * @param object $vocab a vocab item.
      * @throws dml_exception
      */
-    public function insert_vocab($vocab) : int {
+    public function insert_vocab(object $vocab) : int {
         if ($this->does_vocab_exist($vocab)) {
             return $this->determine_id($vocab);
         } else {
@@ -45,6 +56,11 @@ class vocab_manager {
         }
     }
 
+    /**
+     * Checks whether a given vocab already exists in the database.
+     * @param object $vocab
+     * @return bool
+     */
     private function does_vocab_exist(object $vocab) : bool {
         global $DB;
         $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
@@ -60,7 +76,12 @@ class vocab_manager {
         }
     }
 
-    public function create_record ($vocab) : int {
+    /**
+     * Creates a new vocab item.
+     * @param object $vocab
+     * @return int The ID of the created element.
+     */
+    public function create_record (object $vocab) : int {
         global $DB;
 
         try {
@@ -71,9 +92,12 @@ class vocab_manager {
     }
 
     /**
+     * Find the ID of a given vocab.
+     * @param object $vocab
+     * @return int
      * @throws dml_exception
      */
-    private function determine_id($vocab) : int {
+    private function determine_id(object $vocab) : int {
         global $DB;
 
         $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
@@ -86,7 +110,11 @@ class vocab_manager {
     }
 
     /**
+     * Adds a vocab item to user database.
+     * @param int $vocabid
+     * @param int $cmid
      * @throws dml_exception
+     * @return bool
      */
     public function add_vocab_to_user(int $vocabid, int $cmid) : bool {
         global $DB;
@@ -111,7 +139,12 @@ class vocab_manager {
         }
     }
 
-    public function add_list(array $listinfo) :int {
+    /**
+     * Creates a new list.
+     * @param array $listinfo
+     * @return int
+     */
+    public function add_list(array $listinfo) : int {
         global $DB;
 
         try {
@@ -121,6 +154,12 @@ class vocab_manager {
         }
     }
 
+    /**
+     * Adds a vocab item to a lsit.
+     * @param int $vocabid
+     * @param int $listid
+     * @return bool
+     */
     public function add_vocab_to_list (int $vocabid, int $listid) : bool {
         global $DB;
         $conditions = [
@@ -139,6 +178,12 @@ class vocab_manager {
         return true;
     }
 
+    /**
+     * Removes a vocab item from a list.
+     * @param int $vocabid
+     * @param int $listid
+     * @return bool
+     */
     public function remove_vocab_from_list (int $vocabid, int $listid) : bool {
         global $DB;
 
@@ -150,6 +195,12 @@ class vocab_manager {
         return true;
     }
 
+    /**
+     * Adds an entire list to a user box.
+     * @param int $listid
+     * @param int $cmid
+     * @return bool
+     */
     public function add_list_to_user_database (int $listid, int $cmid) : bool {
         global $DB;
 
@@ -180,7 +231,14 @@ class vocab_manager {
         return true;
     }
 
-    public function edit_list($listid, $vocabarray) :void {
+    /**
+     * Updates information for a list.
+     * @param int $listid
+     * @param array $vocabarray
+     * @return void
+     * @throws dml_exception
+     */
+    public function edit_list(int $listid, array $vocabarray) :void {
         global $DB;
 
         foreach ($vocabarray as $vocab) {
@@ -194,7 +252,14 @@ class vocab_manager {
         }
     }
 
-    public function user_owns_list ($userid, $listid) : bool {
+    /**
+     * Checks whether the current user is owner of a list.
+     * @param int $userid
+     * @param int $listid
+     * @return bool
+     * @throws dml_exception
+     */
+    public function user_owns_list (int $userid, int $listid) : bool {
         global $DB;
         $record = $DB->get_record('vocabcoach_lists', ['id' => $listid], 'createdby');
         return $record->createdby == $userid;

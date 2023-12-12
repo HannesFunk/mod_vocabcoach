@@ -14,22 +14,42 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_vocabcoach;
 
 /**
- * @package     mod_vocabcoach
- * @author      J. Funk
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Course Features. Provides information across users from the same course.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
  */
-
-namespace mod_vocabcoach;
 class course_features {
-    public function __construct($courseid, $cmid, $userid) {
+    /**
+     * @var int $courseid Course ID
+     * @var int $cmid Course Module ID
+     * @var int $userid  User ID
+     */
+    private int $courseid, $cmid, $userid;
+
+    /**
+     * Construct the class.
+     * @param int $courseid Course ID
+     * @param int $cmid Course module id
+     * @param int $userid User id
+     */
+    public function __construct(int $courseid, int $cmid, int $userid) {
         $this->courseid = $courseid;
         $this->cmid = $cmid;
         $this->userid = $userid;
     }
 
-    public function get_leaderboard() {
+    /**
+     * Returns the leaderboard.
+     * @return array the list of the first three leaders and the user.
+     * @throws \dml_exception
+     */
+    public function get_leaderboard() : array {
         global $DB;
         $vh = new \vocabhelper($this->cmid);
         $boxconditions = $vh->get_sql_box_conditions();

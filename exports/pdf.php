@@ -14,13 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Create PDF files.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once('../../../lib/tcpdf/tcpdf.php');
 require(__DIR__ . '/../../../config.php');
 
+/**
+ * _pdf class. Creates a PDF
+ */
 class _pdf extends TCPDF {
-    public function colored_table($header, $data, $usesthird) {
+    /**
+     * Include a coloured table
+     * @param array $headers
+     * @param array $data
+     * @param bool $usesthird
+     * @return void
+     */
+    public function colored_table(array $headers, array $data, bool $usesthird) : void {
         // Colors, line width and bold font.
         $this->SetFillColor(15, 108, 191);
         $this->SetTextColor(255);
@@ -33,8 +52,8 @@ class _pdf extends TCPDF {
         } else {
             $w = [80, 80];
         }
-        for ($i = 0; $i < count($header); ++$i) {
-            $this->Cell($w[$i], 7, $header[$i], false, 0, 'L', 1);
+        for ($i = 0; $i < count($headers); ++$i) {
+            $this->Cell($w[$i], 7, $headers[$i], false, 0, 'L', 1);
         }
         $this->Ln();
         // Color and font restoration.
@@ -101,9 +120,9 @@ $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], 'thirdact
 $usesthird = $instanceinfo->thirdactive == 1;
 
 if ($usesthird) {
-    $tableheader = ['Englisch', 'Deutsch', ''];
+    $tableheaders = ['Englisch', 'Deutsch', ''];
 } else {
-    $tableheader = ['Englisch', 'Deutsch'];
+    $tableheaders = ['Englisch', 'Deutsch'];
 }
 
 if (isset($_GET['listid'])) {
@@ -116,5 +135,5 @@ if (isset($_GET['listid'])) {
     $data = null;
 }
 
-$pdf->colored_table($tableheader, $data, $usesthird);
+$pdf->colored_table($tableheaders, $data, $usesthird);
 $pdf->Output('vokabelliste.pdf');

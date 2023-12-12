@@ -29,7 +29,21 @@ use external_single_structure;
 use external_multiple_structure;
 use vocabhelper;
 
+/**
+ * Check-Vocab-API. Manages all interactions with the vocab database.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class check_vocab_api extends external_api {
+    /**
+     * Returns description of update_vocab() parameters.
+     *
+     * @return external_function_parameters
+     * @since  Moodle 3.4
+     */
     public static function update_vocab_parameters() : external_function_parameters {
         return new external_function_parameters([
             'dataid' => new external_value(PARAM_INT),
@@ -38,6 +52,11 @@ class check_vocab_api extends external_api {
         ]);
     }
 
+    /**
+     * Returns description of update_vocab() result value.
+     *
+     * @return external_single_structure
+     */
     public static function update_vocab_returns() : external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'whether the update was successful.'),
@@ -45,7 +64,15 @@ class check_vocab_api extends external_api {
         ]);
     }
 
-    public static function update_vocab($dataid, $userid, $known) : array {
+    /**
+     * Updates a given vocab item. Called after a check.
+     * @param int $dataid ID of the vocabdata.
+     * @param int $userid User ID
+     * @param bool $known
+     * @return array
+     * @throws \invalid_parameter_exception
+     */
+    public static function update_vocab(int $dataid, int $userid, bool $known) : array {
         global $DB;
 
         self::validate_parameters(self::update_vocab_parameters(), ['dataid' => $dataid, 'userid' => $userid, 'known' => $known]);
@@ -64,6 +91,11 @@ class check_vocab_api extends external_api {
         return ['success' => true, 'message' => 'That worked.'];
     }
 
+    /**
+     * Returns description of get_user_vocabs() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function get_user_vocabs_parameters() : external_function_parameters {
         return new external_function_parameters([
             'userid' => new external_value(PARAM_INT, VALUE_REQUIRED),
@@ -73,11 +105,25 @@ class check_vocab_api extends external_api {
         ]);
     }
 
+    /**
+     * Returns description of get_user_vocabs() result value.
+     *
+     * @return external_multiple_structure
+     */
     public static function get_user_vocabs_returns() : external_multiple_structure {
         return self::vocab_returns();
     }
 
-    public static function get_user_vocabs($userid, $cmid, $stage, $force) : array {
+    /**
+     * Returns all vocab items in a certain stage
+     * @param int $userid
+     * @param int $cmid
+     * @param int $stage
+     * @param bool $force
+     * @return array
+     * @throws \invalid_parameter_exception
+     */
+    public static function get_user_vocabs(int $userid, int $cmid, int $stage, bool $force) : array {
         global $DB;
         self::validate_parameters(self::get_user_vocabs_parameters(),
             ['userid' => $userid, 'cmid' => $cmid, 'stage' => $stage, 'force' => $force]);
@@ -104,16 +150,30 @@ class check_vocab_api extends external_api {
         return array_values($output);
     }
 
+    /**
+     * Returns description of get_list_vocabs() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function get_list_vocabs_parameters() : external_function_parameters {
         return new external_function_parameters([
             'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
         ]);
     }
-
+    /**
+     * Returns description of get_list_vocabs() result value.
+     *
+     * @return external_multiple_structure
+     */
     public static function get_list_vocabs_returns() : external_multiple_structure {
         return self::vocab_returns();
     }
 
+    /**
+     * Returns description of vocab_returns() result value.
+     *
+     * @return external_multiple_structure
+     */
     public static function vocab_returns() : external_multiple_structure {
         return new external_multiple_structure(
             new external_single_structure([
@@ -125,6 +185,12 @@ class check_vocab_api extends external_api {
         );
     }
 
+    /**
+     * Returns all vocab items on a list.
+     * @param int $listid
+     * @return array
+     * @throws \invalid_parameter_exception
+     */
     public static function get_list_vocabs(int $listid) : array {
         self::validate_parameters(self::get_list_vocabs_parameters(), ['listid' => $listid]);
 
@@ -141,6 +207,11 @@ class check_vocab_api extends external_api {
         }
     }
 
+    /**
+     * Returns description of log_checked_vocabs_vocabs() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function log_checked_vocabs_parameters() : external_function_parameters {
         return new external_function_parameters([
                 'cmid' => new external_value(PARAM_INT),
@@ -149,6 +220,11 @@ class check_vocab_api extends external_api {
         ]);
     }
 
+    /**
+     * Returns description of log_checked_vocabs() result value.
+     *
+     * @return external_single_structure
+     */
     public static function log_checked_vocabs_returns() : external_single_structure {
         return new external_single_structure([
                 'success' => new external_value(PARAM_BOOL, 'whether the update was successful.'),
@@ -156,7 +232,15 @@ class check_vocab_api extends external_api {
         ]);
     }
 
-    public static function log_checked_vocabs(int $cmid, int $userid, $details) :array {
+    /**
+     * logs the number of checked vocab items.
+     * @param int $cmid
+     * @param int $userid
+     * @param string $details
+     * @return array
+     * @throws \invalid_parameter_exception
+     */
+    public static function log_checked_vocabs(int $cmid, int $userid, string $details) :array {
         self::validate_parameters(self::log_checked_vocabs_parameters(),
                 ['cmid' => $cmid, 'userid' => $userid, 'details' => $details]);
 
@@ -166,12 +250,22 @@ class check_vocab_api extends external_api {
         return ['success' => true, 'message' => 'Logged successfully.'];
     }
 
+    /**
+     * Returns description of remove_vocab_from_user() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function remove_vocab_from_user_parameters() : external_function_parameters {
         return new external_function_parameters([
                 'dataid' => new external_value(PARAM_INT),
         ]);
     }
 
+    /**
+     * Returns description of remove_vocab_from_user() result value.
+     *
+     * @return external_single_structure
+     */
     public static function remove_vocab_from_user_returns() : external_single_structure {
         return new external_single_structure([
                 'success' => new external_value(PARAM_BOOL, 'whether the removal was successful.'),
@@ -179,6 +273,13 @@ class check_vocab_api extends external_api {
         ]);
     }
 
+    /**
+     * Removes one vocab item from a user box.
+     * @param int $dataid
+     * @return array
+     * @throws \dml_exception
+     * @throws \invalid_parameter_exception
+     */
     public static function remove_vocab_from_user(int $dataid) :array {
         self::validate_parameters(self::remove_vocab_from_user_parameters(),
                 ['dataid' => $dataid]);
@@ -191,6 +292,11 @@ class check_vocab_api extends external_api {
 
     }
 
+    /**
+     * Returns description of get_class_total() parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function get_class_total_parameters() : external_function_parameters {
         return new external_function_parameters([
                 'cmid' => new external_value(PARAM_INT),
@@ -198,6 +304,11 @@ class check_vocab_api extends external_api {
         ]);
     }
 
+    /**
+     * Returns description of get_class_total() result value.
+     *
+     * @return external_single_structure
+     */
     public static function get_class_total_returns() : external_single_structure {
         return new external_single_structure([
                 'success' => new external_value(PARAM_BOOL, 'whether the removal was successful.'),
@@ -206,6 +317,13 @@ class check_vocab_api extends external_api {
         ]);
     }
 
+    /**
+     * Return the total number of vocab waiting for revision in a course.
+     * @param int $cmid
+     * @param int $courseid
+     * @return array
+     * @throws \invalid_parameter_exception
+     */
     public static function get_class_total(int $cmid, int $courseid) :array {
         self::validate_parameters(self::get_class_total_parameters(),
                 ['cmid' => $cmid, 'courseid' => $courseid]);
@@ -216,6 +334,13 @@ class check_vocab_api extends external_api {
         return ['success' => true, 'message' => 'Removed successfully.', 'total' => $total];
     }
 
+    /**
+     * Returns the number of vocab items that are due
+     * @param int $cmid
+     * @param string $useridlist
+     * @return int
+     * @throws \dml_exception
+     */
     private static function get_due_count (int $cmid, string $useridlist) : int {
         global $DB;
         $vocabhelper = new vocabhelper($cmid);

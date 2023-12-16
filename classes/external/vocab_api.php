@@ -116,12 +116,13 @@ class vocab_api extends external_api {
 
     /**
      * Returns all vocab items in a certain stage
+     *
      * @param int $userid
      * @param int $cmid
      * @param int $stage
      * @param bool $force
      * @return array
-     * @throws \invalid_parameter_exception
+     * @throws \invalid_parameter_exception|\dml_exception
      */
     public static function get_user_vocabs(int $userid, int $cmid, int $stage, bool $force) : array {
         global $DB;
@@ -319,10 +320,11 @@ class vocab_api extends external_api {
 
     /**
      * Return the total number of vocab waiting for revision in a course.
+     *
      * @param int $cmid
      * @param int $courseid
      * @return array
-     * @throws \invalid_parameter_exception
+     * @throws \invalid_parameter_exception|\dml_exception
      */
     public static function get_class_total(int $cmid, int $courseid) :array {
         self::validate_parameters(self::get_class_total_parameters(),

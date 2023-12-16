@@ -84,8 +84,7 @@ export function printLists(capInfo, onlyOwnLists = false) {
                 list.editable = capInfo.canEdit || list.createdby === userId;
                 list.distributable = capInfo.canDistribute;
             });
-            let json = {'lists': res, 'loading': false, 'cmid': cmid, 'onlyOwnLists': onlyOwnLists};
-            return json;
+            return {'lists': res, 'loading': false, 'cmid': cmid, 'onlyOwnLists': onlyOwnLists};
         }
     ).then(
         (json) => { return Template.renderForPromise('mod_vocabcoach/lists', json); }

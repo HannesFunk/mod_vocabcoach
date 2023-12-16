@@ -50,7 +50,7 @@ $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 $source = optional_param('source', 'user', PARAM_TEXT);
 
-$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
+$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance]);
 
 $jsdata = [
     'userid' => $USER->id,

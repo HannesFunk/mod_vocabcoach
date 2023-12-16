@@ -59,7 +59,7 @@ class _pdf extends TCPDF {
         $this->Ln();
         // Color and font restoration.
         $this->SetFillColor(224, 235, 255);
-        $this->SetTextColor(0);
+        $this->SetTextColor();
         $this->SetFont('');
         $this->setCellPadding(2);
 

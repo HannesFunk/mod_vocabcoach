@@ -65,7 +65,7 @@ $PAGE->set_heading(get_string('add_vocab_title', 'mod_vocabcoach'));
 $PAGE->requires->js_call_amd('mod_vocabcoach/add_vocab', 'init', [$editlistid ?? -1]);
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 
-$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
+$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance]);
 
 $formparameters = [
         'mode' => $mode,

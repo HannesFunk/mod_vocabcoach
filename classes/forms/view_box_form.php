@@ -55,7 +55,7 @@ class view_box_form extends moodleform {
             $vocabrow = [];
             $vocabrow[] =& $mform->createElement('html', '<tr>');
             $vocabitemhtml = '<td>'.$vocab->front.'</td><td>'.$vocab->back.'</td>';
-            if ($usesthird == true) {
+            if ($usesthird) {
                 $vocabitemhtml .= '<td>' . $vocab->third . '</td>';
             }
             $vocabitemhtml .= '<td><input type="button" class="btn btn-secondary mb-1" value="Aus meinem Kasten entfernen"

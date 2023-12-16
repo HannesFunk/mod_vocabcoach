@@ -59,7 +59,7 @@ class view_list_form extends moodleform {
             $vocabrow[] =& $mform->createElement('checkbox', 'vocab-'.$vocab->dataid);
             $vocabrow[] =& $mform->createElement('html', '</td>');
             $vocabitemhtml = '<td>'.$vocab->front.'</td><td>'.$vocab->back.'</td>';
-            if ($usesthird == true) {
+            if ($usesthird) {
                 $vocabitemhtml .= '<td>' . $vocab->third . '</td>';
             }
             $vocabrow[] =& $mform->createElement('html', $vocabitemhtml.'</tr>');

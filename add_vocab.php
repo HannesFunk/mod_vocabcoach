@@ -171,7 +171,7 @@ if ($mform->is_cancelled()) {
 
     // Step 4: If selected, distribute the list to all users.
     if (isset($formdata->list_distribute_now) && $formdata->list_distribute_now == 1) {
-        $listsapi = new \mod_vocabcoach\external\manage_lists_api();
+        $listsapi = new \mod_vocabcoach\external\lists_api();
         $listsapi->distribute_list($listid, $id);
     }
 

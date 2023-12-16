@@ -41,8 +41,10 @@ class box_manager {
 
     /**
      * Construct the class.
+     *
      * @param int $cmid Course module id
      * @param int $userid User id
+     * @throws \dml_exception
      */
     public function __construct(int $cmid, int $userid) {
         $this->vocabhelper = new vocabhelper($cmid);

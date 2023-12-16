@@ -38,7 +38,7 @@ use stdClass;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author    Johannes Funk
  */
-class manage_lists_api extends external_api {
+class lists_api extends external_api {
     /**
      * Returns description of get_lists() parameters.
      *
@@ -78,7 +78,7 @@ class manage_lists_api extends external_api {
      * @param int $cmid
      * @param int $userid
      * @param bool $onlyownlists
-     * @return array|null
+     * @return array
      * @throws invalid_parameter_exception
      */
     public static function get_lists(int $cmid, int $userid, bool $onlyownlists = false) : array {

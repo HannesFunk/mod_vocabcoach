@@ -37,7 +37,7 @@ use vocabhelper;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author    Johannes Funk
  */
-class check_vocab_api extends external_api {
+class vocab_api extends external_api {
     /**
      * Returns description of update_vocab() parameters.
      *

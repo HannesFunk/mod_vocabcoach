@@ -127,10 +127,10 @@ if ($usesthird) {
 }
 
 if (isset($_GET['listid'])) {
-    $checkapi = new \mod_vocabcoach\external\check_vocab_api();
+    $checkapi = new \mod_vocabcoach\external\vocab_api();
     $data = $checkapi->get_list_vocabs($_GET['listid']);
 } else if (isset($_GET['userid'])) {
-    $checkapi = new \mod_vocabcoach\external\check_vocab_api();
+    $checkapi = new \mod_vocabcoach\external\vocab_api();
     $data = $checkapi->get_user_vocabs($_GET['userid'], $_GET['cmid'], $_GET['stage'], true);
 } else {
     $data = null;

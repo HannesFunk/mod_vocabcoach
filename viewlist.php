@@ -25,7 +25,7 @@
 require(__DIR__.'/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__.'/lib.php');
-require_once(__DIR__.'/classes/external/check_vocab_api.php');
+require_once(__DIR__ . '/classes/external/vocab_api.php');
 require_once(__DIR__.'/classes/forms/view_list_form.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
 
@@ -61,7 +61,7 @@ $PAGE->set_heading('Vokabelcoach - Liste');
 $PAGE->navbar->add($listinfo->title);
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 
-$checkapi = new \mod_vocabcoach\external\check_vocab_api();
+$checkapi = new \mod_vocabcoach\external\vocab_api();
 $vocabarray = $checkapi->get_list_vocabs($listid);
 
 $mform = new view_list_form(null,

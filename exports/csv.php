@@ -27,15 +27,15 @@ defined('MOODLE_INTERNAL') || die();
 
 require(__DIR__ . '/../../../config.php');
 require_login();
-require("../classes/external/check_vocab_api.php");
-use mod_vocabcoach\external\check_vocab_api;
+require("../classes/external/vocab_api.php");
+use mod_vocabcoach\external\vocab_api;
 
 if (!isset($_GET['mode'])) {
     die ("Wrong parameters.");
 }
 
 if ($_GET['mode'] == 'list') {
-    $vocabapi = new check_vocab_api();
+    $vocabapi = new vocab_api();
     $vocabarray = $vocabapi->get_list_vocabs($_GET['listid']);
 } else {
     $vocabarray = [];

@@ -37,8 +37,8 @@ class check_settings_form extends moodleform {
 
         $modeoptions = [
             'type' => 'Englische Vokabeln tippen',
-            'back' => 'Nach Englisch fragen',
-            'front' => 'Nach Deutsch fragen',
+            'back' => 'Nach Vorderseite fragen',
+            'front' => 'Nach Rückseite fragen',
             'random' => 'Zufällig',
         ];
         $mform->addElement('select', 'mode',

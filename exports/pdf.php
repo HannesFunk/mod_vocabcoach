@@ -117,13 +117,14 @@ $pdf->AddPage();
 
 $cmid = required_param('cmid', PARAM_INT);
 $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
-$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], 'thirdactive');
+$instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
 $usesthird = $instanceinfo->thirdactive == 1;
+$desc_front = $instanceinfo->desc_front;
+$desc_back = $instanceinfo->desc_back;
 
+$tableheaders = [$desc_front, $desc_back];
 if ($usesthird) {
-    $tableheaders = ['Englisch', 'Deutsch', ''];
-} else {
-    $tableheaders = ['Englisch', 'Deutsch'];
+    $tableheaders[] = '';
 }
 
 if (isset($_GET['listid'])) {

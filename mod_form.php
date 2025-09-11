@@ -73,6 +73,13 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         }
         $mform->addElement('select', 'year', 'Jahrgangsstufe', $years);
 
+        $mform->addElement('text', 'desc_front', 'Vorderseite');
+        $mform->addElement('text', 'desc_back', 'Rückseite');
+        $mform->setType('desc_front', PARAM_TEXT);
+        $mform->setType('desc_back', PARAM_TEXT);
+        $mform->setDefault('desc_back', 'Deutsch');
+
+
         $mform->addElement('checkbox', 'third_active', get_string('third_active', 'vocabcoach'));
 
         $mform->addElement('header', 'boxtimes', get_string('boxtimes', 'mod_vocabcoach'));

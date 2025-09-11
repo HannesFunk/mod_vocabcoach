@@ -34,9 +34,13 @@ class add_vocab_form extends moodleform {
     public function definition() :void {
         $mform = $this->_form;
 
+
+
         $mode = $this->_customdata['mode'];
         $id = $this->_customdata['id'];
         $usesthird = $this->_customdata['third_active'] == true;
+        $desc_front = $this->_customdata['desc_front'];
+        $desc_back = $this->_customdata['desc_back'];
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
@@ -95,8 +99,8 @@ class add_vocab_form extends moodleform {
 
         $vocabrow = [];
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
-        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="Englisch"');
-        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="Deutsch"');
+        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="'.$desc_front .'"');
+        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="'.$desc_back.'"');
         if ($usesthird) {
             $vocabrow[] =& $mform->createElement('text', 'third[]', '', 'placeholder="Zusatzinformation"');
         } else {

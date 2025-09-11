@@ -72,6 +72,8 @@ $formparameters = [
         'id' => $id,
         'year' => $moduleinstance->year,
         'third_active' => $instanceinfo->thirdactive,
+        'desc_front' => $instanceinfo->desc_front,
+        'desc_back' => $instanceinfo->desc_back,
 ];
 
 if ($mode === 'edit') {

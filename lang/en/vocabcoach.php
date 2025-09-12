@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Vokabelcoach';
+$string['plugin_name'] = 'Vokabelcoach';
 $string['modulename'] = 'Vokabelkasten';
 $string['modulenameplural'] = 'Vokabelkästen';
 $string['pluginadministration'] = 'Einstellungen';

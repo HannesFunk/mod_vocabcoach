@@ -1,0 +1,110 @@
+<div class="ms-auto dropdown">
+    <a href="#" class="btn btn-link btn-icon colour-inherit text-decoration-none d-flex " role="button" data-bs-toggle="dropdown" data-bs-boundary="window" aria-haspopup="true" tabindex="0" aria-controls="list-{{id}}-menu" aria-label="Aktionen anzeigen" aria-expanded="false">
+        <i class="fa fa-ellipsis-v text-dark  py-2" aria-hidden="true"></i>
+    </a>
+    <div
+            class="dropdown-menu dropdown-menu-right"
+            aria-labelledby="list-{{id}}-menu"
+            data-rel="menu-content"
+            role="menu"
+            id="list-{{id}}-menu"
+    >
+        <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Abfrage starten"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/check_list"
+        >
+            <i class="fa fa-question-circle-o text-dark  pr-2" aria-hidden="true"></i>
+            <span class="menu-action-text">Abfrage starten</span>
+        </a>
+        <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="In meinen Kasten übernehmen"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/add_list_to_user"
+        >
+            <i class="fa fa-save text-dark  pr-2" aria-hidden="true"></i>
+            <span class="menu-action-text">In meinen Kasten übernehmen</span>
+        </a>
+        <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Als PDF exportieren"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/show_pdf"
+        >
+            <i class="fa fa-copy text-dark  pr-2" aria-hidden="true"></i>
+            <span class="menu-action-text">Als PDF exportieren</span>
+        </a>
+        <a
+                class="dropdown-item menu-action"
+                role="menuitem"
+                tabindex="-1"
+                data-targetstate="0"
+                title="Als CSV exportieren"
+                href="#"
+                data-list-id="{{id}}"
+                data-action="mod_vocabcoach/show_csv"
+        >
+            <i class="fa fa-code text-dark  pr-2" aria-hidden="true"></i>
+            <span class="menu-action-text">Als CSV exportieren</span>
+        </a>
+        {{#editable}}
+            <div class="dropdown-divider"></div>
+            <a
+                    class="dropdown-item menu-action"
+                    role="menuitem"
+                    tabindex="-1"
+                    data-targetstate="0"
+                    title="Bearbeiten"
+                    href="#"
+                    data-list-id="{{id}}"
+                    data-action="mod_vocabcoach/edit_list"
+            >
+                <i class="fa fa-edit text-dark  pr-2" aria-hidden="true"></i>
+                <span class="menu-action-text">Bearbeiten</span>
+            </a>
+            <a
+                    class="dropdown-item menu-action"
+                    role="menuitem"
+                    tabindex="-1"
+                    data-targetstate="0"
+                    title="Löschen"
+                    href="#"
+                    data-list-id="{{id}}"
+                    data-action="mod_vocabcoach/delete_list"
+            >
+                <i class="fa fa-trash-o text-dark  pr-2" aria-hidden="true"></i>
+                <span class="menu-action-text">Löschen</span>
+            </a>
+        {{/editable}}
+        {{#distributable}}
+            <a
+                    class="dropdown-item menu-action"
+                    role="menuitem"
+                    tabindex="-1"
+                    data-targetstate="0"
+                    title="An Kurs verteilen"
+                    href="#"
+                    data-list-id="{{id}}"
+                    data-action="mod_vocabcoach/distribute_list"
+            >
+                <i class="fa fa-share-square-o text-dark  pr-2" aria-hidden="true"></i>
+                <span class="menu-action-text">An Kurs verteilen</span>
+            </a>
+        {{/distributable}}
+    </div>
+
+</div>

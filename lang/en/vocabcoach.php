@@ -78,6 +78,7 @@ $string['lists_empty'] = 'No vocabulary list found.';
 
 $string['name'] = 'Name';
 $string['year_short'] = 'Yr.';
+$string['year'] = 'Year';
 $string['book'] = 'Book';
 $string['unit'] = 'Unit';
 $string['count'] = 'Number of words';

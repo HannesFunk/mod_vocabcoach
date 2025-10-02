@@ -77,6 +77,7 @@ $string['lists_onlyown'] = 'Nur eigene anzeigen';
 
 $string['name'] = 'Name';
 $string['year_short'] = 'Jgst.';
+$string['year'] = 'Jahrgangsstufe';
 $string['book'] = 'Buch';
 $string['unit'] = 'Kapitel';
 $string['count'] = 'Anzahl Vokabeln';

@@ -4,7 +4,7 @@
 
 <div class="user-switch-container mb-3" data-action="mod_vocabcoach/toggle-user-switch">
     <label class="mr-2 mb-0{{#onlyOwnLists}} text-primary{{/onlyOwnLists}}" for="userswitch">
-        Nur eigene anzeigen
+        {{#str}}lists_onlyown, mod_vocabcoach{{/str}}
     </label>
     <div class="custom-control custom-switch" style="display: inline;">
         <input type="checkbox"{{!
@@ -25,18 +25,18 @@
 
 <tbody>
 <tr data-list-id="{{id}}">
-    <th>Name</th>
-    <th class="secondary">Jgst.</th>
-    <th class="secondary">Buch</th>
-    <th class="secondary">Kapitel</th>
-    <th>Anzahl Vokabeln</th>
-    <th>Ersteller:in</th>
-    <th>Aktionen</th>
+    <th>{{#str}}name, mod_vocabcoach{{/str}}</th>
+    <th class="secondary">{{#str}}year_short, mod_vocabcoach{{/str}}</th>
+    <th class="secondary">{{#str}}book, mod_vocabcoach{{/str}}</th>
+    <th class="secondary">{{#str}}unit, mod_vocabcoach{{/str}}</th>
+    <th>{{#str}}count, mod_vocabcoach{{/str}}</th>
+    <th>{{#str}}creator, mod_vocabcoach{{/str}}</th>
+    <th>{{#str}}actions, mod_vocabcoach{{/str}}</th>
 </tr>
 {{^loading}}
     {{^lists}}
         <td colspan="7" class="text-center">
-            <span>Keine Vokabelliste gefunden.</span>
+            <span>{{#str}}lists_empty, mod_vocabcoach{{/str}}</span>
         </td>
     {{/lists}}
 {{/loading}}

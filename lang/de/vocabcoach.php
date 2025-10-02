@@ -32,7 +32,6 @@ $string['modulenameplural'] = 'Vokabelkästen';
 $string['pluginadministration'] = 'Einstellungen';
 
 
-$string['vocabcoachname'] = 'Name des Vokabelkastens';
 $string['vocabcoachsettings'] = 'Einstellungen';
 $string['vocabcoachname'] = 'Vokabelkasten';
 $string['vocabcoachname_help'] = 'Hilfe';
@@ -71,4 +70,25 @@ $string['list_distribute_now_help'] = 'Wenn du diesen Haken setzt, werden die Vo
 $string['type_vocab_label'] = 'Vokabeln tippen';
 $string['mode'] = 'Abfragemodus';
 
+// Lists page.
+$string['lists'] = 'Vokabellisten';
+$string['intro_lists'] = 'Du siehst hier alle öffentlichen Vokabellisten, die andere Schüler in diesem Kurs angelegt haben. Du kannst entweder direkt von diesen Listen lernen oder die ganze Liste in deinen Vokabelkasten übernehmen.';
+$string['lists_onlyown'] = 'Nur eigene anzeigen';
 
+$string['name'] = 'Name';
+$string['year_short'] = 'Jgst.';
+$string['book'] = 'Buch';
+$string['unit'] = 'Kapitel';
+$string['count'] = 'Anzahl Vokabeln';
+$string['creator'] = 'Erstellt von';
+$string['actions'] = 'Aktionen';
+
+// Action menu (lists_action_menu.mustache).
+$string['actions_show_actions'] = 'Aktionen anzeigen';
+$string['actions_start_check'] = 'Abfrage starten';
+$string['actions_add_to_my_box'] = 'In meinen Kasten übernehmen';
+$string['actions_export_pdf'] = 'Als PDF exportieren';
+$string['actions_export_csv'] = 'Als CSV exportieren';
+$string['actions_edit'] = 'Bearbeiten';
+$string['actions_delete'] = 'Löschen';
+$string['actions_distribute_to_course'] = 'An Kurs verteilen';

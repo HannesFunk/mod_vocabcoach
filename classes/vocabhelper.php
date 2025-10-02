@@ -66,7 +66,7 @@ class vocabhelper {
         if ($lastchecked === null) {
             return '-';
         }
-    public function compute_due_time_string (int $lastchecked, int $boxtime) : string {
+
         $nextdue = time() + $boxtime * 60 * 60 * 24;
         $secondsleft = $nextdue - $lastchecked;
         if ($secondsleft > 60 * 60 * 24) {

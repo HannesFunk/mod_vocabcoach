@@ -1,1 +1,4 @@
-/stuff/
+stuff/
+.idea/
+/amd/build/
+.eslintrc

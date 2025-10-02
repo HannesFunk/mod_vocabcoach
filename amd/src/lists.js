@@ -2,6 +2,7 @@ import {addListToUserAJAX, deleteListAJAX, distributeListAJAX, getListsAJAX} fro
 import Template from 'core/templates';
 import notification, {saveCancel} from 'core/notification';
 import Log from 'core/log';
+// import Dropdown from 'core/dropdown';
 
 let cmid;
 let userId;
@@ -21,6 +22,8 @@ function addListToUser(listid) {
 export function init(moduleId, userIdString, capabilitiesInfo) {
     cmid = parseInt(moduleId);
     userId = parseInt(userIdString);
+
+    // Dropdown.init();  // or call an init with a selector
 
     printLists(JSON.parse(capabilitiesInfo));
 

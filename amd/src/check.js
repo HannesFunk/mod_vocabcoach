@@ -18,7 +18,7 @@ export const init = (configuration) => {
             changeMode();
             }
         );
-    } else if(config.source === 'user') {
+    } else if (config.source === 'user') {
         getBoxArrayAJAX(config.userid, config.cmid, config.stage, config.force).then(response => {
             vocabArrayJSON = response;
             initDots();
@@ -85,7 +85,7 @@ const Selectors = {
         typedVocabUnknown: '[data-action="mod-vocabcoach/typed-vocab-unknown"]',
         typedVocabOverride: '[data-action="mod-vocabcoach/typed-vocab-override"]',
     },
-    formElements : {
+    formElements: {
         mode: '[id="check-mode"]',
         typedVocab: '[id="input-vocab-front"]',
     },
@@ -100,7 +100,7 @@ function initDots() {
     greyDot.classList.add('unchecked');
     greyDotContainer.appendChild(greyDot);
 
-    for (let i= 0; i<totalVocab; i++) {
+    for (let i = 0; i < totalVocab; i++) {
         let newDot = greyDotContainer.cloneNode(true);
         newDot.style.transform = 'translateX(calc(100% - ' + (i+1)*12 + 'px))';
         newDot.setAttribute('data-new-shift', (totalVocab-i)*12);

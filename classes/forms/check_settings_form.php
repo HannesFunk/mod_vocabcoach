@@ -36,10 +36,10 @@ class check_settings_form extends moodleform {
         $mform->disable_form_change_checker();
 
         $modeoptions = [
-            'type' => 'Englische Vokabeln tippen',
             'back' => 'Nach Vorderseite fragen',
             'front' => 'Nach Rückseite fragen',
             'random' => 'Zufällig',
+            'type' => 'Vorderseite eingeben',
         ];
         $mform->addElement('select', 'mode',
             get_string('mode', 'mod_vocabcoach'),

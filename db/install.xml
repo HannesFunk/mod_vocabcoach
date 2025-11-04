@@ -21,6 +21,8 @@
         <FIELD NAME="boxtime_3" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 3."/>
         <FIELD NAME="boxtime_4" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 4."/>
         <FIELD NAME="boxtime_5" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 5."/>
+        <FIELD NAME="desc_front" TYPE="char" LENGTH="127" NOTNULL="true" DEFAULT="front" SEQUENCE="false" COMMENT="Name of the language shown on the front side of vocab cards."/>
+        <FIELD NAME="desc_back" TYPE="char" LENGTH="127" NOTNULL="true" DEFAULT="back" SEQUENCE="false" COMMENT="Name of the language shown on the back side of vocab cards."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

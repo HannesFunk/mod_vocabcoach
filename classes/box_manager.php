@@ -80,7 +80,11 @@ class box_manager {
                             ";
                 try {
                     $record = $DB->get_record_sql($query);
-                    $nextdue = $this->vocabhelper->compute_due_time_string($record->recent, $this->vocabhelper->boxtimes[$i]);
+                    if ($record == null || $record->recent == null) {
+                        $nextdue = '-';
+                    } else {
+                        $nextdue = $this->vocabhelper->compute_due_time_string($record->recent, $this->vocabhelper->boxtimes[$i]);
+                    }
                 } catch (\dml_exception $e) {
                     $nextdue = '-';
                 }

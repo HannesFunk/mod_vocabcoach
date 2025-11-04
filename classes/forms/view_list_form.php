@@ -49,8 +49,8 @@ class view_list_form extends moodleform {
         <tbody>
         <tr>
             <th></th>
-            <th>Englisch</th>
-            <th>Deutsch</th>'.($usesthird ? '<th>Zusatzinfo</th>' : '').'</tr>';
+            <th></th>
+            <th></th>'.($usesthird ? '<th>Zusatzinfo</th>' : '').'</tr>';
         $mform->addElement('html', $tableheaderhtml);
 
         foreach ($vocabarray as $vocab) {

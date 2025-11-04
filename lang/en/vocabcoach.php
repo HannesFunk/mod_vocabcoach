@@ -25,49 +25,72 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Vokabelcoach';
-$string['modulename'] = 'Vokabelkasten';
-$string['modulenameplural'] = 'Vokabelkästen';
-$string['pluginadministration'] = 'Einstellungen';
+$string['pluginname'] = 'Vocab Coach';
+$string['plugin_name'] = 'Vocab Coach';
+$string['modulename'] = 'Vocabulary box';
+$string['modulenameplural'] = 'Vocabulary boxes';
+$string['pluginadministration'] = 'Settings';
 
 
-$string['vocabcoachname'] = 'Name des Vokabelkastens';
-$string['vocabcoachsettings'] = 'Einstellungen';
-$string['vocabcoachname'] = 'Vokabelkasten';
-$string['vocabcoachname_help'] = 'Hilfe';
-$string['vocabcoachnameplural'] = 'Vokabelkasten';
+$string['vocabcoachsettings'] = 'Settings';
+$string['vocabcoachname'] = 'Vocabulary box';
+$string['vocabcoachname_help'] = 'Help';
+$string['vocabcoachnameplural'] = 'Vocabulary box';
 
-$string['boxtimes'] = 'Wiederholungszeiten';
-$string['info_boxtimes'] = 'Setze hier die Zeiten, nach denen Vokabeln in den verschiedenen Fächern wiederholt werden sollen und wieder als "fällig" erscheinen.';
-$string['boxtime'] = "Zeit für Box";
-$string['move_undue'] = 'Vokabeln, die vor Ablauf der Wiederholungszeit abgefragt werden, ins nächste Fach bewegen.';
-$string['move_undue_help'] = 'Vokabeln können jederzeit wiederholt werden. Ist dieses Feld aktiviert, werden auch Vokabeln, die noch vor Ablauf der Wiederholungszeit abgefragt werden, in die nächste Box verschoben. Andernfalls verbleiben diese in der aktuellen Box.';
-$string['third_active'] = 'Dritte Spalte für zusätzliche Informationen aktivieren.';
+$string['boxtimes'] = 'Revision intervals';
+$string['info_boxtimes'] = 'Set the intervals after which words in the different boxes should be reviewed and become "due" again.';
+$string['boxtime'] = 'Interval for box';
+$string['move_undue'] = 'Move words that are reviewed before the interval has elapsed to the next box.';
+$string['move_undue_help'] = 'Words can be reviewed at any time. If this box is ticked, words reviewed before the interval has elapsed will also be moved to the next box. Otherwise, they will remain in the current box.';
+$string['third_active'] = 'Enable third column for additional information.';
 
-$string['add_vocab_title'] = 'Vokabeln hinzufügen';
-$string['front'] = 'Vorderseite';
-$string['back'] = 'Rückseite';
-$string['cancelled_form'] = 'Eintragen abgebrochen.';
-$string['add_vocab_successful'] = 'Vokabeln hinzugefügt.';
-$string['edit_vocab_successful'] = 'Liste geändert.';
-$string['add_vocab_info_lines'] = 'Weitere Zeilen werden automatisch ergänzt.';
-$string['add_vocab_add_to_user_database'] = 'Sofort zum eigenen Karteikasten hinzufügen.';
-$string['edit_vocab_instructions'] = 'Um eine Vokabeln zu löschen, lass beide Seiten leer.';
-$string['edit_list_not_allowed'] = 'Du hast nicht die Berechtigung, diese Liste zu ändern.';
-$string['add_vocab_add_to_user_database_help'] = 'Wenn du diesen Haken nicht setzt, wird nur die Liste angelegt, die Vokabeln landen aber nicht direkt in deinem Kasten. Du kannst sie aber jederzeit später hinzufügen.';
+$string['add_vocab_title'] = 'Add vocabulary';
+$string['front'] = 'Front';
+$string['back'] = 'Back';
+$string['cancelled_form'] = 'Entry cancelled.';
+$string['add_vocab_successful'] = 'Vocabulary added.';
+$string['edit_vocab_successful'] = 'List updated.';
+$string['add_vocab_info_lines'] = 'Additional rows will be added automatically.';
+$string['add_vocab_add_to_user_database'] = 'Add immediately to your own box.';
+$string['edit_vocab_instructions'] = 'To delete a vocabulary item, leave both sides empty.';
+$string['edit_list_not_allowed'] = 'You do not have permission to edit this list.';
+$string['add_vocab_add_to_user_database_help'] = 'If you do not tick this box, only the list will be created and the words will not be added to your box yet. You can add them later at any time.';
 
-$string['vocab'] = 'Vokabel';
-$string['vocabplural'] = 'Vokabeln';
-$string['list'] = 'Liste';
-$string['listplural'] = 'Listen';
-$string['listprops'] = 'Listeneigenschaften';
-$string['instructions'] = 'Hinweise zum Eintippen von Vokabeln';
-$string['list_private'] = 'Private Liste';
-$string['list_private_help'] = 'Wenn du diesen Haken setzt, kannst nur du selbst diese Liste sehen. Andernfalls können die anderen Teilnehmer aus dem Kurs die Liste sehen, aber nicht bearbeiten.';
-$string['list_distribute_now'] = 'An alle verteilen';
-$string['list_distribute_now_help'] = 'Wenn du diesen Haken setzt, werden die Vokabeln direkt bei allen anderen Schüler:innen in diesem Kurs hinzugefügt. Für vocab duties (in-class oder homework) bitte setzen.';
+$string['vocab'] = 'Word';
+$string['vocabplural'] = 'Words';
+$string['list'] = 'List';
+$string['listplural'] = 'Lists';
+$string['listprops'] = 'List properties';
+$string['instructions'] = 'Instructions for typing vocabulary';
+$string['list_private'] = 'Private list';
+$string['list_private_help'] = 'If you tick this box, only you can see this list. Otherwise, other participants in the course can see the list, but not edit it.';
+$string['list_distribute_now'] = 'Distribute to everyone';
+$string['list_distribute_now_help'] = 'If you tick this box, the words will be added immediately to all other students in this course. Please tick for vocab duties (in-class or homework).';
 
-$string['type_vocab_label'] = 'Vokabeln tippen';
-$string['mode'] = 'Abfragemodus';
+$string['type_vocab_label'] = 'Type vocabulary';
+$string['mode'] = 'Practice mode';
 
+// Lists page.
+$string['lists'] = 'Vocabulary lists';
+$string['intro_lists'] = 'Here you can see all public vocabulary lists created by other students in this course. You can either study directly from these lists or copy the entire list into your own box.';
+$string['lists_onlyown'] = 'Show only mine';
+$string['lists_empty'] = 'No vocabulary list found.';
 
+$string['name'] = 'Name';
+$string['year_short'] = 'Yr.';
+$string['year'] = 'Year';
+$string['book'] = 'Book';
+$string['unit'] = 'Unit';
+$string['count'] = 'Number of words';
+$string['creator'] = 'Created by';
+$string['actions'] = 'Actions';
+
+// Action menu (lists_action_menu.mustache).
+$string['actions_show_actions'] = 'Show actions';
+$string['actions_start_check'] = 'Start check';
+$string['actions_add_to_my_box'] = 'Add to my box';
+$string['actions_export_pdf'] = 'Export as PDF';
+$string['actions_export_csv'] = 'Export as CSV';
+$string['actions_edit'] = 'Edit';
+$string['actions_delete'] = 'Delete';
+$string['actions_distribute_to_course'] = 'Distribute to course';

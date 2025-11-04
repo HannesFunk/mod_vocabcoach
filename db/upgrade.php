@@ -46,9 +46,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-
-        // Vocabcoach savepoint reached.
-        upgrade_mod_savepoint(true, 2023100309, 'vocabcoach');
     }
 
     if ($oldversion < 2023103022) {
@@ -60,9 +57,20 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-
-        // Vocabcoach savepoint reached.
-        upgrade_mod_savepoint(true, 2023103022, 'vocabcoach');
     }
+
+    if ($oldversion < 2025100222) {
+        $table = new xmldb_table('vocabcoach');
+        $field_front = new xmldb_field('desc_front', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, "Englisch", null);
+        $field_back = new xmldb_field('desc_back', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, "Deutsch", null);
+
+        foreach ([$field_front, $field_back] as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+    }
+    upgrade_mod_savepoint(true, 2025100223, 'vocabcoach');
     return true;
 }

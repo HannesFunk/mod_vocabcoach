@@ -66,6 +66,7 @@ class vocabhelper {
         if ($lastchecked === null) {
             return '-';
         }
+
         $nextdue = time() + $boxtime * 60 * 60 * 24;
         $secondsleft = $nextdue - $lastchecked;
         if ($secondsleft > 60 * 60 * 24) {

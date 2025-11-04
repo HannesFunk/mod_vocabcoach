@@ -34,9 +34,20 @@ class add_vocab_form extends moodleform {
     public function definition() :void {
         $mform = $this->_form;
 
+        global $DB;
+
+       // $vocabcoach = $DB->get_re
+
         $mode = $this->_customdata['mode'];
         $id = $this->_customdata['id'];
-        $usesthird = $this->_customdata['third_active'] == true;
+
+        $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+        $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
+
+
+        $usesthird = $moduleinstance->thirdactive;
+        $desc_front = $moduleinstance->desc_front;
+        $desc_back = $moduleinstance->desc_back;
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
@@ -63,11 +74,11 @@ class add_vocab_form extends moodleform {
             for ($i = 5; $i <= 13; $i++) {
                 $years[$i] = $i;
             }
-            $mform->addElement('select', 'list_year', 'Jahrgangsstufe', $years, ['disabled']);
+            $mform->addElement('select', 'list_year', get_string('year', 'mod_vocabcoach'), $years, ['disabled']);
             $mform->setDefault('list_year', $this->_customdata['year']);
             $mform->disable_form_change_checker();
 
-            $mform->addElement('text', 'list_unit', 'Unit');
+            $mform->addElement('text', 'list_unit', get_string('unit', 'mod_vocabcoach'));
             $mform->setType('list_unit', PARAM_TEXT);
 
             $mform->addElement('checkbox', 'add_to_user_database', get_string('add_vocab_add_to_user_database', 'mod_vocabcoach'));
@@ -95,8 +106,8 @@ class add_vocab_form extends moodleform {
 
         $vocabrow = [];
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
-        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="Englisch"');
-        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="Deutsch"');
+        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="'.$desc_front .'"');
+        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="'.$desc_back.'"');
         if ($usesthird) {
             $vocabrow[] =& $mform->createElement('text', 'third[]', '', 'placeholder="Zusatzinformation"');
         } else {

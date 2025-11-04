@@ -25,7 +25,6 @@
 require(__DIR__.'/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__.'/lib.php');
-require_once(__DIR__.'/classes/forms/add_vocab_form.php');
 require_once(__DIR__.'/classes/box_manager.php');
 require_once(__DIR__.'/classes/activity_tracker.php');
 

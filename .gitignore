@@ -1,2 +1,6 @@
 /stuff/
 /node_modules/
+stuff/
+.idea/
+/amd/build/
+.eslintrc

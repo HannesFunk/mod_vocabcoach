@@ -27,6 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 /** @var stdClass $plugin */
 $plugin->component = 'mod_vocabcoach';
 $plugin->release = '0.1.0';
-$plugin->version = 2023121613;
+$plugin->version = 2025100121;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_ALPHA;

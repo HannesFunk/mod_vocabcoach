@@ -8,7 +8,7 @@ class mobile {
             'templates' => [
                 [
                     'id' => 'main',
-                    'html' => '<h1 class="text-center">Hello!</h1>',
+                    'html' => '<h1 class="text-center">Hallo, ballo!</h1>',
                 ],
             ],
         ];

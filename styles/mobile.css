@@ -1,0 +1,768 @@
+/**
+ * Mobile-specific styles for VocabCoach module
+ *
+ * This file is part of Moodle - http://moodle.org/
+ * 
+ * @copyright   2023 J. Funk, johannesfunk@outlook.com
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Mobile-specific overrides and additional styles */
+
+/* Base mobile container */
+.mod-vocabcoach-mobile,
+.mod-vocabcoach-mobile-check {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.5;
+    color: #333;
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+/* Touch-friendly buttons */
+.mobile-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    padding: 16px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    min-height: 44px; /* iOS recommended touch target size */
+    min-width: 44px;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-btn:active {
+    transform: scale(0.95);
+}
+
+.mobile-btn:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.mobile-btn-large {
+    padding: 20px 32px;
+    font-size: 18px;
+    min-height: 56px;
+}
+
+.mobile-btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.mobile-btn-primary:hover,
+.mobile-btn-primary:focus {
+    background: #0056b3;
+    color: white;
+}
+
+.mobile-btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.mobile-btn-success:hover,
+.mobile-btn-success:focus {
+    background: #1e7e34;
+    color: white;
+}
+
+.mobile-btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.mobile-btn-danger:hover,
+.mobile-btn-danger:focus {
+    background: #c82333;
+    color: white;
+}
+
+/* Mobile form elements */
+.mobile-select,
+.mobile-vocab-input {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    background: white;
+    color: #333;
+    box-sizing: border-box;
+    min-height: 44px;
+}
+
+.mobile-select:focus,
+.mobile-vocab-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Mobile box styling */
+.mobile-box {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    touch-action: manipulation;
+    min-height: 88px; /* Ensure adequate touch target */
+}
+
+.mobile-box:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.mobile-box-inactive {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+}
+
+.mobile-box-inactive:active {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Vocabulary card styling */
+.mobile-vocab-card {
+    min-height: 200px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.mobile-vocab-side {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    word-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    overflow-wrap: break-word;
+}
+
+/* Progress indicators */
+.mobile-progress-dots {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mobile-progress-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dee2e6;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.mobile-progress-dot.active {
+    background: #007bff;
+    transform: scale(1.3);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+.mobile-progress-dot.correct {
+    background: #28a745;
+    transform: scale(1.1);
+}
+
+.mobile-progress-dot.incorrect {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 480px) {
+    .mod-vocabcoach-mobile,
+    .mod-vocabcoach-mobile-check {
+        padding: 12px;
+    }
+    
+    .mobile-vocab-side {
+        padding: 24px 16px;
+        font-size: 20px;
+        min-height: 140px;
+    }
+    
+    .mobile-btn {
+        padding: 14px 20px;
+        font-size: 15px;
+    }
+    
+    .mobile-btn-large {
+        padding: 18px 28px;
+        font-size: 16px;
+    }
+    
+    .mobile-progress-dots {
+        gap: 6px;
+    }
+    
+    .mobile-progress-dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .mobile-box,
+    .mobile-vocab-side,
+    .mobile-btn {
+        border-width: 1px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .mod-vocabcoach-mobile,
+    .mod-vocabcoach-mobile-check {
+        background: #1a1a1a;
+        color: #f0f0f0;
+    }
+    
+    .mobile-box,
+    .mobile-vocab-side,
+    .mobile-select,
+    .mobile-vocab-input {
+        background: #2d2d2d;
+        border-color: #444;
+        color: #f0f0f0;
+    }
+    
+    .mobile-vocab-side {
+        background: #333;
+    }
+    
+    .mobile-progress-dot {
+        background: #666;
+    }
+}
+
+/* Animation classes */
+.mobile-fade-in {
+    animation: mobileFadeIn 0.3s ease-in-out;
+}
+
+.mobile-slide-up {
+    animation: mobileSlideUp 0.3s ease-out;
+}
+
+@keyframes mobileFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes mobileSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Accessibility improvements */
+.mobile-btn:focus-visible,
+.mobile-box:focus-visible,
+.mobile-select:focus-visible,
+.mobile-vocab-input:focus-visible {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .mobile-btn,
+    .mobile-box,
+    .mobile-progress-dot {
+        transition: none;
+    }
+    
+    .mobile-btn:active,
+    .mobile-box:active {
+        transform: none;
+    }
+    
+    .mobile-fade-in,
+    .mobile-slide-up {
+        animation: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .mod-vocabcoach-mobile,
+    .mod-vocabcoach-mobile-check {
+        background: white;
+        color: black;
+        padding: 0;
+    }
+    
+    .mobile-btn,
+    .mobile-progress-dots {
+        display: none;
+    }
+}
+
+.mod-vocabcoach-mobile {
+    padding: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.mobile-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.mobile-header h3 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.streak-info {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 8px;
+}
+
+.streak-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+}
+
+.streak-label {
+    color: #666;
+    font-size: 12px;
+}
+
+.streak-value {
+    font-weight: bold;
+    font-size: 18px;
+    color: #007bff;
+}
+
+.mobile-boxes-container h4 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.mobile-box {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.mobile-box:active {
+    transform: scale(0.98);
+}
+
+.mobile-box-inactive {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.mobile-box-inactive:active {
+    transform: none;
+}
+
+.mobile-box-header {
+    background: #007bff;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mobile-box-inactive .mobile-box-header {
+    background: #6c757d;
+}
+
+.mobile-box-title {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.mobile-box-arrow {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.mobile-box-content {
+    padding: 16px;
+}
+
+.mobile-box-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.mobile-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 8px;
+}
+
+.mobile-stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #007bff;
+    line-height: 1;
+}
+
+.mobile-stat-value.inactive {
+    color: #6c757d;
+}
+
+.mobile-stat-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-stat-divider {
+    font-size: 24px;
+    color: #dee2e6;
+    margin: 0 16px;
+}
+
+.mobile-next-due {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.mobile-check-button {
+    background: #28a745;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.mobile-no-boxes {
+    text-align: center;
+    padding: 32px 16px;
+    color: #666;
+}
+
+.mod-vocabcoach-mobile-check {
+    padding: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.mobile-check-header {
+    text-align: center;
+    margin-bottom: 24px;
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mobile-check-header h3 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.mobile-check-progress {
+    color: #666;
+    font-size: 14px;
+}
+
+.mobile-check-area {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mobile-progress-dots {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mobile-progress-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.mobile-progress-dot.active {
+    background: #007bff;
+    transform: scale(1.2);
+}
+
+.mobile-progress-dot.correct {
+    background: #28a745;
+}
+
+.mobile-progress-dot.incorrect {
+    background: #dc3545;
+}
+
+.mobile-vocab-card {
+    min-height: 200px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.mobile-vocab-side {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+.mobile-vocab-front {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.mobile-vocab-back {
+    background: #e8f5e8;
+    border-color: #4caf50;
+}
+
+.mobile-mode-selector {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.mobile-select {
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    background: white;
+    color: #333;
+    min-width: 200px;
+}
+
+.mobile-type-area {
+    margin-bottom: 24px;
+}
+
+.mobile-vocab-input {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 18px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.mobile-vocab-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.mobile-check-buttons {
+    text-align: center;
+}
+
+.mobile-result-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.mobile-btn {
+    padding: 16px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.mobile-btn:active {
+    transform: scale(0.95);
+}
+
+.mobile-btn-large {
+    padding: 20px 32px;
+    font-size: 18px;
+}
+
+.mobile-btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.mobile-btn-primary:hover {
+    background: #0056b3;
+}
+
+.mobile-btn-success {
+    background: #28a745;
+    color: white;
+    flex: 1;
+}
+
+.mobile-btn-success:hover {
+    background: #1e7e34;
+}
+
+.mobile-btn-danger {
+    background: #dc3545;
+    color: white;
+    flex: 1;
+}
+
+.mobile-btn-danger:hover {
+    background: #c82333;
+}
+
+.mobile-check-summary {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.mobile-check-summary h4 {
+    margin: 0 0 24px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.mobile-summary-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.mobile-summary-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mobile-summary-value {
+    font-size: 48px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.mobile-summary-correct .mobile-summary-value {
+    color: #28a745;
+}
+
+.mobile-summary-incorrect .mobile-summary-value {
+    color: #dc3545;
+}
+
+.mobile-summary-label {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+}
+
+.mobile-no-vocab {
+    text-align: center;
+    padding: 48px 16px;
+}
+
+.mobile-no-vocab h3 {
+    margin: 0 0 24px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.mobile-no-vocab-content {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mobile-no-vocab-content p {
+    margin: 0 0 24px 0;
+    color: #666;
+    font-size: 16px;
+}

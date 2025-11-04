@@ -94,3 +94,47 @@ $string['actions_export_csv'] = 'Export as CSV';
 $string['actions_edit'] = 'Edit';
 $string['actions_delete'] = 'Delete';
 $string['actions_distribute_to_course'] = 'Distribute to course';
+
+// Mobile app strings.
+$string['check_vocab'] = 'Check vocabulary';
+$string['box'] = 'Box';
+$string['due'] = 'Due';
+$string['total'] = 'Total';
+$string['start_check'] = 'Start check';
+$string['no_vocab_due'] = 'No vocabulary due in this box';
+$string['check_complete'] = 'Check complete';
+$string['correct'] = 'Correct';
+$string['incorrect'] = 'Incorrect';
+$string['known'] = 'Known';
+$string['unknown'] = 'Unknown';
+$string['next_vocab'] = 'Next vocabulary';
+$string['finish_check'] = 'Finish check';
+$string['next_due'] = 'Next due';
+$string['no_vocab_available'] = 'No vocabulary available';
+$string['days_logged_in'] = 'Days logged in';
+$string['days_checked_all'] = 'Days all checked';
+$string['check_mode_buttons'] = 'Button mode';
+$string['check_mode_type'] = 'Type mode';
+$string['type_answer'] = 'Type your answer';
+$string['check_answer'] = 'Check answer';
+$string['show_answer'] = 'Show answer';
+$string['back_to_boxes'] = 'Back to boxes';
+
+// Additional mobile app strings expected by mobile configuration
+$string['mobile_main_title'] = 'Vocabulary Boxes';
+$string['mobile_box_due'] = 'Due: {$a}';
+$string['mobile_check_start'] = 'Start Learning';
+$string['mobile_no_due_vocab'] = 'No vocabulary due for review';
+$string['mobile_progress_text'] = '{$a->current} of {$a->total}';
+$string['mobile_check_title'] = 'Vocabulary Check';
+$string['mobile_check_mode_buttons'] = 'Button Mode';
+$string['mobile_check_mode_type'] = 'Type Mode';
+$string['mobile_check_show_back'] = 'Show Answer';
+$string['mobile_check_known'] = 'Known';
+$string['mobile_check_unknown'] = 'Unknown';
+$string['mobile_check_type_answer'] = 'Type your answer';
+$string['mobile_check_answer'] = 'Answer';
+$string['mobile_summary_title'] = 'Summary';
+$string['mobile_summary_known'] = 'Known: {$a}';
+$string['mobile_summary_unknown'] = 'Unknown: {$a}';
+$string['mobile_finish_check'] = 'Finish Check';

@@ -4,3 +4,4 @@ stuff/
 .idea/
 /amd/build/
 .eslintrc
+.grunt/

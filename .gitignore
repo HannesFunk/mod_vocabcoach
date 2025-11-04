@@ -5,3 +5,8 @@ stuff/
 /amd/build/
 .eslintrc
 .grunt/
+Gruntfile.js
+dev/
+package-lock.json
+package.json
+test/

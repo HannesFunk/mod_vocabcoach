@@ -36,6 +36,7 @@ let checkResults = [];
  */
 const mobileCheckInit = (configuration) => {
     config = configuration;
+    console.log("Initializing mobile_check.");
     
     // Get vocabulary data from the template
     const vocabDataElement = document.getElementById('mobile-vocab-data');
@@ -87,6 +88,18 @@ function initProgressDots() {
         dot.setAttribute('data-index', i);
         dotsContainer.appendChild(dot);
     }
+}
+
+/**
+ * Start Checking
+ */
+
+function mobileStartCheck(cmid, stage) {
+    // For mobile app, we'll use URL parameters to trigger check view
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('stage', stage);
+    currentUrl.searchParams.set('action', 'check');
+    window.location.href = currentUrl.toString();
 }
 
 /**
@@ -456,5 +469,6 @@ function cleanString(input) {
 
 // Export for global use
 export default {
-    mobileCheckInit
+    mobileCheckInit,
+    mobileStartCheck
 };

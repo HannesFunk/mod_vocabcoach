@@ -71,7 +71,7 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         }
 
     }
-    $add_version = 2;
+    $add_version = 4;
     upgrade_mod_savepoint(true, 2025110520 + $add_version, 'vocabcoach');
     return true;
 }

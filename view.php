@@ -60,6 +60,8 @@ $PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', [$id, $USER->
 $boxmanager = new box_manager($id, $USER->id);
 $boxdata = $boxmanager->get_box_details();
 
+print_r($boxdata);
+
 $al = new activity_tracker($USER->id, $id);
 $al->log($al->typesdaily['ACT_LOGGED_IN']);
 if ($al->is_all_done($boxdata)) {

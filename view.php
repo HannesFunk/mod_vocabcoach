@@ -80,5 +80,7 @@ echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecont
 if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
     echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object) ['total' => ""]);
 }
-echo $OUTPUT->render_from_template('mod_vocabcoach/leaderboard', (object) ['leaders' => $leaderboarddata]);
+//if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
+    echo $OUTPUT->render_from_template('mod_vocabcoach/leaderboard', (object) ['leaders' => $leaderboarddata]);
+//}
 echo $OUTPUT->footer();

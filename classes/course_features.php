@@ -54,12 +54,10 @@ class course_features {
         $vh = new \vocabhelper($this->cmid);
         $boxconditions = $vh->get_sql_box_conditions();
 
-        $usersquery =
-                "SELECT uu.id, uu.firstname, uu.lastname FROM {user} uu
-                    JOIN {user_enrolments} ue ON uu.id = ue.userid JOIN {enrol} en ON ue.enrolid = en.id
-                    WHERE en.courseid = $this->courseid;";
+        $users = $this->get_student_users();
+        $userIDs = array_column($users, 'id');
 
-        $users = $DB->get_records_sql($usersquery);
+        $query = "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} vd WHERE userid IN ($userIDs) AND cmid = $this->cmid AND ($boxconditions);";
 
         $perfect = [];
         foreach ($users as $user) {
@@ -119,5 +117,22 @@ class course_features {
             $topthree[] = $records[$ownindex];
             return $topthree;
         }
+    }
+
+   /**
+     * Get all students using the standard 'student' archetype role.
+     * @return array Array of user objects
+     * @throws \dml_exception
+     */
+    public function get_student_users(): array {
+        global $DB;
+
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
+        if (!$studentrole) {
+            return [];
+        }
+
+        $coursecontext = \context_course::instance($this->courseid);
+        return get_role_users($studentrole->id, $coursecontext, false, 'u.*');
     }
 }

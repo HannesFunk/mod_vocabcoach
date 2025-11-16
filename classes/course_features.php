@@ -55,9 +55,9 @@ class course_features {
         $boxconditions = $vh->get_sql_box_conditions();
 
         $users = $this->get_student_users();
-        $userIDs = array_column($users, 'id');
-
-        $query = "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} vd WHERE userid IN ($userIDs) AND cmid = $this->cmid AND ($boxconditions);";
+        // $userids = array_map(function($user) { return $user->id; }, $users);
+        // $useridslist = implode(',', $userids);
+        // $query = "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} vd WHERE userid IN ($useridslist) AND cmid = $this->cmid AND ($boxconditions);";
 
         $perfect = [];
         foreach ($users as $user) {

@@ -77,9 +77,9 @@ $leaderboarddata = $cf->get_leaderboard();
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecontext);
-if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
+// if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
     echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object) ['total' => ""]);
-}
+// }
 //if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
     echo $OUTPUT->render_from_template('mod_vocabcoach/leaderboard', (object) ['leaders' => $leaderboarddata]);
 //}

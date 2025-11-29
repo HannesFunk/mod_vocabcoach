@@ -327,13 +327,24 @@ class vocab_api extends external_api {
      * @throws \invalid_parameter_exception|\dml_exception
      */
     public static function get_class_total(int $cmid, int $courseid) :array {
+        global $DB;
         self::validate_parameters(self::get_class_total_parameters(),
                 ['cmid' => $cmid, 'courseid' => $courseid]);
 
-        $subquery = "SELECT userid FROM {user_enrolments} ue JOIN {enrol} en ON ue.enrolid = en.id
-                JOIN {user} uu ON uu.id = ue.userid WHERE en.courseid = $courseid";
-        $total = self::get_due_count($cmid, $subquery);
-        return ['success' => true, 'message' => 'Removed successfully.', 'total' => $total];
+        // $subquery = "SELECT userid FROM {user_enrolments} ue JOIN {enrol} en ON ue.enrolid = en.id
+        //        JOIN {user} uu ON uu.id = ue.userid WHERE en.courseid = $courseid";
+
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
+        if (!$studentrole) {
+            return [];
+        }
+
+        $coursecontext = \context_course::instance($courseid);
+        $userid = get_role_users($studentrole->id, $coursecontext, false, 'u.*');
+        $useridlist = implode(',', array_map(fn($user) => $user->id, $userid));
+
+        $total = self::get_due_count($cmid, $useridlist);
+        return ['success' => true, 'message' => '', 'total' => $total];
     }
 
     /**

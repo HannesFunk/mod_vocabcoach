@@ -57,7 +57,11 @@ class course_features {
         $users = $this->get_student_users();
         $userIDs = array_column($users, 'id');
 
-        $query = "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} vd WHERE userid IN ($userIDs) AND cmid = $this->cmid AND ($boxconditions);";
+        $query =    "SELECT COUNT(*) AS number 
+                    FROM {vocabcoach_vocabdata} vd 
+                    WHERE userid IN (".implode(',', $userIDs).")
+                        AND cmid = $this->cmid 
+                        AND ($boxconditions);";
 
         $perfect = [];
         foreach ($users as $user) {

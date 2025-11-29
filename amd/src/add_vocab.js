@@ -5,6 +5,12 @@ import {showElement} from "./general";
 
 let template = null;
 
+/**
+ * Initializes the add_vocab module.
+ *
+ * @param {string} [listidString="-1"] - The ID of the vocabulary list as a string. Defaults to "-1".
+ * If a valid list ID is provided, it fetches the vocabulary list and populates the rows.
+ */
 export const init = (listidString = "-1") => {
     initTemplate();
     let listid = parseInt(listidString);
@@ -39,6 +45,10 @@ export const init = (listidString = "-1") => {
     });
 };
 
+/**
+ * Initializes the template for vocabulary rows.
+ * Captures the structure of the first row and stores it for cloning.
+ */
 function initTemplate() {
     const vocabRow = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
     let temp = document.createElement('div');
@@ -49,6 +59,15 @@ function initTemplate() {
     template = temp;
 }
 
+/**
+ * Adds a new vocabulary row to the form.
+ *
+ * @param {number} [id=0] - The ID of the vocabulary item. Defaults to 0.
+ * @param {string} [front=""] - The front text of the vocabulary item. Defaults to an empty string.
+ * @param {string} [back=""] - The back text of the vocabulary item. Defaults to an empty string.
+ * @param {string} [third=""] - The third text of the vocabulary item. Defaults to an empty string.
+ * @returns {boolean} - Returns true after adding the row.
+ */
 function addRow(id = 0, front = "", back = "", third = "") {
     const firstRow = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
     const lastRow = firstRow.parentNode.lastChild;
@@ -61,6 +80,12 @@ function addRow(id = 0, front = "", back = "", third = "") {
     return true;
 }
 
+/**
+ * Adds a new row if the calling element is the last row.
+ *
+ * @param {HTMLElement} callingElement - The input element that triggered the event.
+ * @returns {boolean} - Returns true if a new row is added, false otherwise.
+ */
 function addRowMaybe(callingElement) {
     const frontInputs = document.querySelectorAll('input[name="front[]"]');
     const noElements = frontInputs.length;

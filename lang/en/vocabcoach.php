@@ -94,3 +94,10 @@ $string['actions_export_csv'] = 'Export as CSV';
 $string['actions_edit'] = 'Edit';
 $string['actions_delete'] = 'Delete';
 $string['actions_distribute_to_course'] = 'Distribute to course';
+
+// Task / notification strings
+$string['task_sendduenotifications'] = 'Send due vocab notifications';
+$string['due_notification_subject'] = '{$a} vocab items due';
+$string['due_notification_small'] = '{$a} vocab due';
+$string['due_notification_body'] = 'You have {$a->count} vocabulary items due. Open the activity: {$a->url}';
+

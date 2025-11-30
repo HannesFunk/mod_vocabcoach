@@ -51,7 +51,7 @@ class course_features {
      */
     public function get_leaderboard() : array {
         global $DB;
-        $vh = new \vocabhelper($this->cmid);
+        $vh = new vocabhelper($this->cmid);
         $boxconditions = $vh->get_sql_box_conditions();
 
         $users = $this->get_student_users();

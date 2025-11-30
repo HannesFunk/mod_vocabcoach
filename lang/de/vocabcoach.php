@@ -93,3 +93,10 @@ $string['actions_export_csv'] = 'Als CSV exportieren';
 $string['actions_edit'] = 'Bearbeiten';
 $string['actions_delete'] = 'Löschen';
 $string['actions_distribute_to_course'] = 'An Kurs verteilen';
+
+// Task / notification strings
+$string['task_sendduenotifications'] = 'Sende Benachrichtigungen für fällige Vokabeln';
+$string['due_notification_subject'] = '{$a} Vokabeln fällig';
+$string['due_notification_small'] = '{$a} Vokabeln fällig';
+$string['due_notification_body'] = 'Du hast {$a->count} fällige Vokabeln. Öffne die Aktivität: {$a->url}';
+

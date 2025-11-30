@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_vocabcoach;
-use vocabhelper;
 
 defined('MOODLE_INTERNAL') || die();
 require('vocabhelper.php');

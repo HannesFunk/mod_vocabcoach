@@ -23,7 +23,7 @@ class send_due_notifications extends \core\task\scheduled_task {
         mtrace('mod_vocabcoach: sending due notifications...');
 
         // Find all course modules for this activity.
-        $cms = $DB->get_records_sql("SELECT cm.id AS cmid, cm.course
+        $cms = $DB->get_records_sql("SELECT cm.id AS cmid, cm.course, cm.instance
             FROM {course_modules} cm
             JOIN {modules} md ON md.id = cm.module
             WHERE md.name = 'vocabcoach'");
@@ -42,9 +42,20 @@ class send_due_notifications extends \core\task\scheduled_task {
         mtrace('mod_vocabcoach: found ' . count($cms) . ' course modules.');
 
         foreach ($cms as $cm) {
+            // Load module instance and skip if notifications disabled.
+            $instance = $DB->get_record('vocabcoach', ['id' => $cm->instance]);
+            if (!$instance) {
+                mtrace('mod_vocabcoach: missing instance for cmid ' . $cm->cmid);
+                continue;
+            }
+            if (isset($instance->notify_students) && (int)$instance->notify_students == 0) {
+                    mtrace('mod_vocabcoach: notifications disabled for cmid ' . $cm->cmid);
+                    continue;
+            }
+
             // instantiate vocabhelper for this cmid. Skip if something goes wrong.
             try {
-                $vh = new vocabhelper($cm->cmid);
+                $vh = new \mod_vocabcoach\vocabhelper($cm->cmid);
             } catch (\dml_exception | \coding_exception $e) {
                 // skip invalid/removed instances
                 mtrace('mod_vocabcoach: skipping cmid ' . $cm->cmid . ' (' . $e->getMessage() . ')');
@@ -89,13 +100,16 @@ class send_due_notifications extends \core\task\scheduled_task {
                     $message->contexturl = $url->out(false);
                     $message->contexturlname = get_string('pluginname', 'mod_vocabcoach');
 
-                    message_send($message);
+                    mtrace('mod_vocabcoach: would send to ' . ($message->userto->email ?? '[no-email]') . ' (count=' . $count . ')');
+                    if (str_contains($message->userto->email, 'funk')) {
+                        message_send($message);
+                    }
                 } catch (\Exception $e) {
                     mtrace('mod_vocabcoach: failed to send message to user ' . $student->id . ': ' . $e->getMessage());
                 }
 
             }
-        mtrace('mod_vocabcoach: sent due notifications to ' . count($students) . ' students in module ' . $cm->cmid . '.');
+        mtrace('mod_vocabcoach: processed ' . count($students) . ' students in module ' . $cm->cmid . '. Notifications sent to ' . $counter . ' users.');
         }
     }
 }

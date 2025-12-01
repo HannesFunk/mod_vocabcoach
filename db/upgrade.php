@@ -69,8 +69,15 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
                 $dbman->add_field($table, $field);
             }
         }
-
     }
-    // upgrade_mod_savepoint(true, 2025111423, 'vocabcoach');
+
+    if ($oldversion < 2025120100) {
+        // Add notify_students to vocabcoach if it does not exist.
+        $table = new xmldb_table('vocabcoach');
+        $field = new xmldb_field('notify_students', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 1, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
     return true;
 }

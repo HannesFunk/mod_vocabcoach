@@ -99,4 +99,5 @@ $string['task_sendduenotifications'] = 'Sende Benachrichtigungen für fällige V
 $string['due_notification_subject'] = '{$a} Vokabeln fällig';
 $string['due_notification_small'] = '{$a} Vokabeln fällig';
 $string['due_notification_body'] = 'Du hast {$a->count} fällige Vokabeln. Öffne die Aktivität: {$a->url}';
-
+$string['notify_students'] = 'Benachrichtigungen über fällige Vokabeln senden';
+$string['notify_students_help'] = 'Wenn aktiviert, sendet der Scheduler E‑Mail‑Benachrichtigungen an Schüler, wenn sie fällige Vokabeln in dieser Aktivität haben.';

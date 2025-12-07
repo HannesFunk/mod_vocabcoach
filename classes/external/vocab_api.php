@@ -27,7 +27,7 @@ use external_function_parameters;
 use external_value;
 use external_single_structure;
 use external_multiple_structure;
-use vocabhelper;
+use mod_vocabcoach\vocabhelper;
 
 /**
  * Check-Vocab-API. Manages all interactions with the vocab database.

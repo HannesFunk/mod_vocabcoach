@@ -13,12 +13,13 @@
     border: 1px solid grey;
     border-radius: 10px;
     width: 85%;
-    height: 20vh;
+    height: 25vh;
     text-align: center;
     margin: 15px auto;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-y: scroll;
 }
 
 .check-box.hidden {

@@ -62,6 +62,21 @@ $string['list'] = 'Liste';
 $string['listplural'] = 'Listen';
 $string['listprops'] = 'Listeneigenschaften';
 $string['instructions'] = 'Hinweise zum Eintippen von Vokabeln';
+$string['instructions_short'] = 'Hinweise';
+$string['instructions_help'] = 'Hinweise für Schülerinnen und Schüler, die sie beim Eingeben von Vokabeln sehen (beispielsweise einheitliche Abkürzungen).';
+$string['instructions_default'] = '<div class="pl-5 pr-3"><p>Beachte folgende Hinweise, wenn du neue Vokabeln eintippst, damit alle ähnliche Form haben.</p>
+    <ul>
+        <li><b>Verben:</b> im Englischen mit <i>to</i> einleiten (ohne Klammern etc.): <i>to go - gehen.</i></li>
+        <li><b>Abkürzungen:</b> Normalerweise wie im Schulbuch verwenden,
+        z. B. nicht <s>somebody</s> oder <s>sbd</s>, sondern <i>sb.</i> (mit Punkt). Hier eine Liste gängiger Abkürzungen: <br />
+        Englisch: <i>sb. - sth. </i><br />
+        Deutsch: <i>etw. - jmd.</i> (für jemandem, jemanden, jemand)
+        </li>
+        <li><b>Klammern vermeiden:</b> Präpositionen etc. einfach ohne Klammern übernehmen,
+        im Deutschen wie im Englischen: <i>fear of - Angst vor</i>.</li>
+    </ul>
+    </div>
+    ';
 $string['list_private'] = 'Private Liste';
 $string['list_private_help'] = 'Wenn du diesen Haken setzt, kannst nur du selbst diese Liste sehen. Andernfalls können die anderen Teilnehmer aus dem Kurs die Liste sehen, aber nicht bearbeiten.';
 $string['list_distribute_now'] = 'An alle verteilen';

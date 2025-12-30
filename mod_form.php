@@ -79,7 +79,6 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         $mform->setType('desc_back', PARAM_TEXT);
         $mform->setDefault('desc_back', 'Deutsch');
 
-
         $mform->addElement('checkbox', 'third_active', get_string('third_active', 'vocabcoach'));
 
         $mform->addElement('header', 'boxtimes', get_string('boxtimes', 'mod_vocabcoach'));
@@ -99,10 +98,35 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         $mform->setDefault('notify_students', 0);
         $mform->addHelpButton('notify_students', 'notify_students', 'mod_vocabcoach');
 
+        $mform->addElement('header', 'instructionsheader', get_string('instructions', 'mod_vocabcoach'));
+
+        $mform->addElement('editor', 'instructions', get_string('instructions_short', 'mod_vocabcoach'));
+        $mform->setType('instructions', PARAM_RAW);
+        $mform->addHelpButton('instructions', 'instructions', 'mod_vocabcoach');
+        $mform->setDefault('instructions', [
+            'text' => get_string('instructions_default', 'mod_vocabcoach'),
+            'format' => FORMAT_HTML,
+        ]);
+
         // Add standard elements.
         $this->standard_coursemodule_elements();
 
         // Add standard buttons.
         $this->add_action_buttons();
+    }
+
+    /**
+     * Preprocess data from the database before it is displayed in the form.
+     *
+     * @param array $defaultvalues
+     */
+    public function data_preprocessing(&$defaultvalues) {
+        // Convert the instructions text to the array format expected by the editor element.
+        if (isset($defaultvalues['instructions'])) {
+            $defaultvalues['instructions'] = [
+                'text' => $defaultvalues['instructions'],
+                'format' => FORMAT_HTML,
+            ];
+        }
     }
 }

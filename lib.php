@@ -55,6 +55,11 @@ function vocabcoach_add_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timecreated = time();
 
+    // Handle editor fields - extract text from array.
+    if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
+        $moduleinstance->instructions = $moduleinstance->instructions['text'];
+    }
+
     $id = $DB->insert_record('vocabcoach', $moduleinstance);
 
     return $id;
@@ -75,6 +80,11 @@ function vocabcoach_update_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timemodified = time();
     $moduleinstance->id = $moduleinstance->instance;
+
+    // Handle editor fields - extract text from array.
+    if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
+        $moduleinstance->instructions = $moduleinstance->instructions['text'];
+    }
 
     return $DB->update_record('vocabcoach', $moduleinstance);
 }

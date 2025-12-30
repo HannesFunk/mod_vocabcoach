@@ -62,6 +62,10 @@ $string['list'] = 'List';
 $string['listplural'] = 'Lists';
 $string['listprops'] = 'List properties';
 $string['instructions'] = 'Instructions for typing vocabulary';
+$string['instructions_short'] = 'Instructions';
+$string['instructions_help'] = 'Insert instructions that students see on the page they type vocabulary (for example, whether standard abbreviations should be used).';
+$string['instructions_default'] = '<div class="pl-5 pr-3"><p>Pay attention to the following instructions to make sure words added by different users all have the same style.</p></div>
+    ';
 $string['list_private'] = 'Private list';
 $string['list_private_help'] = 'If you tick this box, only you can see this list. Otherwise, other participants in the course can see the list, but not edit it.';
 $string['list_distribute_now'] = 'Distribute to everyone';

@@ -79,5 +79,14 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             $dbman->add_field($table, $field);
         }
     }
+
+    if ($oldversion < 2025123002) {
+        // Add instructions field to vocabcoach if it does not exist.
+        $table = new xmldb_table('vocabcoach');
+        $field = new xmldb_field('instructions', XMLDB_TYPE_TEXT);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+    }
     return true;
 }

@@ -34,8 +34,10 @@ function addListeners() {
         if (e.target.closest(Selectors.actions.checkTypedVocab)) {
             checkTypedVocab(config.userid);
         } else if (e.target.closest(Selectors.actions.revealCard) && mode !== 'type') {
-            const label = e.target.closest(Selectors.actions.revealCard).getElementsByClassName('vc-check-label')[0];
-            showElements([label, 'check-third'], config.thirdActive);
+            const trigger = e.target.closest(Selectors.actions.revealCard);
+            const label = trigger.getElementsByClassName('vc-check-label')[0];
+            showElement(label, true);
+            // showElement('check-third', config.thirdActive);
         } else if (e.target.closest(Selectors.actions.updateVocab)) {
             checkDone(vocabArrayJSON[0].dataid, e.target.getAttribute('data-vocabcoach-known') === 'true');
         } else if (e.target.closest(Selectors.actions.endCheck)) {
@@ -174,13 +176,36 @@ function showNext(removeShown = true) {
 }
 
 function updateLabels () {
-    document.getElementById('check-front').innerHTML = vocabArrayJSON[0].front;
-    document.getElementById('check-back').innerHTML = vocabArrayJSON[0].back;
+    const frontBox = document.getElementById('check-front');
+    const backBox = document.getElementById('check-back');
+    frontBox.innerHTML = vocabArrayJSON[0].front;
+    backBox.innerHTML = vocabArrayJSON[0].back;
+
     const thirdBox = document.getElementById('check-third');
     if (thirdBox !== null) {
         thirdBox.innerHTML = vocabArrayJSON[0].third;
     }
+
+    [frontBox, backBox].forEach(
+        elem => adjustFontSizeToBoxHeight(elem)
+    );
+
     document.getElementById('check-container').setAttribute('data-vocab-data-id', vocabArrayJSON[0].dataid);
+}
+
+function adjustFontSizeToBoxHeight (elem) {
+    elem.style.fontSize = "";
+
+    while (elem.offsetHeight > elem.parentNode.offsetHeight) {
+        let fontSize = getComputedStyle(elem).getPropertyValue('font-size');
+        fontSize = parseFloat(fontSize);
+
+        if (fontSize <= 18) {
+            break;
+        }
+
+        elem.style.fontSize = (fontSize - 2) + 'px';
+    }
 }
 
 function resetCheckFields() {

@@ -110,3 +110,16 @@ $string['due_notification_small'] = '{$a} vocab due';
 $string['due_notification_body'] = 'You have {$a->count} vocabulary items due. Open the activity: {$a->url}';
 $string['notify_students'] = 'Send due-vocab notifications to students';
 $string['notify_students_help'] = 'If enabled, the scheduled task will send email notifications to students when they have due vocabulary items for this activity instance.';
+
+// View page (view.mustache).
+$string['view_actions'] = 'Actions';
+$string['view_your_vocab_box'] = 'Your vocabulary box';
+$string['view_activity'] = 'Activity';
+$string['view_logged_in_streak'] = 'Logged in consistently for {$a} days.';
+$string['view_checked_all_streak'] = 'Reviewed all vocabulary consistently for {$a} days.';
+$string['view_box_title'] = 'Box {$a}';
+$string['view_show_actions'] = 'Show actions';
+$string['view_check_undue'] = 'Check not yet due';
+$string['view_remove_incorrect'] = 'Remove incorrect';
+$string['view_export_pdf'] = 'Export as PDF';
+$string['view_class_total'] = 'Total number of unrevised vocabulary in class';

@@ -25,12 +25,12 @@
 }}
 
 
-<h4 class="mt-5">Aktionen</h4>
+<h4 class="mt-5">{{#str}}view_actions, mod_vocabcoach{{/str}}</h4>
 <hr>
 {{> mod_vocabcoach/view-actions}}
 
 
-<h4 class="mt-5">Dein Vokabelkasten</h4>
+<h4 class="mt-5">{{#str}}view_your_vocab_box, mod_vocabcoach{{/str}}</h4>
 <hr>
 <div id="vocabcoach-box-container">
 
@@ -44,9 +44,9 @@
         data-next-due="{{next_due}}"
     >
         <div class="box-top-line">
-            <div class="box-title mr-2">Box {{stage}}</div>
+            <div class="box-title mr-2">{{#str}}view_box_title, mod_vocabcoach, {{stage}}{{/str}}</div>
             <div class="dropdown">
-                <a href="#" class="btn btn-link btn-icon colour-inherit text-decoration-none d-flex align-items-center justify-content-center" role="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" tabindex="0" aria-controls="box-{{stage}}-menu" aria-label="Aktionen anzeigen" aria-expanded="false">
+                <a href="#" class="btn btn-link btn-icon colour-inherit text-decoration-none d-flex align-items-center justify-content-center" role="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" tabindex="0" aria-controls="box-{{stage}}-menu" aria-label="{{#str}}view_show_actions, mod_vocabcoach{{/str}}" aria-expanded="false">
                     <i class="fa fa-ellipsis-v text-dark  py-2" aria-hidden="true"></i>
                 </a>
                 <div
@@ -60,12 +60,12 @@
                             role="menuitem"
                             tabindex="-1"
                             data-targetstate="0"
-                            title="Nicht fällige abfragen"
+                            title="{{#str}}view_check_undue, mod_vocabcoach{{/str}}"
                             href="#"
                             data-action="mod_vocabcoach/force_check_all"
                     >
                         <i class="fa fa-question-circle-o text-dark  pr-2" aria-hidden="true"></i>
-                        <span class="menu-action-text">Nicht fällige abfragen</span>
+                        <span class="menu-action-text">{{#str}}view_check_undue, mod_vocabcoach{{/str}}</span>
                     </a>
                     <a
                             class="dropdown-item menu-action"
@@ -73,12 +73,12 @@
                             tabindex="-1"
                             data-targetstate="0"
                             data-stage="{{stage}}"
-                            title="Fehlerhafte entfernen"
+                            title="{{#str}}view_remove_incorrect, mod_vocabcoach{{/str}}"
                             href="#"
                             data-action="mod_vocabcoach/view_box"
                     >
                         <i class="fa fa-edit text-dark  pr-2" aria-hidden="true"></i>
-                        <span class="menu-action-text">Fehlerhafte entfernen</span>
+                        <span class="menu-action-text">{{#str}}view_remove_incorrect, mod_vocabcoach{{/str}}</span>
                     </a>
                     <a
                             class="dropdown-item menu-action"
@@ -86,12 +86,12 @@
                             tabindex="-1"
                             data-targetstate="0"
                             data-stage="{{stage}}"
-                            title="Als PDF exportieren"
+                            title="{{#str}}view_export_pdf, mod_vocabcoach{{/str}}"
                             href="#"
                             data-action="mod_vocabcoach/show_pdf_user"
                     >
                         <i class="fa fa-copy text-dark  pr-2" aria-hidden="true"></i>
-                        <span class="menu-action-text">Als PDF exportieren</span>
+                        <span class="menu-action-text">{{#str}}view_export_pdf, mod_vocabcoach{{/str}}</span>
                     </a>
                 </div>
             </div>
@@ -106,11 +106,11 @@
 
 <div class="clearfix"></div>
 
-<h4 class="mt-5">Aktivität</h4>
+<h4 class="mt-5">{{#str}}view_activity, mod_vocabcoach{{/str}}</h4>
 <hr>
 <div class="activity-report">
-    <span class="streak">Durchgehend eingeloggt seit {{days_logged_in}} Tagen.</span>
-    <span class="streak">Durchgehend alle Vokabeln wiederholt seit {{days_checked_all}} Tagen.</span>
+    <span class="streak">{{#str}}view_logged_in_streak, mod_vocabcoach, {{days_logged_in}}{{/str}}</span>
+    <span class="streak">{{#str}}view_checked_all_streak, mod_vocabcoach, {{days_checked_all}}{{/str}}</span>
 </div>
 
 

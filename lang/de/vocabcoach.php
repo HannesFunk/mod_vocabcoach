@@ -120,3 +120,16 @@ $string['due_notification_small'] = '{$a} Vokabeln fällig';
 $string['due_notification_body'] = 'Du hast {$a->count} fällige Vokabeln. Öffne die Aktivität: {$a->url}';
 $string['notify_students'] = 'Benachrichtigungen über fällige Vokabeln senden';
 $string['notify_students_help'] = 'Wenn aktiviert, sendet der Scheduler E‑Mail‑Benachrichtigungen an Schüler, wenn sie fällige Vokabeln in dieser Aktivität haben.';
+
+// View page (view.mustache).
+$string['view_actions'] = 'Aktionen';
+$string['view_your_vocab_box'] = 'Dein Vokabelkasten';
+$string['view_activity'] = 'Aktivität';
+$string['view_logged_in_streak'] = 'Durchgehend eingeloggt seit {$a} Tagen.';
+$string['view_checked_all_streak'] = 'Durchgehend alle Vokabeln wiederholt seit {$a} Tagen.';
+$string['view_box_title'] = 'Box {$a}';
+$string['view_show_actions'] = 'Aktionen anzeigen';
+$string['view_check_undue'] = 'Nicht fällige abfragen';
+$string['view_remove_incorrect'] = 'Fehlerhafte entfernen';
+$string['view_export_pdf'] = 'Als PDF exportieren';
+$string['view_class_total'] = 'Fällige Vokabeln in der ganzen Klasse';

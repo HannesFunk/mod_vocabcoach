@@ -45,6 +45,10 @@ $string['move_undue_help'] = 'Vokabeln können jederzeit wiederholt werden. Ist 
 $string['third_active'] = 'Dritte Spalte für zusätzliche Informationen aktivieren.';
 
 $string['add_vocab_title'] = 'Vokabeln hinzufügen';
+$string['add_vocab_user'] = 'Vokabeln nur für mich hinzufügen';
+$string['add_vocab_list'] = 'Vokabelliste für den Kurs hinzufügen';
+$string['add_vocab'] = 'Vokabeln hinzufügen';
+$string['show_lists'] = 'Vokabellisten anzeigen';
 $string['front'] = 'Vorderseite';
 $string['back'] = 'Rückseite';
 $string['cancelled_form'] = 'Eintragen abgebrochen.';

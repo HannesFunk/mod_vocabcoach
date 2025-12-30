@@ -45,6 +45,10 @@ $string['move_undue_help'] = 'Words can be reviewed at any time. If this box is 
 $string['third_active'] = 'Enable third column for additional information.';
 
 $string['add_vocab_title'] = 'Add vocabulary';
+$string['add_vocab_user'] = 'Add words only for myself';
+$string['add_vocab_list'] = 'Add a list for the course';
+$string['add_vocab'] = 'Add words';
+$string['show_lists'] = 'Show all lists';
 $string['front'] = 'Front';
 $string['back'] = 'Back';
 $string['cancelled_form'] = 'Entry cancelled.';

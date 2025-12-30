@@ -1,0 +1,19 @@
+
+<div class="d-flex">
+    <div class="dropdown show">
+        <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="addVocabButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{#str}} add_vocab, mod_vocabcoach {{/str}}
+        </a>
+
+        <ul class="dropdown-menu" aria-labelledby="addVocabButton">
+            <li><a class="dropdown-item" href="#" data-action="mod_vocabcoach/add_vocab_user">
+                {{#str}} add_vocab_user, mod_vocabcoach {{/str}}
+            </a></li>
+            <li><a class="dropdown-item" href="#" data-action="mod_vocabcoach/add_vocab_list">
+                {{#str}} add_vocab_list, mod_vocabcoach {{/str}}
+            </a></li>
+        </ul>
+    </div>
+
+    <button class="btn btn-primary ml-2" data-action="mod_vocabcoach/show_lists">{{#str}} show_lists, mod_vocabcoach {{/str}}</button>
+</div>

@@ -53,17 +53,9 @@ class course_features {
         global $DB;
         $vh = new vocabhelper($this->cmid);
         $boxconditions = $vh->get_sql_box_conditions();
-
         $users = $this->get_student_users();
-        $userIDs = array_column($users, 'id');
-
-        $query =    "SELECT COUNT(*) AS number 
-                    FROM {vocabcoach_vocabdata} vd 
-                    WHERE userid IN (".implode(',', $userIDs).")
-                        AND cmid = $this->cmid 
-                        AND ($boxconditions);";
-
         $perfect = [];
+
         foreach ($users as $user) {
             $query =
                     "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} vd
@@ -114,13 +106,11 @@ class course_features {
 
         $topthree = array_slice($records, 0, $lasttopthree + 1);
 
-        if ($ownindex <= $lasttopthree) {
-            return $topthree;
-        } else {
-            $topthree[] = (object) ['id' => 0, 'firstname' => "...", 'lastname' => "", 'number' => ""];
-            $topthree[] = $records[$ownindex];
-            return $topthree;
+        if ($ownindex > $lasttopthree && $lasttopthree >= 0) {
+            $topthree[] = (object)['id' => 0, 'firstname' => "...", 'lastname' => "", 'number' => ""];
+            $topthree[] = $records[$ownindex]; //undefined array key 0
         }
+        return $topthree;
     }
 
    /**

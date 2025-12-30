@@ -95,6 +95,7 @@ class add_vocab_form extends moodleform {
         }
 
         $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));
+        $mform->setExpanded('vocabsectionheader');
 
         if ($mode === 'edit') {
             $text = get_string('add_vocab_info_lines', 'mod_vocabcoach').

@@ -194,9 +194,12 @@ function updateLabels () {
 }
 
 function adjustFontSizeToBoxHeight (elem) {
+    const parentHeight = elem.parentNode.offsetHeight;
+    const elemDisplayOld = elem.style.display;
+    elem.style.display = 'block';
     elem.style.fontSize = "";
 
-    while (elem.offsetHeight > elem.parentNode.offsetHeight) {
+    while (elem.offsetHeight > parentHeight) {
         let fontSize = getComputedStyle(elem).getPropertyValue('font-size');
         fontSize = parseFloat(fontSize);
 
@@ -206,6 +209,8 @@ function adjustFontSizeToBoxHeight (elem) {
 
         elem.style.fontSize = (fontSize - 2) + 'px';
     }
+
+    elem.style.display = elemDisplayOld;
 }
 
 function resetCheckFields() {

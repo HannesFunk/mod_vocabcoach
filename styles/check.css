@@ -16,9 +16,6 @@
     height: 25vh;
     text-align: center;
     margin: 15px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow-y: scroll;
 }
 
@@ -26,8 +23,10 @@
     display: none;
 }
 
-.check-box > div {
+.vc-check-label{
     font-size: xx-large;
+    margin: auto;
+    padding: 0.5rem 0.25rem;
 }
 
 .check-summary {

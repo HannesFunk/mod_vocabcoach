@@ -130,3 +130,10 @@ $string['view_remove_incorrect'] = 'Remove incorrect';
 $string['view_export_pdf'] = 'Export as PDF';
 $string['view_class_total'] = 'Total number of unrevised vocabulary in class';
 $string['notification_userprefs_updated'] = 'Userpreferences updated successfully.';
+
+$string['vocabcoach:addinstance'] = 'Add a new Vocab Coach activity';
+$string['vocabcoach:view'] = 'View Vocab Coach activity';
+$string['vocabcoach:delete_lists'] = 'Delete vocabulary lists';
+$string['vocabcoach:distribute_lists'] = 'Distribute vocabulary lists to course';
+$string['vocabcoach:show_class_total'] = 'View total unrevised vocabulary in class';
+$string['vocabcoach:show_leaderboard'] = 'View leaderboard';

@@ -52,24 +52,4 @@ class checkprefs_api extends external_api {
             'success' => new external_value(PARAM_BOOL, 'Success flag'),
         ]);
     }
-
-    public static function get_mode_parameters(): external_function_parameters {
-        return new external_function_parameters([
-            'cmid' => new external_value(PARAM_INT, 'Course module id', VALUE_REQUIRED),
-            'userid' => new external_value(PARAM_INT, 'User id', VALUE_REQUIRED),
-        ]);
-    }
-
-    public static function get_mode(int $cmid, int $userid): array {
-        global $USER;
-        self::validate_parameters(self::get_mode_parameters(), ['cmid' => $cmid, 'userid' => $userid]);
-        $mode = check_preferences::get_mode($cmid, $userid);
-        return ['mode' => $mode];
-    }
-
-    public static function get_mode_returns(): external_single_structure {
-        return new external_single_structure([
-            'mode' => new external_value(PARAM_ALPHANUMEXT, 'Current mode'),
-        ]);
-    }
 }

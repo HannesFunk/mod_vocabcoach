@@ -17,14 +17,5 @@
 
     <button class="btn btn-primary ml-2" data-action="mod_vocabcoach/show_lists">{{#str}} show_lists, mod_vocabcoach {{/str}}</button>
 
-    <div class="d-flex align-items-center ml-auto" id="checkmode-preference" data-cmid="{{cmid}}">
-        <label for="checkmode-select" class="mr-2 mb-0">{{#str}}mode, mod_vocabcoach{{/str}}:</label>
-        <select id="checkmode-select" class="custom-select w-auto">
-            <option value="empty"></option>
-            <option value="front">{{#str}}checkmode_front, mod_vocabcoach{{/str}}</option>
-            <option value="back">{{#str}}checkmode_back, mod_vocabcoach{{/str}}</option>
-            <option value="type">{{#str}}checkmode_type, mod_vocabcoach{{/str}}</option>
-            <option value="random">{{#str}}checkmode_random, mod_vocabcoach{{/str}}</option>
-        </select>
-    </div>
+    {{> mod_vocabcoach/checkmode_settings}}
 </div>

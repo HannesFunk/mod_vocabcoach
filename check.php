@@ -66,6 +66,8 @@ $PAGE->requires->js_call_amd(
         [json_encode($jsdata)]
 );
 
+$checkContext = \mod_vocabcoach\check_preferences::get_stdmode_context($id, $USER->id);
+
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('mod_vocabcoach/check', []);
+echo $OUTPUT->render_from_template('mod_vocabcoach/check', $checkContext);
 echo $OUTPUT->footer();

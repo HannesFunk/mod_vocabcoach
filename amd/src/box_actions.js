@@ -1,6 +1,6 @@
 import notification from 'core/notification';
 import {getString} from 'core/str';
-import {getClassTotalAJAX, getCheckModeAJAX, setCheckModeAJAX} from "./repository";
+import {getClassTotalAJAX, setCheckModeAJAX} from "./repository";
 
 const Selectors = {
     actions: {
@@ -15,44 +15,10 @@ const Selectors = {
     elements: {
         dropdown: '.dropdown',
         checkModeSelect: '#checkmode-select',
-        checkModeContainer: '#checkmode-preference',
     }
 };
 
 export function init(cmid, userid, courseid) {
-    const checkModeSelect = document.querySelector(Selectors.elements.checkModeSelect);
-    const checkModeContainer = document.querySelector(Selectors.elements.checkModeContainer);
-    if (checkModeSelect && checkModeContainer) {
-        getCheckModeAJAX(cmid, userid)
-            .then(result => {
-                if (result && result.mode) {
-                    checkModeSelect.value = result.mode;
-                    checkModeSelect.querySelector('[value="empty"]').remove();
-                }
-            });
-
-        const userPrefsListener = () => {
-            const mode = checkModeSelect.value;
-            if (mode === 'empty') {
-                return;
-            }
-            setCheckModeAJAX(cmid, userid, mode)
-                .catch(err => notification.exception(err))
-                .then(() => {
-                    return getString('notification_userprefs_updated', 'mod_vocabcoach').then(msg => {
-                        const msgData = {
-                            type: "success",
-                            message: msg
-                        };
-                        notification.addNotification(msgData);
-                    });
-                }
-            );
-        };
-
-        checkModeSelect.addEventListener('change', userPrefsListener);
-    }
-
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.forceCheck)) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
@@ -75,6 +41,30 @@ export function init(cmid, userid, courseid) {
             location.href = 'lists.php?id=' + cmid;
         }
     });
+
+    const checkModeSelect = document.querySelector(Selectors.elements.checkModeSelect);
+    const userPrefsListener = () => {
+        if (!checkModeSelect) {
+            return;
+        }
+        const mode = checkModeSelect.value;
+        if (mode === 'empty') {
+            return;
+        }
+        setCheckModeAJAX(cmid, userid, mode)
+            .catch(err => notification.exception(err))
+            .then(() => {
+                    return getString('notification_userprefs_updated', 'mod_vocabcoach').then(msg => {
+                        const msgData = {
+                            type: "success",
+                            message: msg
+                        };
+                        notification.addNotification(msgData);
+                    });
+                }
+            );
+    };
+    checkModeSelect.addEventListener('change', userPrefsListener);
 
     getClassTotalAJAX(cmid, courseid).then(
         (result) => {
@@ -114,3 +104,4 @@ function checkBox(cmid, box, force = false) {
         location.href = 'check.php?id=' + cmid + '&stage=' + stage + "&force=" + force;
     }
 }
+

@@ -28,18 +28,9 @@
 <div id="check-container" data-vocab-data-id="-1">
     <div id="check-header">
 
-        <div class="d-flex align-items-center mb-2">
-            <label for="check-mode" class="mr-2 ml-auto">{{#str}} checkmode, mod_vocabcoach {{/str}}</label>
-            <select id="check-mode" class="custom-select w-auto">
-                <option value="empty"></option>
-                <option value="front">{{#str}} checkmode_front, mod_vocabcoach {{/str}}</option>
-                <option value="back">{{#str}} checkmode_back, mod_vocabcoach {{/str}}</option>
-                <option value="type">{{#str}} checkmode_type, mod_vocabcoach {{/str}}</option>
-                <option value="random">{{#str}} checkmode_random, mod_vocabcoach {{/str}}</option>
-            </select>
-        </div>
+        {{> mod_vocabcoach/checkmode_settings}}
 
-        <p class="instruction-front-back-random">{{#str}} check_instructions, mod_vocabcoach {{/str}}</p>
+        <p class="instruction-front-back-random mt-2">{{#str}} check_instructions, mod_vocabcoach {{/str}}</p>
         <p class="check-number-remaining"></p>
         <div class="clearfix"></div>
 

@@ -66,12 +66,15 @@ if ($al->is_all_done($boxdata)) {
     $al->log($al->typesdaily['ACT_CHECKED_ALL']);
 }
 
+$stdcheckmodecontext = \mod_vocabcoach\check_preferences::get_stdmode_context($cm->id, $USER->id);
+
 $templatecontext = [
     'boxdata' => $boxdata,
     'days_logged_in' => $al->get_continuous_days($al->typesdaily['ACT_LOGGED_IN']),
     'days_checked_all' => $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']),
     'cmid' => $cm->id,
     'userid' => $USER->id,
+    ...$stdcheckmodecontext,
 ];
 
 $cf = new \mod_vocabcoach\course_features($course->id, $id, $USER->id);

@@ -1,7 +1,6 @@
 import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX, logCheckedVocabsAJAX, updateVocabAJAX} from "./repository";
 import mustache from 'core/mustache';
 import {showElement, showElements} from "./general";
-import {getCheckModeAJAX} from "./repository";
 
 let vocabArrayJSON = null;
 let knownCount = 0;
@@ -13,24 +12,16 @@ export const init = (configuration) => {
     config = JSON.parse(configuration);
     config.userid = parseInt(config.userid);
 
-    Promise.all([
-        getVocabArray(config),
-        getCheckModeAJAX(config.cmid, config.userid)
-    ])
-    // eslint-disable-next-line no-unused-vars
-    .then(([_, modeResult]) => {
-        const checkModeSelect = document.querySelector(Selectors.formElements.mode);
-        if (checkModeSelect && modeResult && modeResult.mode) {
-            checkModeSelect.value = modeResult.mode;
-            const emptyOpt = checkModeSelect.querySelector(Selectors.formElements.modeEmpty);
-            if (emptyOpt) {
-                emptyOpt.remove();
-            }
-        }
-        initDots();
-        changeMode();
-        addListeners();
-    });
+    mode = document.querySelector(Selectors.formElements.mode).value;
+
+    getVocabArray(config)
+        .then(() => {
+            initDots();
+            changeMode();
+        });
+
+    addListeners();
+
 };
 
 // Unified function to fetch vocab data based on config.source and set vocabArrayJSON.
@@ -107,7 +98,7 @@ const Selectors = {
         typedVocabOverride: '[data-action="mod-vocabcoach/typed-vocab-override"]',
     },
     formElements: {
-        mode: '[id="check-mode"]',
+        mode: '[id="checkmode-select"]',
         modeEmpty: '[value="empty"]',
         typedVocab: '[id="input-vocab-front"]',
     },

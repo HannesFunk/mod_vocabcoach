@@ -132,14 +132,3 @@ export const setCheckModeAJAX = (
         mode,
     },
 }])[0];
-
-export const getCheckModeAJAX = (
-    cmid,
-    userid
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_get_checkmode',
-    args: {
-        cmid,
-        userid,
-    },
-}])[0];

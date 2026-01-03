@@ -88,9 +88,6 @@ $string['list_private_help'] = 'Wenn du diesen Haken setzt, kannst nur du selbst
 $string['list_distribute_now'] = 'An alle verteilen';
 $string['list_distribute_now_help'] = 'Wenn du diesen Haken setzt, werden die Vokabeln direkt bei allen anderen Schüler:innen in diesem Kurs hinzugefügt. Für vocab duties (in-class oder homework) bitte setzen.';
 
-$string['type_vocab_label'] = 'Vokabeln tippen';
-$string['mode'] = 'Abfragemodus';
-
 // Lists page.
 $string['lists'] = 'Vokabellisten';
 $string['intro_lists'] = 'Du siehst hier alle öffentlichen Vokabellisten, die andere Schüler in diesem Kurs angelegt haben. Du kannst entweder direkt von diesen Listen lernen oder die ganze Liste in deinen Vokabelkasten übernehmen.';

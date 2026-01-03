@@ -113,11 +113,4 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
-    'mod_vocabcoach_get_checkmode' => [
-        'classname' => 'mod_vocabcoach\external\checkprefs_api',
-        'methodname' => 'get_mode',
-        'description' => 'Get the user check mode preference for this activity',
-        'type' => 'read',
-        'ajax' => true,
-    ],
 ];

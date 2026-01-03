@@ -76,9 +76,6 @@ $string['list_private_help'] = 'If you tick this box, only you can see this list
 $string['list_distribute_now'] = 'Distribute to everyone';
 $string['list_distribute_now_help'] = 'If you tick this box, the words will be added immediately to all other students in this course. Please tick for vocab duties (in-class or homework).';
 
-$string['type_vocab_label'] = 'Type vocabulary';
-$string['mode'] = 'Practice mode';
-
 // Lists page.
 $string['lists'] = 'Vocabulary lists';
 $string['intro_lists'] = 'Here you can see all public vocabulary lists created by other students in this course. You can either study directly from these lists or copy the entire list into your own box.';

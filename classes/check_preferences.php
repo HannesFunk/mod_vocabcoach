@@ -49,6 +49,16 @@ class check_preferences {
         return $record->mode;
     }
 
+    public static function get_stdmode_context(int $cmid, int $userid) : array {
+        $mode = self::get_mode($cmid, $userid);
+        return [
+            'frontSelected' => $mode === 'front',
+            'backSelected' => $mode === 'back',
+            'randomSelected' => $mode === 'random',
+            'typeSelected' => $mode === 'type',
+        ];
+    }
+
     /**
      * Store/update the user preference.
      *

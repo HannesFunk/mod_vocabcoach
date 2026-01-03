@@ -244,8 +244,8 @@ function resetCheckFields() {
         }
         case 'front':
         case 'back':
-            showElement('check-front', mode === 'front');
-            showElement('check-back', mode === 'back');
+            showElement('check-front', mode === 'back');
+            showElement('check-back', mode === 'front');
             break;
 
         case 'type':

@@ -129,6 +129,8 @@ $string['view_check_undue'] = 'Check not yet due';
 $string['view_remove_incorrect'] = 'Remove incorrect';
 $string['view_export_pdf'] = 'Export as PDF';
 $string['view_class_total'] = 'Total number of unrevised vocabulary in class';
+$string['view_live_update'] = 'Update live.';
+
 $string['notification_userprefs_updated'] = 'Userpreferences updated successfully.';
 
 $string['vocabcoach:addinstance'] = 'Add a new Vocab Coach activity';
@@ -137,3 +139,4 @@ $string['vocabcoach:delete_lists'] = 'Delete vocabulary lists';
 $string['vocabcoach:distribute_lists'] = 'Distribute vocabulary lists to course';
 $string['vocabcoach:show_class_total'] = 'View total unrevised vocabulary in class';
 $string['vocabcoach:show_leaderboard'] = 'View leaderboard';
+$string['vocabcoach:mod/vocabcoach:show_class_total_live'] = 'Show live updates of the number of total due vocab.';

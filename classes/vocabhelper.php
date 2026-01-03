@@ -30,6 +30,10 @@ class vocabhelper {
      */
     public int $boxnumber = 5;
     /**
+     * @var int $cmid The course module id.
+     */
+    public int $cmid;
+    /**
      * @var array|int[] $boxtimes Times (in days) after vocab in a box is revisited.
      */
     public array $boxtimes = [0, 1, 2, 5, 10, 30];
@@ -41,6 +45,7 @@ class vocabhelper {
      */
     public function __construct(int $cmid) {
         global $DB;
+        $this->cmid = $cmid;
         $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
         $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance]);
         for ($i = 1; $i <= 5; $i++) {
@@ -93,5 +98,40 @@ class vocabhelper {
             $boxconditions .= " (vd.stage = $i AND lastchecked < " . $this->old_timestamp($this->boxtimes[$i]).")";
         }
         return $boxconditions;
+    }
+
+    public function get_class_total (int $courseid) :int {
+        global $DB;
+
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
+        if (!$studentrole) {
+            return -1;
+        }
+
+        $coursecontext = \context_course::instance($courseid);
+        $userids = get_role_users($studentrole->id, $coursecontext, false, 'u.*');
+        return self::get_due_count($userids);
+    }
+
+    /**
+     * Returns the number of vocab items that are due
+     * @param array $userids
+     * @return int
+     * @throws \dml_exception
+     */
+    public function get_due_count (array $userids) : int {
+        global $DB;
+        $vocabhelper = new vocabhelper($this->cmid);
+        $boxconditions = $vocabhelper->get_sql_box_conditions();
+
+        $useridlist = implode(',', array_map(fn($user) => $user->id, $userids));
+
+        $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd
+             WHERE userid IN ($useridlist) AND cmid = $this->cmid AND ($boxconditions)";
+        $record = $DB->get_record_sql($query);
+        if (!$record) {
+            return -1;
+        }
+        return $record->total;
     }
 }

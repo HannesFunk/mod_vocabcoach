@@ -139,6 +139,7 @@ $string['view_check_undue'] = 'Nicht fällige abfragen';
 $string['view_remove_incorrect'] = 'Fehlerhafte entfernen';
 $string['view_export_pdf'] = 'Als PDF exportieren';
 $string['view_class_total'] = 'Fällige Vokabeln in der ganzen Klasse';
+$string['view_live_update'] = 'Live updates.';
 $string['notification_userprefs_updated'] = 'Einstellungen erfolgreich aktualisiert.';
 
 $string['vocabcoach:addinstance'] = 'Neue Vokabelcoach-Aktivität hinzufügen';
@@ -146,4 +147,5 @@ $string['vocabcoach:view'] = 'Vokabelcoach-Aktivität anzeigen';
 $string['vocabcoach:delete_lists'] = 'Vokabellisten löschen';
 $string['vocabcoach:distribute_lists'] = 'Vokabellisten an den Kurs verteilen';
 $string['vocabcoach:show_class_total'] = 'Gesamtzahl nicht wiederholter Vokabeln in der Klasse anzeigen';
-$string['vocabcoach:show_leaderboard'] = 'Bestenliste anzeigen';
+$string['vocabcoach:show_leaderboard'] = 'Leaderboard anzeigen';
+$string['vocabcoach:mod/vocabcoach:show_class_total_live'] = 'Live updates der fälligen Vokabeln anzeigen.';

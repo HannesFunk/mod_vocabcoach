@@ -1,9 +1,11 @@
 <h4 class="mt-5">{{#str}}view_class_total, mod_vocabcoach {{/str}}</h4>
 <hr>
-<div style="height: 120px">
+{{#liveupdate}}
+    <div class="d-flex">
+        <input class="ml-auto mr-2" type="checkbox" id="checkbox-live-update" data-action="mod_vocabcoach/live_update" />
+        <label for="checkbox-live-update">{{#str}} view_live_update, mod_vocabcoach {{/str}}</label>
+    </div>
+{{/liveupdate}}
 <div style="text-align: center;">
-    <div class="streak" style="width: 75%; font-size: 80px"><span id="vocabcoach-class-total"></span>{{total}}</div>
-</div>
-
-</div><div style="height: 120px">
+    <div class="streak" id="vocabcoach-class-total" style="width: 75%; font-size: 80px">{{total}}</div>
 </div>

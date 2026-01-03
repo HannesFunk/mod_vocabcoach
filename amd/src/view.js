@@ -11,6 +11,7 @@ const Selectors = {
         forceCheck: '[data-action="mod_vocabcoach/force_check_all"]',
         showPdfUser: '[data-action="mod_vocabcoach/show_pdf_user"]',
         viewBox: '[data-action="mod_vocabcoach/view_box"]',
+        liveUpdate: '[data-action="mod_vocabcoach/live_update"]',
     },
     elements: {
         dropdown: '.dropdown',
@@ -42,6 +43,31 @@ export function init(cmid, userid, courseid) {
         }
     });
 
+    const checkBoxLiveUpdate = document.querySelector(Selectors.actions.liveUpdate);
+    if (checkBoxLiveUpdate) {
+        checkBoxLiveUpdate.addEventListener('change', () => {
+            if (checkBoxLiveUpdate.checked) {
+                if (checkBoxLiveUpdate.hasAttribute('data-interval-id')) {
+                    return;
+                }
+                const intervalID = setInterval( () => {
+                    getClassTotalAJAX(cmid, courseid).then(
+                        (result) => {
+                            document.getElementById('vocabcoach-class-total').innerHTML = result.total === -1 ? '-' : result.total;
+                        }
+                    );
+                }, 1000);
+                checkBoxLiveUpdate.setAttribute('data-interval-id', intervalID.toString());
+            } else {
+                const intervalID = checkBoxLiveUpdate.getAttribute('data-interval-id');
+                if (intervalID !== "") {
+                    clearInterval(parseInt(intervalID));
+                    checkBoxLiveUpdate.removeAttribute('data-interval-id');
+                }
+            }
+        });
+    }
+
     const checkModeSelect = document.querySelector(Selectors.elements.checkModeSelect);
     const userPrefsListener = () => {
         if (!checkModeSelect) {
@@ -71,13 +97,7 @@ export function init(cmid, userid, courseid) {
             document.getElementById('vocabcoach-class-total').innerHTML = result.total;
         }
     );
-    setInterval( () => {
-        getClassTotalAJAX(cmid, courseid).then(
-            (result) => {
-                document.getElementById('vocabcoach-class-total').innerHTML = result.total;
-            }
-        );
-    }, 1000);
+
 }
 
 function checkBox(cmid, box, force = false) {

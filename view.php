@@ -55,7 +55,7 @@ $PAGE->set_context($modulecontext);
 
 $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/activity.css');
-$PAGE->requires->js_call_amd('mod_vocabcoach/box_actions', 'init', [$id, $USER->id, $course->id]);
+$PAGE->requires->js_call_amd('mod_vocabcoach/view', 'init', [$id, $USER->id, $course->id]);
 
 $boxmanager = new box_manager($id, $USER->id);
 $boxdata = $boxmanager->get_box_details();
@@ -81,7 +81,13 @@ echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecontext);
 
 if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
-    echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object) ['total' => ""]);
+    if (has_capability('mod/vocabcoach:show_class_total_live', $modulecontext)) {
+        echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object)['total' => "", 'liveupdate' => true]);
+    } else {
+        $vh = new \mod_vocabcoach\vocabhelper($cm->id);
+        $total = $vh->get_class_total($cm->course);
+        echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object)['total' => $total, 'liveupdate' => false]);
+    }
 }
 
 if (has_capability('mod/vocabcoach:show_leaderboard', $modulecontext)) {

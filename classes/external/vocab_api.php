@@ -312,56 +312,22 @@ class vocab_api extends external_api {
      */
     public static function get_class_total_returns() : external_single_structure {
         return new external_single_structure([
-                'success' => new external_value(PARAM_BOOL, 'whether the removal was successful.'),
-                'message' => new external_value(PARAM_TEXT, 'a message'),
                 'total' => new external_value(PARAM_INT, 'the total number of due vocab'),
         ]);
     }
 
     /**
-     * Return the total number of vocab waiting for revision in a course.
+     * Return the total number of vocab waiting for revision in a course, defaults to -1 at error.
      *
      * @param int $cmid
      * @param int $courseid
      * @return array
-     * @throws \invalid_parameter_exception|\dml_exception
      */
     public static function get_class_total(int $cmid, int $courseid) :array {
-        global $DB;
-        self::validate_parameters(self::get_class_total_parameters(),
-                ['cmid' => $cmid, 'courseid' => $courseid]);
 
-        // $subquery = "SELECT userid FROM {user_enrolments} ue JOIN {enrol} en ON ue.enrolid = en.id
-        //        JOIN {user} uu ON uu.id = ue.userid WHERE en.courseid = $courseid";
+        $vh = new vocabhelper($cmid);
+        $total = $vh->get_class_total($courseid);
 
-        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
-        if (!$studentrole) {
-            return [];
-        }
-
-        $coursecontext = \context_course::instance($courseid);
-        $userid = get_role_users($studentrole->id, $coursecontext, false, 'u.*');
-        $useridlist = implode(',', array_map(fn($user) => $user->id, $userid));
-
-        $total = self::get_due_count($cmid, $useridlist);
-        return ['success' => true, 'message' => '', 'total' => $total];
-    }
-
-    /**
-     * Returns the number of vocab items that are due
-     * @param int $cmid
-     * @param string $useridlist
-     * @return int
-     * @throws \dml_exception
-     */
-    private static function get_due_count (int $cmid, string $useridlist) : int {
-        global $DB;
-        $vocabhelper = new vocabhelper($cmid);
-        $boxconditions = $vocabhelper->get_sql_box_conditions();
-
-        $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd
-             WHERE userid IN ($useridlist) AND cmid = $cmid AND ($boxconditions)";
-        $record = $DB->get_record_sql($query);
-        return $record->total;
+        return ['total' => $total];
     }
 }

@@ -30,13 +30,13 @@ require_once(__DIR__.'/classes/activity_tracker.php');
 
 use mod_vocabcoach\box_manager;
 // Course module id.
-$id = optional_param('id', 0, PARAM_INT);
+$cmid = optional_param('id', 0, PARAM_INT);
 
 // Activity instance id.
 $v = optional_param('v', 0, PARAM_INT);
 
-if ($id) {
-    $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+if ($cmid) {
+    $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 } else {
@@ -55,12 +55,12 @@ $PAGE->set_context($modulecontext);
 
 $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/activity.css');
-$PAGE->requires->js_call_amd('mod_vocabcoach/view', 'init', [$id, $USER->id, $course->id]);
+$PAGE->requires->js_call_amd('mod_vocabcoach/view', 'init', [$cmid, $USER->id, $course->id]);
 
-$boxmanager = new box_manager($id, $USER->id);
+$boxmanager = new box_manager($cmid, $USER->id);
 $boxdata = $boxmanager->get_box_details();
 
-$al = new activity_tracker($USER->id, $id);
+$al = new activity_tracker($USER->id, $cmid);
 $al->log($al->typesdaily['ACT_LOGGED_IN']);
 if ($al->is_all_done($boxdata)) {
     $al->log($al->typesdaily['ACT_CHECKED_ALL']);
@@ -80,18 +80,15 @@ $templatecontext = [
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecontext);
 
+$cf = new \mod_vocabcoach\course_features($course->id, $cmid, $USER->id);
+
 if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
-    if (has_capability('mod/vocabcoach:show_class_total_live', $modulecontext)) {
-        echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object)['total' => "", 'liveupdate' => true]);
-    } else {
-        $vh = new \mod_vocabcoach\vocabhelper($cm->id);
-        $total = $vh->get_class_total($cm->course);
-        echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object)['total' => $total, 'liveupdate' => false]);
-    }
+    $total = $cf->get_class_total($cm->course);
+    $canliveupdate = has_capability('mod/vocabcoach:show_class_total_live', $modulecontext);
+    echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object)['total' => $total, 'liveupdate' => $canliveupdate]);
 }
 
 if (has_capability('mod/vocabcoach:show_leaderboard', $modulecontext)) {
-    $cf = new \mod_vocabcoach\course_features($course->id, $id, $USER->id);
     $leaderboarddata = $cf->get_leaderboard();
     if (!empty($leaderboarddata)) {
         echo $OUTPUT->render_from_template('mod_vocabcoach/leaderboard', (object) ['leaders' => $leaderboarddata]);

@@ -77,21 +77,30 @@ class course_features {
                 ORDER BY number;";
         $nonperfect = $DB->get_records_sql($query);
 
+        // array of all records in the DB
         $records = array_merge($perfect, $nonperfect);
+        if (sizeof($records) == 0) {
+            return [];
+        }
 
+        // Ranking algorithm: array is already ordered, now compute the (dense) rank and edit rows accordingly.
         $rank = 1;
+        // the index of the last record in the top three
         $lasttopthree = 0;
         $records = array_values($records);
-        $ownindex = 0;
-        for ($i = 0; $i < count($records); $i++) {
-            if ($i > 0 && $records[$i - 1]->number < $records[$i]->number) {
+        $ownindex = null;
+        $records[0]->rank = 1;
+
+        for ($i = 1; $i < count($records); $i++) {
+            if ($records[$i - 1]->number < $records[$i]->number) {
                 $rank++;
-                if ($rank > 3 && $lasttopthree == 0) {
-                    $lasttopthree = $i - 1;
-                }
                 $records[$i]->rank = $rank;
             } else {
-                $records[$i]->rank = ($i == 0) ? $rank : "";
+                $records[$i]->rank = "";
+            }
+
+            if ($rank <= 3) {
+                $lasttopthree = $i;
             }
 
             if ($records[$i]->id == $this->userid) {
@@ -100,13 +109,9 @@ class course_features {
             }
         }
 
-        if ($lasttopthree == 0) {
-            $lasttopthree = $i - 1;
-        }
-
         $topthree = array_slice($records, 0, $lasttopthree + 1);
 
-        if ($ownindex > $lasttopthree && $lasttopthree >= 0) {
+        if ($ownindex && $ownindex > $lasttopthree) {
             $topthree[] = (object)['id' => 0, 'firstname' => "...", 'lastname' => "", 'number' => ""];
             $topthree[] = $records[$ownindex]; //undefined array key 0
         }
@@ -129,4 +134,32 @@ class course_features {
         $coursecontext = \context_course::instance($this->courseid);
         return get_role_users($studentrole->id, $coursecontext, false, 'u.*');
     }
+
+    public function get_class_total () :int {
+        $userids = $this->get_student_users();
+        return self::get_due_count($userids);
+    }
+
+    /**
+     * Returns the number of vocab items that are due
+     * @param array $userids
+     * @return int
+     * @throws \dml_exception
+     */
+    public function get_due_count (array $userids) : int {
+        global $DB;
+        $vocabhelper = new vocabhelper($this->cmid);
+        $boxconditions = $vocabhelper->get_sql_box_conditions();
+
+        $useridlist = implode(',', array_map(fn($user) => $user->id, $userids));
+
+        $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd
+             WHERE userid IN ($useridlist) AND cmid = $this->cmid AND ($boxconditions)";
+        $record = $DB->get_record_sql($query);
+        if (!$record) {
+            return -1;
+        }
+        return $record->total;
+    }
+
 }

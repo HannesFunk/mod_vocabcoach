@@ -122,7 +122,7 @@ function initDots() {
 }
 
 export function changeMode() {
-    mode = document.getElementById('check-mode').value;
+    mode = document.getElementById('checkmode-select').value;
     vocabArrayJSON = shuffle(vocabArrayJSON);
     const checkAreaElem = document.getElementById('check-area');
     startAnimation(checkAreaElem, 'animation-slide-out').then(

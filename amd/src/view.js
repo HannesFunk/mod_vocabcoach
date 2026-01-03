@@ -25,13 +25,11 @@ export function init(cmid, userid, courseid) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
         } else if (e.target.closest(Selectors.actions.showPdfUser)) {
             const stage = e.target.closest(Selectors.actions.showPdfUser).getAttribute('data-stage');
-            window.open('exorts/pdf.php?userid=' + userid + '&cmid=' +
+            window.open('exports/pdf.php?userid=' + userid + '&cmid=' +
                 cmid + '&stage=' + stage);
         } else if (e.target.closest(Selectors.actions.viewBox)) {
             const stage = e.target.closest(Selectors.actions.viewBox).getAttribute('data-stage');
             location.href = 'viewbox.php?id=' + cmid + '&stage=' + stage;
-        } else if (e.target.closest(Selectors.elements.dropdown)) {
-            return false;
         }  else if (e.target.closest(Selectors.actions.checkBox)) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox));
         } else if (e.target.closest(Selectors.actions.addUserVocab)) {
@@ -40,6 +38,8 @@ export function init(cmid, userid, courseid) {
             location.href = 'add_vocab.php?id=' + cmid + '&mode=list';
         } else if (e.target.closest(Selectors.actions.showLists)) {
             location.href = 'lists.php?id=' + cmid;
+        } else if (e.target.closest(Selectors.elements.dropdown)) { // keep this last!
+            return false;
         }
     });
 
@@ -91,13 +91,6 @@ export function init(cmid, userid, courseid) {
             );
     };
     checkModeSelect.addEventListener('change', userPrefsListener);
-
-    getClassTotalAJAX(cmid, courseid).then(
-        (result) => {
-            document.getElementById('vocabcoach-class-total').innerHTML = result.total;
-        }
-    );
-
 }
 
 function checkBox(cmid, box, force = false) {

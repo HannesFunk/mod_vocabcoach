@@ -88,5 +88,23 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             $dbman->add_field($table, $field);
         }
     }
+    if ($oldversion < 2026010100) {
+        $table = new xmldb_table('vocabcoach_checkprefs');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null, 'primary key');
+            $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'cmid');
+            $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'userid');
+            $table->add_field('mode', XMLDB_TYPE_CHAR, '16', null, XMLDB_NOTNULL, null, 'random', null, null, 'mode');
+            $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, null, null, 'timemodified');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key('uniq_cmid_user', XMLDB_KEY_UNIQUE, ['cmid', 'userid']);
+            $table->add_key('fk_cmid', XMLDB_KEY_FOREIGN, ['cmid'], 'course_modules', ['id']);
+            $table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+
+            $dbman->create_table($table);
+        }
+        upgrade_mod_savepoint(true, 2026010100, 'vocabcoach');
+    }
     return true;
 }

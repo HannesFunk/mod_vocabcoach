@@ -28,9 +28,18 @@
 <div id="check-container" data-vocab-data-id="-1">
     <div id="check-header">
 
-        {{{check-settings-form}}}
+        <div class="d-flex align-items-center mb-2">
+            <label for="check-mode" class="mr-2 ml-auto">{{#str}} checkmode, mod_vocabcoach {{/str}}</label>
+            <select id="check-mode" class="custom-select w-auto">
+                <option value="empty"></option>
+                <option value="front">{{#str}} checkmode_front, mod_vocabcoach {{/str}}</option>
+                <option value="back">{{#str}} checkmode_back, mod_vocabcoach {{/str}}</option>
+                <option value="type">{{#str}} checkmode_type, mod_vocabcoach {{/str}}</option>
+                <option value="random">{{#str}} checkmode_random, mod_vocabcoach {{/str}}</option>
+            </select>
+        </div>
 
-        <p class="instruction-front-back-random">Überlege dir die Übersetzung der Vokabel und überprüfe deine Lösung, indem du in das leere Feld klickst.</p>
+        <p class="instruction-front-back-random">{{#str}} check_instructions, mod_vocabcoach {{/str}}</p>
         <p class="check-number-remaining"></p>
         <div class="clearfix"></div>
 
@@ -51,14 +60,14 @@
     </div>
     <div id="check-area">
         <div id="check-box-front" class="check-box d-flex" data-action="mod_vocabcoach/reveal-card">
-            <div id="check-front" class="vc-check-label">Lädt...</div>
+            <div id="check-front" class="vc-check-label">{{#str}} loading, mod_vocabcoach {{/str}}</div>
         </div>
         <div id="check-box-back" class="check-box d-flex" data-action="mod_vocabcoach/reveal-card">
-            <div id="check-back" class="vc-check-label">Lädt...</div>
+            <div id="check-back" class="vc-check-label">{{#str}} loading, mod_vocabcoach {{/str}}</div>
         </div>
         {{#thirdActive}}
         <div id="check-box-third" class="check-box d-flex" data-action="mod_vocabcoach/reveal-card">
-            <div id="check-third" class="vc-check-label">Lädt...</div>
+            <div id="check-third" class="vc-check-label">{{#str}} loading, mod_vocabcoach {{/str}}</div>
         </div>
         {{/thirdActive}}
 

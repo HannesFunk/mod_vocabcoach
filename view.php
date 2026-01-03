@@ -70,6 +70,8 @@ $templatecontext = [
     'boxdata' => $boxdata,
     'days_logged_in' => $al->get_continuous_days($al->typesdaily['ACT_LOGGED_IN']),
     'days_checked_all' => $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']),
+    'cmid' => $cm->id,
+    'userid' => $USER->id,
 ];
 
 $cf = new \mod_vocabcoach\course_features($course->id, $id, $USER->id);

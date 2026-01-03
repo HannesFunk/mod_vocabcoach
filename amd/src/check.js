@@ -1,6 +1,7 @@
 import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX, logCheckedVocabsAJAX, updateVocabAJAX} from "./repository";
 import mustache from 'core/mustache';
 import {showElement, showElements} from "./general";
+import {getCheckModeAJAX} from "./repository";
 
 let vocabArrayJSON = null;
 let knownCount = 0;
@@ -11,23 +12,41 @@ let config = {};
 export const init = (configuration) => {
     config = JSON.parse(configuration);
     config.userid = parseInt(config.userid);
-    if (config.source === 'list') {
-        getListArrayAJAX(config.listid).then(response => {
-            vocabArrayJSON = response;
-            initDots();
-            changeMode();
+
+    Promise.all([
+        getVocabArray(config),
+        getCheckModeAJAX(config.cmid, config.userid)
+    ])
+    // eslint-disable-next-line no-unused-vars
+    .then(([_, modeResult]) => {
+        const checkModeSelect = document.querySelector(Selectors.formElements.mode);
+        if (checkModeSelect && modeResult && modeResult.mode) {
+            checkModeSelect.value = modeResult.mode;
+            const emptyOpt = checkModeSelect.querySelector(Selectors.formElements.modeEmpty);
+            if (emptyOpt) {
+                emptyOpt.remove();
             }
-        );
-    } else if (config.source === 'user') {
-        getBoxArrayAJAX(config.userid, config.cmid, config.stage, config.force).then(response => {
-            vocabArrayJSON = response;
-            initDots();
-            changeMode();
-            }
-        );
-    }
-    addListeners();
+        }
+        initDots();
+        changeMode();
+        addListeners();
+    });
 };
+
+// Unified function to fetch vocab data based on config.source and set vocabArrayJSON.
+function getVocabArray(cfg) {
+    if (cfg.source === 'list') {
+        return getListArrayAJAX(cfg.listid).then(response => {
+            vocabArrayJSON = response;
+        });
+    } else if (cfg.source === 'user') {
+        return getBoxArrayAJAX(cfg.userid, cfg.cmid, cfg.stage, cfg.force).then(response => {
+            vocabArrayJSON = response;
+        });
+    }
+    // Default: resolve immediately if no known source.
+    return Promise.resolve();
+}
 
 function addListeners() {
     document.addEventListener('click', e => {
@@ -89,6 +108,7 @@ const Selectors = {
     },
     formElements: {
         mode: '[id="check-mode"]',
+        modeEmpty: '[value="empty"]',
         typedVocab: '[id="input-vocab-front"]',
     },
 };

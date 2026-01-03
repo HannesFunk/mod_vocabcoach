@@ -120,5 +120,26 @@ export const getClassTotalAJAX = (
         },
     }])[0];
 
+export const setCheckModeAJAX = (
+    cmid,
+    userid,
+    mode
+) => fetchMany([{
+    methodname: 'mod_vocabcoach_set_checkmode',
+    args: {
+        cmid,
+        userid,
+        mode,
+    },
+}])[0];
 
-
+export const getCheckModeAJAX = (
+    cmid,
+    userid
+) => fetchMany([{
+    methodname: 'mod_vocabcoach_get_checkmode',
+    args: {
+        cmid,
+        userid,
+    },
+}])[0];

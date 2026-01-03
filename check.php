@@ -26,7 +26,6 @@ require(__DIR__.'/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
-require_once(__DIR__.'/classes/forms/check_settings_form.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -42,9 +41,6 @@ $PAGE->set_url('/mod/vocabcoach/view.php');
 $PAGE->set_title('Vokabelcoach - Abfrage');
 $PAGE->set_heading('Vokabelcoach - Abfrage');
 $PAGE->navbar->add('Abfrage');
-
-$checksettingsform = new check_settings_form();
-$formhtml = $checksettingsform->to_html();
 
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
@@ -71,5 +67,5 @@ $PAGE->requires->js_call_amd(
 );
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('mod_vocabcoach/check', ['check-settings-form' => $formhtml]);
+echo $OUTPUT->render_from_template('mod_vocabcoach/check', []);
 echo $OUTPUT->footer();

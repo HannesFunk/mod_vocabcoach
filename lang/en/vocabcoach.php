@@ -31,6 +31,7 @@ $string['modulename'] = 'Vocabulary box';
 $string['modulenameplural'] = 'Vocabulary boxes';
 $string['pluginadministration'] = 'Settings';
 
+$string['loading'] = "Loading...";
 
 $string['vocabcoachsettings'] = 'Settings';
 $string['vocabcoachname'] = 'Vocabulary box';
@@ -103,6 +104,14 @@ $string['actions_edit'] = 'Edit';
 $string['actions_delete'] = 'Delete';
 $string['actions_distribute_to_course'] = 'Distribute to course';
 
+$string['checkmode'] = 'Check mode';
+$string['checkmode_front'] = 'Ask for front';
+$string['checkmode_back'] = 'Ask for back';
+$string['checkmode_type'] = 'Type word on the front';
+$string['checkmode_random'] = 'Random';
+$string['check_instructions'] = "Remember the translation, then check your solution by clicking or tipping into the empty box.";
+
+
 // Task / notification strings
 $string['task_sendduenotifications'] = 'Send due vocab notifications';
 $string['due_notification_subject'] = '{$a} vocab items due';
@@ -123,3 +132,4 @@ $string['view_check_undue'] = 'Check not yet due';
 $string['view_remove_incorrect'] = 'Remove incorrect';
 $string['view_export_pdf'] = 'Export as PDF';
 $string['view_class_total'] = 'Total number of unrevised vocabulary in class';
+$string['notification_userprefs_updated'] = 'Userpreferences updated successfully.';

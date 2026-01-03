@@ -31,6 +31,8 @@ $string['modulename'] = 'Vokabelkasten';
 $string['modulenameplural'] = 'Vokabelkästen';
 $string['pluginadministration'] = 'Einstellungen';
 
+$string['loading'] = "Lädt...";
+
 
 $string['vocabcoachsettings'] = 'Einstellungen';
 $string['vocabcoachname'] = 'Vokabelkasten';
@@ -113,6 +115,13 @@ $string['actions_edit'] = 'Bearbeiten';
 $string['actions_delete'] = 'Löschen';
 $string['actions_distribute_to_course'] = 'An Kurs verteilen';
 
+$string['checkmode'] = 'Abfragemodus';
+$string['checkmode_front'] = 'Nach Vorderseite fragen';
+$string['checkmode_back'] = 'Nach Rückseite fragen';
+$string['checkmode_type'] = 'Vorderseite eintippen';
+$string['checkmode_random'] = 'Zufällig';
+$string['check_instructions'] = "Überlege dir die Übersetzung der Vokabel und überprüfe deine Lösung, indem du in das leere Feld klickst.";
+
 // Task / notification strings
 $string['task_sendduenotifications'] = 'Sende Benachrichtigungen für fällige Vokabeln';
 $string['due_notification_subject'] = '{$a} Vokabeln fällig';
@@ -133,3 +142,4 @@ $string['view_check_undue'] = 'Nicht fällige abfragen';
 $string['view_remove_incorrect'] = 'Fehlerhafte entfernen';
 $string['view_export_pdf'] = 'Als PDF exportieren';
 $string['view_class_total'] = 'Fällige Vokabeln in der ganzen Klasse';
+$string['notification_userprefs_updated'] = 'Einstellungen erfolgreich aktualisiert.';

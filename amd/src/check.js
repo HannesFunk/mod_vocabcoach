@@ -45,7 +45,7 @@ function addListeners() {
             checkTypedVocab(config.userid);
         } else if (e.target.closest(Selectors.actions.revealCard) && mode !== 'type') {
             const trigger = e.target.closest(Selectors.actions.revealCard);
-            const label = trigger.getElementsByClassName('vc-check-label')[0];
+            const label = trigger.querySelector('.vc-check-label');
             showElement(label, true);
             // showElement('check-third', config.thirdActive);
         } else if (e.target.closest(Selectors.actions.updateVocab)) {
@@ -113,10 +113,21 @@ function initDots() {
     greyDot.classList.add('unchecked');
     greyDotContainer.appendChild(greyDot);
 
+    const maxWidth = progressBar.offsetWidth;
+    let showEveryNthDot = 1;
+    while ((totalVocab * 12)/showEveryNthDot > maxWidth - 50) {
+        showEveryNthDot++;
+    }
+
     for (let i = 0; i < totalVocab; i++) {
         let newDot = greyDotContainer.cloneNode(true);
-        newDot.style.transform = 'translateX(calc(100% - ' + (i+1)*12 + 'px))';
-        newDot.setAttribute('data-new-shift', (totalVocab-i)*12);
+        if ((i % showEveryNthDot) !== 0) {
+            newDot.classList.add('hidden');
+        }
+        let xShift = 12 + i * 12 / showEveryNthDot;
+        newDot.style.transform = 'translateX(calc(100% - ' + xShift + 'px))';
+        newDot.setAttribute('data-new-shift', (totalVocab - i) * 12 / showEveryNthDot);
+
         progressBar.appendChild(newDot);
     }
 }
@@ -162,13 +173,11 @@ function checkTypedVocab () {
     }
 }
 
-function showNext(removeShown = true) {
-    if (removeShown) {
-        vocabArrayJSON.splice(0, 1);
-    }
+function showNext() {
+    vocabArrayJSON.splice(0, 1);
 
     const numberRemaining = vocabArrayJSON.length;
-    document.getElementsByClassName('check-number-remaining')[0].innerHTML = 'Noch ' + numberRemaining +
+    document.querySelector('.check-number-remaining').innerHTML = 'Noch ' + numberRemaining +
         ' Vokabel' + (numberRemaining === 1 ? '' : 'n');
 
     if (numberRemaining === 0) {
@@ -287,11 +296,11 @@ function showSummary() {
     const logNumber = logCheckedVocabsAJAX(config.userid, config.cmid, JSON.stringify(logDetails));
 
     Promise.all([getMsg, getTemplate, logNumber]).then(() => {
-        const summaryContainer = document.getElementsByClassName('check-summary')[0];
+        const summaryContainer = document.querySelector('.check-summary');
         summaryContainer.innerHTML = mustache.render(template, templateData);
         showElement(summaryContainer, true);
         showElements(['check-box-front', 'check-box-back', 'check-type-area', 'check-box-third', 'check-buttons'], false);
-        const instructionElement = document.getElementsByClassName('instruction-front-back-random')[0];
+        const instructionElement = document.querySelector('.instruction-front-back-random');
         instructionElement.innerHTML = "Klicke in das Feld, um die Abfrage zu beenden.";
         showElement(instructionElement, true);
     });

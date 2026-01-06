@@ -55,6 +55,11 @@ function vocabcoach_add_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timecreated = time();
 
+    // Normalise checkbox fields (unset / unchecked -> 0)
+    $moduleinstance->thirdactive   = !empty($moduleinstance->thirdactive)   ? 1 : 0;
+    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue)    ? 1 : 0;
+    $moduleinstance->notify_students = !empty($moduleinstance->notify_students) ? 1 : 0;
+
     // Handle editor fields - extract text from array.
     if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
         $moduleinstance->instructions = $moduleinstance->instructions['text'];
@@ -80,6 +85,11 @@ function vocabcoach_update_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timemodified = time();
     $moduleinstance->id = $moduleinstance->instance;
+
+    // Normalise checkbox fields (unset / unchecked -> 0)
+    $moduleinstance->thirdactive   = !empty($moduleinstance->thirdactive)   ? 1 : 0;
+    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue)    ? 1 : 0;
+    $moduleinstance->notify_students = !empty($moduleinstance->notify_students) ? 1 : 0;
 
     // Handle editor fields - extract text from array.
     if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {

@@ -12,7 +12,24 @@ let template = null;
  * If a valid list ID is provided, it fetches the vocabulary list and populates the rows.
  */
 export const init = (listidString = "-1") => {
-    initTemplate();
+
+    const vocabRow = document.querySelector('input[name="front[]"]').closest('[data-groupname="vocabrow"]');
+    const rowDiv = vocabRow.querySelector('#id_vocabid_').parentNode;
+
+    for (let i = rowDiv.childNodes.length - 1; i >= 0; i--) {
+        const child = rowDiv.childNodes[i];
+        if (child.nodeType === Node.TEXT_NODE) {
+            rowDiv.removeChild(child);
+        }
+    }
+
+    let temp = document.createElement('div');
+    temp.classList.add('form-group', 'row', 'fitem');
+    temp.setAttribute('datagroupname', 'vocabrow');
+    temp.innerHTML = vocabRow.innerHTML;
+
+    template = temp;
+
     let listid = parseInt(listidString);
 
     if (listid !== -1) {
@@ -44,20 +61,6 @@ export const init = (listidString = "-1") => {
         }
     });
 };
-
-/**
- * Initializes the template for vocabulary rows.
- * Captures the structure of the first row and stores it for cloning.
- */
-function initTemplate() {
-    const vocabRow = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
-    let temp = document.createElement('div');
-    temp.classList.add('form-group', 'row', 'fitem');
-    temp.setAttribute('datagroupname', 'vocabrow');
-    temp.innerHTML = vocabRow.innerHTML;
-
-    template = temp;
-}
 
 /**
  * Adds a new vocabulary row to the form.

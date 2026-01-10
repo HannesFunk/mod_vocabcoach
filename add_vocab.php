@@ -165,7 +165,6 @@ if ($mform->is_cancelled()) {
     // Step 3: add list to user (if necessary).
     if (isset($formdata->add_to_user_database) && $formdata->add_to_user_database == 1) {
         if (!$vocabmanager->add_list_to_user_database($listid, $id)) {
-            notification::add('Fehler beim Eintragen der Vokabeln. ', notification::ERROR);
             notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
             $redirect = false;
         }
@@ -182,7 +181,6 @@ if ($mform->is_cancelled()) {
             get_string('add_vocab_successful', 'mod_vocabcoach'));
     }
 }
-
 
 echo $OUTPUT->header();
 $mform->display();

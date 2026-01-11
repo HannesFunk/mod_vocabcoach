@@ -65,17 +65,40 @@ class _pdf extends TCPDF {
 
         $fill = true;
         foreach ($data as $vocab) {
-            $this->Cell($w[0], 5, $vocab->front, false, 0, 'L', $fill);
-            $this->Cell($w[1], 5, $vocab->back, false, 0, 'L', $fill);
+            // Calculate row height based on content.
+            $frontheight = $this->getStringHeight($w[0], $vocab->front);
+            $backheight = $this->getStringHeight($w[1], $vocab->back);
+            $thirdheight = 0;
+            if ($usesthird && !empty($vocab->third)) {
+                $thirdheight = $this->getStringHeight($w[2] ?: 60, $vocab->third);
+            }
+            $rowheight = max($frontheight, $backheight, $thirdheight, 5);
+
+            // Check if we need a page break before this row.
+            $pagebreak = $this->GetY() + $rowheight > ($this->getPageHeight() - $this->getBreakMargin());
+            if ($pagebreak) {
+                $this->AddPage();
+            }
+
+            $starty = $this->GetY();
+            $startx = $this->GetX();
+
+            // Front column.
+            $this->MultiCell($w[0], $rowheight, $vocab->front, 0, 'L', $fill, 0,
+                    $startx, $starty, true, 0, false, true, $rowheight, 'M');
+
+            // Back column.
+            $this->MultiCell($w[1], $rowheight, $vocab->back, 0, 'L', $fill, 0,
+                    $startx + $w[0], $starty, true, 0, false, true, $rowheight, 'M');
 
             if ($usesthird) {
                 if ($vocab->third === null) {
                     $vocab->third = '';
                 }
-                $this->MultiCell($w[2], 9, $vocab->third, 0, 'L', $fill, 1,
-                        null, null, true, 0, false, true , 0, 'M');
+                $this->MultiCell($w[2], $rowheight, $vocab->third, 0, 'L', $fill, 1,
+                        $startx + $w[0] + $w[1], $starty, true, 0, false, true, $rowheight, 'M');
             } else {
-                $this->Ln();
+                $this->SetY($starty + $rowheight);
             }
 
             $fill = !$fill;

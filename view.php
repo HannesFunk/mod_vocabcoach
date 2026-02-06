@@ -83,7 +83,10 @@ echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecont
 $cf = new \mod_vocabcoach\course_features($course->id, $cmid, $USER->id);
 
 if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
-    $total = $cf->get_class_total($cm->course);
+    $total = $cf->get_class_total();
+    if ($total == -1) {
+        $total = "-";
+    }
     $canliveupdate = has_capability('mod/vocabcoach:show_class_total_live', $modulecontext);
     echo $OUTPUT->render_from_template('mod_vocabcoach/class-total', (object)['total' => $total, 'liveupdate' => $canliveupdate]);
 }

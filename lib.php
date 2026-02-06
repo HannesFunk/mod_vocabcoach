@@ -33,7 +33,7 @@ function vocabcoach_supports($feature) {
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_MOD_PURPOSE:
-            return MOD_PURPOSE_INTERFACE;
+            return MOD_PURPOSE_INTERACTIVECONTENT;
         default:
             return null;
     }

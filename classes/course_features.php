@@ -147,6 +147,9 @@ class course_features {
      * @throws \dml_exception
      */
     public function get_due_count (array $userids) : int {
+        if (empty($userids)) {
+            return -1;
+        }
         global $DB;
         $vocabhelper = new vocabhelper($this->cmid);
         $boxconditions = $vocabhelper->get_sql_box_conditions();

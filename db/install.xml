@@ -17,7 +17,7 @@
         <FIELD NAME="move_undue" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether checked undue vocab will be moved to the next box."/>
         <FIELD NAME="thirdactive" TYPE="int" LENGTH="11" NOTNULL="false" SEQUENCE="false" COMMENT="Whether a third column should be active for vocab items."/>
         <FIELD NAME="notify_students" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Whether due-vocab notifications are enabled for this instance."/>
-        <FIELD NAME="instructions" TYPE="text" NOTNULL="true" DEFAULT="" SEQUENCE="false" COMMENT="Instructions for students when adding vocab" />
+        <FIELD NAME="instructions" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Instructions for students when adding vocab" />
         <FIELD NAME="boxtime_1" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 1."/>
         <FIELD NAME="boxtime_2" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 2."/>
         <FIELD NAME="boxtime_3" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Repetition time for box 3."/>

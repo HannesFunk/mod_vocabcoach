@@ -54,20 +54,8 @@ function vocabcoach_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
     $moduleinstance->timecreated = time();
-
-    // Normalise checkbox fields (unset / unchecked -> 0)
-    $moduleinstance->thirdactive   = !empty($moduleinstance->thirdactive)   ? 1 : 0;
-    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue)    ? 1 : 0;
-    $moduleinstance->notify_students = !empty($moduleinstance->notify_students) ? 1 : 0;
-
-    // Handle editor fields - extract text from array.
-    if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
-        $moduleinstance->instructions = $moduleinstance->instructions['text'];
-    }
-
-    $id = $DB->insert_record('vocabcoach', $moduleinstance);
-
-    return $id;
+    $moduleinstance = normalize_checkboxes($moduleinstance);
+    return $DB->insert_record('vocabcoach', $moduleinstance);
 }
 
 /**
@@ -85,17 +73,7 @@ function vocabcoach_update_instance($moduleinstance, $mform = null) {
 
     $moduleinstance->timemodified = time();
     $moduleinstance->id = $moduleinstance->instance;
-
-    // Normalise checkbox fields (unset / unchecked -> 0)
-    $moduleinstance->thirdactive   = !empty($moduleinstance->thirdactive)   ? 1 : 0;
-    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue)    ? 1 : 0;
-    $moduleinstance->notify_students = !empty($moduleinstance->notify_students) ? 1 : 0;
-
-    // Handle editor fields - extract text from array.
-    if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
-        $moduleinstance->instructions = $moduleinstance->instructions['text'];
-    }
-
+    $moduleinstance = normalize_checkboxes($moduleinstance);
     return $DB->update_record('vocabcoach', $moduleinstance);
 }
 
@@ -116,4 +94,21 @@ function vocabcoach_delete_instance($id) {
     $DB->delete_records('vocabcoach', ['id' => $id]);
 
     return true;
+}
+
+function normalize_checkboxes ($moduleinstance) {
+
+
+    // Normalise checkbox fields (unset / unchecked -> 0)
+    $moduleinstance->thirdactive   = !empty($moduleinstance->thirdactive)   ? 1 : 0;
+    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue)    ? 1 : 0;
+    $moduleinstance->notifications_enabled = !empty($moduleinstance->notifications_enabled) ? 1 : 0;
+    $moduleinstance->notifications_optout = !empty($moduleinstance->notifications_optout) ? 1 : 0;
+
+    // Handle editor fields - extract text from array.
+    if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
+        $moduleinstance->instructions = $moduleinstance->instructions['text'];
+    }
+
+    return $moduleinstance;
 }

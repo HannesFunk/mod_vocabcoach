@@ -75,7 +75,7 @@ $templatecontext = [
     'days_checked_all' => $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']),
     'cmid' => $cm->id,
     'userid' => $USER->id,
-    'courseNotificationsEnabled' => $moduleinstance->notify_students == 1,
+    'courseNotificationsEnabled' => $moduleinstance->notifications_enabled == 1,
     ...$prefcontext,
 ];
 

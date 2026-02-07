@@ -48,7 +48,7 @@ class send_due_notifications extends \core\task\scheduled_task {
                 mtrace('mod_vocabcoach: missing instance for cmid ' . $cm->cmid);
                 continue;
             }
-            if (isset($instance->notify_students) && (int)$instance->notify_students == 0) {
+            if (isset($instance->notifications_enabled) && (int)$instance->notifications_enabled == 0) {
                     mtrace('mod_vocabcoach: notifications disabled for cmid ' . $cm->cmid);
                     continue;
             }
@@ -106,8 +106,8 @@ class send_due_notifications extends \core\task\scheduled_task {
                     $message->contexturl = $url->out(false);
                     $message->contexturlname = get_string('pluginname', 'mod_vocabcoach');
 
-                    mtrace('mod_vocabcoach: would send to ' . ($message->userto->email ?? '[no-email]') . ' (count=' . $count . ')');
                     // message_send($message);
+                    mtrace('mod_vocabcoach: notification send to ' . ($message->userto->email ?? '[no-email]') . ' (count=' . $count . ')');
                     $notificationstotal++;
                 } catch (\Exception $e) {
                     mtrace('mod_vocabcoach: failed to send message to user ' . $student->id . ': ' . $e->getMessage());

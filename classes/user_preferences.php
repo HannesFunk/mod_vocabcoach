@@ -107,10 +107,16 @@ class user_preferences {
      *
      * @return bool
      */
-    public function get_email_notifications_enabled(): bool {
+    public function get_email_notifications_enabled(): bool
+    {
         global $DB;
         $record = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
-        return $record ? (bool)$record->email_notifications : false;
+        if ($record) {
+            return $record->email_notifications;
+        }
+        $cm = get_coursemodule_from_id('vocabcoach', $this->cmid, 0, false, MUST_EXIST);
+        $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
+        return $moduleinstance->notifications_optout;
     }
 
     /**

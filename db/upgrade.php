@@ -72,7 +72,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
     }
 
     if ($oldversion < 2025120100) {
-        // Add notify_students to vocabcoach if it does not exist.
         $table = new xmldb_table('vocabcoach');
         $field = new xmldb_field('notify_students', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 1, null);
         if (!$dbman->field_exists($table, $field)) {
@@ -81,7 +80,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
     }
 
     if ($oldversion < 2025123002) {
-        // Add instructions field to vocabcoach if it does not exist.
         $table = new xmldb_table('vocabcoach');
         $field = new xmldb_field('instructions', XMLDB_TYPE_TEXT);
         if (!$dbman->field_exists($table, $field)) {
@@ -108,7 +106,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
     }
 
     if ($oldversion < 2026020700) {
-        // Add email_notifications field to vocabcoach_checkprefs.
         $table = new xmldb_table('vocabcoach_checkprefs');
         $field = new xmldb_field('email_notifications', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
 
@@ -117,6 +114,17 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         }
 
         upgrade_mod_savepoint(true, 2026020700, 'vocabcoach');
+    }
+
+    if ($oldversion < 2026020800) {
+        $table = new xmldb_table('vocabcoach');
+        $field = new xmldb_field('notify_students', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 1, null);
+        $dbman->rename_field($table, $field, "notifications_enabled");
+
+        $field = new xmldb_field('notifications_optout', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
+        $dbman->add_field($table, $field);
+
+        upgrade_mod_savepoint(true, 2026020800, 'vocabcoach');
     }
 
     return true;

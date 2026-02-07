@@ -114,8 +114,10 @@ $string['task_sendduenotifications'] = 'Send due vocab notifications';
 $string['due_notification_subject'] = '{$a} vocab items due';
 $string['due_notification_small'] = '{$a} vocab due';
 $string['due_notification_body'] = 'You have {$a->count} vocabulary items due. Open the activity: {$a->url}';
-$string['notify_students'] = 'Send due-vocab notifications to students';
-$string['notify_students_help'] = 'If enabled, the scheduled task will send email notifications to students when they have due vocabulary items for this activity instance.';
+$string['notifications_enabled'] = 'Enable e-mail notifications.';
+$string['notifications_enabled_help'] = 'If enabled, the scheduled task will send email notifications to students when they have due vocabulary items for this activity instance.';
+$string['notifications_optout'] = 'Send notifications by default (participants can still opt-out).';
+$string['notifications_optout_help'] = 'Otherwise, participants have to opt-in to notifications.';
 
 // View page (view.mustache).
 $string['view_actions'] = 'Actions';

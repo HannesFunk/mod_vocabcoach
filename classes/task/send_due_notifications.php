@@ -106,7 +106,7 @@ class send_due_notifications extends \core\task\scheduled_task {
                     $message->contexturl = $url->out(false);
                     $message->contexturlname = get_string('pluginname', 'mod_vocabcoach');
 
-                    // message_send($message);
+                    message_send($message);
                     mtrace('mod_vocabcoach: notification send to ' . ($message->userto->email ?? '[no-email]') . ' (count=' . $count . ')');
                     $notificationstotal++;
                 } catch (\Exception $e) {

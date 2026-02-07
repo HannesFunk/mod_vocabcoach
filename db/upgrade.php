@@ -87,7 +87,7 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         }
     }
     if ($oldversion < 2026010100) {
-        $table = new xmldb_table('vocabcoach_checkprefs');
+        $table = new xmldb_table('vocabcoach_userprefs');
         if (!$dbman->table_exists($table)) {
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null, 'primary key');
             $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'cmid');
@@ -106,7 +106,7 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
     }
 
     if ($oldversion < 2026020700) {
-        $table = new xmldb_table('vocabcoach_checkprefs');
+        $table = new xmldb_table('vocabcoach_userprefs');
         $field = new xmldb_field('email_notifications', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
 
         if (!$dbman->field_exists($table, $field)) {
@@ -125,6 +125,16 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         $dbman->add_field($table, $field);
 
         upgrade_mod_savepoint(true, 2026020800, 'vocabcoach');
+    }
+
+    if ($oldversion < 2026020801) {
+        // Rename vocabcoach_checkprefs table to vocabcoach_userprefs.
+        $table = new xmldb_table('vocabcoach_checkprefs');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'vocabcoach_userprefs');
+        }
+
+        upgrade_mod_savepoint(true, 2026020801, 'vocabcoach');
     }
 
     return true;

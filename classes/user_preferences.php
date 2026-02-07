@@ -23,10 +23,12 @@ defined('MOODLE_INTERNAL') || die();
  */
 class user_preferences {
     /** @var int Course module ID */
-    private $cmid;
+    private int $cmid;
 
     /** @var int User ID */
-    private $userid;
+    private int $userid;
+    /** @var mixed existing DB user preferences */
+    private mixed $existing_prefs;
 
     /**
      * Constructor.
@@ -35,8 +37,10 @@ class user_preferences {
      * @param int $userid User ID
      */
     public function __construct(int $cmid, int $userid) {
+        global $DB;
         $this->cmid = $cmid;
         $this->userid = $userid;
+        $this->existing_prefs = $DB->get_record('vocabcoach_userprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
     }
 
     /**
@@ -53,8 +57,7 @@ class user_preferences {
      * @return string
      */
     public function get_mode(): string {
-        global $DB;
-        $record = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
+        $record = $this->existing_prefs;
         if (!$record) {
             return 'random';
         }
@@ -93,12 +96,12 @@ class user_preferences {
             'mode' => $mode,
             'timemodified' => $now,
         ];
-        $existing = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
+        $existing = $this->existing_prefs;
         if ($existing) {
             $data->id = $existing->id;
-            $DB->update_record('vocabcoach_checkprefs', $data);
+            $DB->update_record('vocabcoach_userprefs', $data);
         } else {
-            $DB->insert_record('vocabcoach_checkprefs', $data);
+            $DB->insert_record('vocabcoach_userprefs', $data);
         }
     }
 
@@ -107,10 +110,9 @@ class user_preferences {
      *
      * @return bool
      */
-    public function get_email_notifications_enabled(): bool
-    {
+    public function get_email_notifications_enabled(): bool {
         global $DB;
-        $record = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
+        $record = $this->existing_prefs;
         if ($record) {
             return $record->email_notifications;
         }
@@ -136,12 +138,12 @@ class user_preferences {
             'timemodified' => $now,
         ];
 
-        $existing = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
+        $existing = $this->existing_prefs;
         if ($existing) {
             $data->id = $existing->id;
-            $DB->update_record('vocabcoach_checkprefs', $data);
+            $DB->update_record('vocabcoach_userprefs', $data);
         } else {
-            $DB->insert_record('vocabcoach_checkprefs', $data);
+            $DB->insert_record('vocabcoach_userprefs', $data);
         }
     }
 }

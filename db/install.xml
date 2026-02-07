@@ -125,7 +125,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="vocabcoach_checkprefs" COMMENT="Stores per-user per-activity check mode preferences.">
+    <TABLE NAME="vocabcoach_userprefs" COMMENT="Stores per-user per-activity preferences including check mode and notifications.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
         <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />

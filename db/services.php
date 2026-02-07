@@ -113,4 +113,11 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
+    'mod_vocabcoach_set_email_notifications' => [
+        'classname' => 'mod_vocabcoach\external\checkprefs_api',
+        'methodname' => 'set_email_notifications',
+        'description' => 'Set the user email notification preference for this activity',
+        'type' => 'write',
+        'ajax' => true,
+    ],
 ];

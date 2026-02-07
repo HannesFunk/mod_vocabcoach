@@ -1,9 +1,3 @@
 <div class="d-flex align-items-center ml-auto">
-    <label for="checkmode-select" class="mr-2 ml-auto">{{#str}} checkmode, mod_vocabcoach {{/str}}</label>
-    <select id="checkmode-select" class="custom-select w-auto">
-        <option value="front" {{#frontSelected}}selected{{/frontSelected}}>{{#str}} checkmode_front, mod_vocabcoach {{/str}}</option>
-        <option value="back" {{#backSelected}}selected{{/backSelected}}>{{#str}} checkmode_back, mod_vocabcoach {{/str}}</option>
-        <option value="random" {{#randomSelected}}selected{{/randomSelected}}>{{#str}} checkmode_random, mod_vocabcoach {{/str}}</option>
-        <option value="type" {{#typeSelected}}selected{{/typeSelected}}>{{#str}} checkmode_type, mod_vocabcoach {{/str}}</option>
-    </select>
+    {{> mod_vocabcoach/checkmode_select }}
 </div>

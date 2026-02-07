@@ -66,7 +66,8 @@ if ($al->is_all_done($boxdata)) {
     $al->log($al->typesdaily['ACT_CHECKED_ALL']);
 }
 
-$stdcheckmodecontext = \mod_vocabcoach\check_preferences::get_stdmode_context($cm->id, $USER->id);
+$userpreferences = new \mod_vocabcoach\user_preferences($cm->id, $USER->id);
+$prefcontext = $userpreferences->get_template_context();
 
 $templatecontext = [
     'boxdata' => $boxdata,
@@ -74,7 +75,8 @@ $templatecontext = [
     'days_checked_all' => $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']),
     'cmid' => $cm->id,
     'userid' => $USER->id,
-    ...$stdcheckmodecontext,
+    'courseNotificationsEnabled' => $moduleinstance->notify_students == 1,
+    ...$prefcontext,
 ];
 
 echo $OUTPUT->header();

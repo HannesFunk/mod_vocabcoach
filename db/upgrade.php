@@ -106,5 +106,18 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         }
         upgrade_mod_savepoint(true, 2026010100, 'vocabcoach');
     }
+
+    if ($oldversion < 2026020700) {
+        // Add email_notifications field to vocabcoach_checkprefs.
+        $table = new xmldb_table('vocabcoach_checkprefs');
+        $field = new xmldb_field('email_notifications', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2026020700, 'vocabcoach');
+    }
+
     return true;
 }

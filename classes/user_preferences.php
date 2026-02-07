@@ -21,7 +21,24 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Helper to get/set per-user check mode preferences per activity.
  */
-class check_preferences {
+class user_preferences {
+    /** @var int Course module ID */
+    private $cmid;
+
+    /** @var int User ID */
+    private $userid;
+
+    /**
+     * Constructor.
+     *
+     * @param int $cmid Course module ID
+     * @param int $userid User ID
+     */
+    public function __construct(int $cmid, int $userid) {
+        $this->cmid = $cmid;
+        $this->userid = $userid;
+    }
+
     /**
      * Allowed modes.
      * @return string[]
@@ -33,13 +50,11 @@ class check_preferences {
     /**
      * Get the user preference for this cm; default to 'random' if none.
      *
-     * @param int $cmid
-     * @param int $userid
      * @return string
      */
-    public static function get_mode(int $cmid, int $userid): string {
+    public function get_mode(): string {
         global $DB;
-        $record = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $cmid, 'userid' => $userid]);
+        $record = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
         if (!$record) {
             return 'random';
         }
@@ -49,37 +64,73 @@ class check_preferences {
         return $record->mode;
     }
 
-    public static function get_stdmode_context(int $cmid, int $userid) : array {
-        $mode = self::get_mode($cmid, $userid);
+    public function get_template_context() : array {
+        $mode = $this->get_mode();
         return [
             'frontSelected' => $mode === 'front',
             'backSelected' => $mode === 'back',
             'randomSelected' => $mode === 'random',
             'typeSelected' => $mode === 'type',
+            'userNotificationsEnabled' => $this->get_email_notifications_enabled(),
         ];
     }
 
     /**
      * Store/update the user preference.
      *
-     * @param int $cmid
-     * @param int $userid
      * @param string $mode
      * @return void
      */
-    public static function set_mode(int $cmid, int $userid, string $mode): void {
+    public function set_mode(string $mode): void {
         global $DB;
         if (!in_array($mode, self::allowed_modes(), true)) {
             throw new \invalid_parameter_exception('invalidmode');
         }
         $now = time();
         $data = (object) [
-            'cmid' => $cmid,
-            'userid' => $userid,
+            'cmid' => $this->cmid,
+            'userid' => $this->userid,
             'mode' => $mode,
             'timemodified' => $now,
         ];
-        $existing = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $cmid, 'userid' => $userid]);
+        $existing = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
+        if ($existing) {
+            $data->id = $existing->id;
+            $DB->update_record('vocabcoach_checkprefs', $data);
+        } else {
+            $DB->insert_record('vocabcoach_checkprefs', $data);
+        }
+    }
+
+    /**
+     * Get the user's email notification preference for this cm.
+     *
+     * @return bool
+     */
+    public function get_email_notifications_enabled(): bool {
+        global $DB;
+        $record = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
+        return $record ? (bool)$record->email_notifications : false;
+    }
+
+    /**
+     * Set the user's email notification preference.
+     *
+     * @param bool $enabled
+     * @return void
+     */
+    public function set_email_notifications(bool $enabled): void {
+        global $DB;
+
+        $now = time();
+        $data = (object) [
+            'cmid' => $this->cmid,
+            'userid' => $this->userid,
+            'email_notifications' => $enabled ? 1 : 0,
+            'timemodified' => $now,
+        ];
+
+        $existing = $DB->get_record('vocabcoach_checkprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
         if ($existing) {
             $data->id = $existing->id;
             $DB->update_record('vocabcoach_checkprefs', $data);
@@ -88,4 +139,3 @@ class check_preferences {
         }
     }
 }
-

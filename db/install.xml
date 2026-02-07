@@ -130,6 +130,7 @@
         <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
         <FIELD NAME="mode" TYPE="char" LENGTH="16" NOTNULL="true" DEFAULT="random" SEQUENCE="false" COMMENT="User preferred check mode." />
+        <FIELD NAME="email_notifications" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether email notifications are enabled." />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
       </FIELDS>
       <KEYS>

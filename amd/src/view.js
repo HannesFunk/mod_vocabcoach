@@ -1,6 +1,6 @@
 import notification from 'core/notification';
 import {getString} from 'core/str';
-import {getClassTotalAJAX, setCheckModeAJAX} from "./repository";
+import {getClassTotalAJAX, setCheckModeAJAX, setEmailNotificationsAJAX} from "./repository";
 
 const Selectors = {
     actions: {
@@ -16,6 +16,7 @@ const Selectors = {
     elements: {
         dropdown: '.dropdown',
         checkModeSelect: '#checkmode-select',
+        emailNotifications: '#email-notifications'
     }
 };
 
@@ -91,6 +92,25 @@ export function init(cmid, userid, courseid) {
             );
     };
     checkModeSelect.addEventListener('change', userPrefsListener);
+
+    // Email notifications checkbox listener
+    const emailNotificationsCheckbox = document.querySelector(Selectors.elements.emailNotifications);
+    if (emailNotificationsCheckbox) {
+        emailNotificationsCheckbox.addEventListener('change', () => {
+            const enabled = emailNotificationsCheckbox.checked;
+            setEmailNotificationsAJAX(cmid, userid, enabled)
+                .catch(err => notification.exception(err))
+                .then(() => {
+                    return getString('notification_userprefs_updated', 'mod_vocabcoach').then(msg => {
+                        const msgData = {
+                            type: "success",
+                            message: msg
+                        };
+                        notification.addNotification(msgData);
+                    });
+                });
+        });
+    }
 }
 
 function checkBox(cmid, box, force = false) {

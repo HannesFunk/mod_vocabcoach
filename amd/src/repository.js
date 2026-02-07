@@ -132,3 +132,16 @@ export const setCheckModeAJAX = (
         mode,
     },
 }])[0];
+
+export const setEmailNotificationsAJAX = (
+    cmid,
+    userid,
+    enabled
+) => fetchMany([{
+    methodname: 'mod_vocabcoach_set_email_notifications',
+    args: {
+        cmid,
+        userid,
+        enabled,
+    },
+}])[0];

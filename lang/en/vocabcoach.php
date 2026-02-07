@@ -140,3 +140,8 @@ $string['vocabcoach:distribute_lists'] = 'Distribute vocabulary lists to course'
 $string['vocabcoach:show_class_total'] = 'View total unrevised vocabulary in class';
 $string['vocabcoach:show_leaderboard'] = 'View leaderboard';
 $string['vocabcoach:mod/vocabcoach:show_class_total_live'] = 'Show live updates of the number of total due vocab.';
+
+// Settings and notifications
+$string['settings'] = 'Settings';
+$string['email_notifications'] = 'Email notifications';
+$string['email_notifications_help'] = 'Receive email notifications when vocabulary is due for review.';

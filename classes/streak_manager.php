@@ -11,6 +11,11 @@ class streak_manager {
         */
         private int $userid, $cmid;
         private array $types = ['login', 'checkall'];
+        private array $statekeys = [
+            0 => 'active',
+            1 => 'restorable',
+            2 => 'obsolete'
+        ];
 
         /**
         * Construct the class.
@@ -26,7 +31,7 @@ class streak_manager {
          * Get the current streak of the user.
          * @return int Current streak
          */
-        public function get_streak(string $type) : int {
+        public function get_streak_count(string $type) : int {
             if (!in_array($type, $this->types)) {
                 throw new invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
             }
@@ -36,6 +41,41 @@ class streak_manager {
                 ['userid' => $this->userid, 'cmid' => $this->cmid, 'type' => $type]
             );
             return $record ? $record->streak : 0;
+        }
+
+        public function get_streak(string $type) : object|null {
+            if (!in_array($type, $this->types)) {
+                return null;
+            }
+
+            global $DB;
+            $record = $DB->get_record(
+                'vocabcoach_streaks',
+                ['userid' => $this->userid, 'cmid' => $this->cmid, 'type' => $type]
+            );
+
+            if (!$record) {
+                return (object) [
+                    'userid' => $this->userid,
+                    'cmid' => $this->cmid,
+                    'type' => $type,
+                    'streak' => 0,
+                    'status' => 'active'
+                ];
+            }
+            $record->state = $this->statekeys[$record->state];
+            return $record;
+        }
+
+
+        public function get_streak_info() : object {
+            $info = [];
+            foreach ($this->types as $type) {
+                $streak = $this->get_streak($type);
+                $info[$type]['streak'] = $streak->streak;
+                $info[$type]['status'] = $streak->status;
+            }
+            return (object) $info;
         }
 
         public function update_streak(string $type) : void {

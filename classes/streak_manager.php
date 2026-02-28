@@ -40,7 +40,7 @@ class streak_manager {
 
         public function update_streak(string $type) : void {
             if (!in_array($type, $this->types)) {
-                throw new \InvalidArgumentException("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
+                throw new invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
             }
             global $DB;
             $record = $DB->get_record(
@@ -77,9 +77,4 @@ class streak_manager {
             }
             return $streak;
         }
-
-
-
-
-
 }

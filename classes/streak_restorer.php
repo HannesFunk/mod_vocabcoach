@@ -22,12 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_vocabcoach;
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class for managing streak restores with monthly limits.
  */
-class streak_restorer {
+class streak_restorer
+{
 
     const MAX_RESTORES_PER_MONTH = 3;
 
@@ -36,7 +38,8 @@ class streak_restorer {
      *
      * @return string
      */
-    public static function get_current_month() {
+    public static function get_current_month()
+    {
         return date('Y-m');
     }
 
@@ -48,7 +51,8 @@ class streak_restorer {
      * @param string $streak_type Type of streak (login, checkall)
      * @return bool True if user can restore, false otherwise
      */
-    public static function can_restore_streak($userid, $cmid, $streak_type) {
+    public static function can_restore_streak($userid, $cmid, $streak_type)
+    {
         global $DB;
 
         $month_year = self::get_current_month();
@@ -75,7 +79,8 @@ class streak_restorer {
      * @param string $streak_type Type of streak (login, checkall)
      * @return int Number of restores remaining (0-3)
      */
-    public static function get_remaining_restores($userid, $cmid, $streak_type) {
+    public static function get_remaining_restores($userid, $cmid, $streak_type)
+    {
         global $DB;
 
         $month_year = self::get_current_month();
@@ -103,7 +108,8 @@ class streak_restorer {
      * @return bool True on success, false if restore limit reached
      * @throws \Exception If streak record not found
      */
-    public static function restore_streak($userid, $cmid, $streak_type) {
+    public static function restore_streak($userid, $cmid, $streak_type)
+    {
         global $DB;
 
         $transaction = $DB->start_delegated_transaction();
@@ -164,7 +170,8 @@ class streak_restorer {
      * @param string $streak_type Type of streak (login, checkall)
      * @return object Object with used and remaining properties
      */
-    public static function get_restore_stats($userid, $cmid, $streak_type) {
+    public static function get_restore_stats($userid, $cmid, $streak_type)
+    {
         $remaining = self::get_remaining_restores($userid, $cmid, $streak_type);
         $used = self::MAX_RESTORES_PER_MONTH - $remaining;
 

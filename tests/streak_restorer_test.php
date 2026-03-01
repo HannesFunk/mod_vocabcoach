@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/mod/vocabcoach/classes/streak_restorer.php');
  * @package   mod_vocabcoach
  * @copyright 2026 onwards, Johannes Funk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \streak_restorer
+ * @covers    \mod_vocabcoach\streak_restorer
  */
 class streak_restorer_test extends \advanced_testcase {
 
@@ -52,7 +52,7 @@ class streak_restorer_test extends \advanced_testcase {
         $vocabcoach = $this->getDataGenerator()->create_module('vocabcoach', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('vocabcoach', $vocabcoach->id);
 
-        $this->assertTrue(\streak_restorer::can_restore_streak($user->id, $cm->id, 'login'));
+        $this->assertTrue(\mod_vocabcoach\streak_restorer::can_restore_streak($user->id, $cm->id, 'login'));
     }
 
     /**
@@ -78,7 +78,7 @@ class streak_restorer_test extends \advanced_testcase {
         ]);
 
         // Create restore records to reach the limit.
-        $month_year = \streak_restorer::get_current_month();
+        $month_year = \mod_vocabcoach\streak_restorer::get_current_month();
         $DB->insert_record('vocabcoach_streak_restores', (object)[
             'userid' => $user->id,
             'cmid' => $cm->id,
@@ -88,7 +88,7 @@ class streak_restorer_test extends \advanced_testcase {
             'timemodified' => time(),
         ]);
 
-        $this->assertFalse(\streak_restorer::can_restore_streak($user->id, $cm->id, 'login'));
+        $this->assertFalse(\mod_vocabcoach\streak_restorer::can_restore_streak($user->id, $cm->id, 'login'));
     }
 
     /**
@@ -105,11 +105,11 @@ class streak_restorer_test extends \advanced_testcase {
         $cm = get_coursemodule_from_instance('vocabcoach', $vocabcoach->id);
 
         // Initially should have 3 restores.
-        $remaining = \streak_restorer::get_remaining_restores($user->id, $cm->id, 'login');
+        $remaining = \mod_vocabcoach\streak_restorer::get_remaining_restores($user->id, $cm->id, 'login');
         $this->assertEquals(3, $remaining);
 
         // Create one restore record.
-        $month_year = \streak_restorer::get_current_month();
+        $month_year = \mod_vocabcoach\streak_restorer::get_current_month();
         $DB->insert_record('vocabcoach_streak_restores', (object)[
             'userid' => $user->id,
             'cmid' => $cm->id,
@@ -119,7 +119,7 @@ class streak_restorer_test extends \advanced_testcase {
             'timemodified' => time(),
         ]);
 
-        $remaining = \streak_restorer::get_remaining_restores($user->id, $cm->id, 'login');
+        $remaining = \mod_vocabcoach\streak_restorer::get_remaining_restores($user->id, $cm->id, 'login');
         $this->assertEquals(2, $remaining);
     }
 
@@ -146,7 +146,7 @@ class streak_restorer_test extends \advanced_testcase {
         ]);
 
         // Restore the streak.
-        $result = \streak_restorer::restore_streak($user->id, $cm->id, 'login');
+        $result = \mod_vocabcoach\streak_restorer::restore_streak($user->id, $cm->id, 'login');
         $this->assertTrue($result);
 
         // Verify streak was incremented.
@@ -183,11 +183,11 @@ class streak_restorer_test extends \advanced_testcase {
 
         // Restore 3 times.
         for ($i = 0; $i < 3; $i++) {
-            \streak_restorer::restore_streak($user->id, $cm->id, 'login');
+            \mod_vocabcoach\streak_restorer::restore_streak($user->id, $cm->id, 'login');
         }
 
         // Verify restore count.
-        $month_year = \streak_restorer::get_current_month();
+        $month_year = \mod_vocabcoach\streak_restorer::get_current_month();
         $restore_record = $DB->get_record('vocabcoach_streak_restores', [
             'userid' => $user->id,
             'cmid' => $cm->id,
@@ -221,9 +221,9 @@ class streak_restorer_test extends \advanced_testcase {
         ]);
 
         // Restore once.
-        \streak_restorer::restore_streak($user->id, $cm->id, 'login');
+        \mod_vocabcoach\streak_restorer::restore_streak($user->id, $cm->id, 'login');
 
-        $stats = \streak_restorer::get_restore_stats($user->id, $cm->id, 'login');
+        $stats = \mod_vocabcoach\streak_restorer::get_restore_stats($user->id, $cm->id, 'login');
 
         $this->assertEquals(1, $stats->used);
         $this->assertEquals(2, $stats->remaining);
@@ -242,7 +242,7 @@ class streak_restorer_test extends \advanced_testcase {
         $cm = get_coursemodule_from_instance('vocabcoach', $vocabcoach->id);
 
         // Try to restore without a streak record.
-        $result = \streak_restorer::restore_streak($user->id, $cm->id, 'login');
+        $result = \mod_vocabcoach\streak_restorer::restore_streak($user->id, $cm->id, 'login');
         $this->assertFalse($result);
     }
 
@@ -270,7 +270,7 @@ class streak_restorer_test extends \advanced_testcase {
 
         // Restore 3 times successfully.
         for ($i = 1; $i <= 3; $i++) {
-            $result = \streak_restorer::restore_streak($user->id, $cm->id, 'login');
+            $result = \mod_vocabcoach\streak_restorer::restore_streak($user->id, $cm->id, 'login');
             $this->assertTrue($result);
 
             $streak = $DB->get_record('vocabcoach_streaks', [
@@ -282,7 +282,7 @@ class streak_restorer_test extends \advanced_testcase {
         }
 
         // 4th restore should fail (limit reached).
-        $result = \streak_restorer::restore_streak($user->id, $cm->id, 'login');
+        $result = \mod_vocabcoach\streak_restorer::restore_streak($user->id, $cm->id, 'login');
         $this->assertFalse($result);
 
         // Streak should not have been updated.
@@ -326,15 +326,15 @@ class streak_restorer_test extends \advanced_testcase {
 
         // Restore login 3 times.
         for ($i = 0; $i < 3; $i++) {
-            \streak_restorer::restore_streak($user->id, $cm->id, 'login');
+            \mod_vocabcoach\streak_restorer::restore_streak($user->id, $cm->id, 'login');
         }
 
         // Checkall should still have 3 restores available.
-        $remaining = \streak_restorer::get_remaining_restores($user->id, $cm->id, 'checkall');
+        $remaining = \mod_vocabcoach\streak_restorer::get_remaining_restores($user->id, $cm->id, 'checkall');
         $this->assertEquals(3, $remaining);
 
         // Login should have 0 restores available.
-        $remaining = \streak_restorer::get_remaining_restores($user->id, $cm->id, 'login');
+        $remaining = \mod_vocabcoach\streak_restorer::get_remaining_restores($user->id, $cm->id, 'login');
         $this->assertEquals(0, $remaining);
     }
 }

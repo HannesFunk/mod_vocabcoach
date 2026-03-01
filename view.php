@@ -29,6 +29,8 @@ require_once(__DIR__.'/classes/box_manager.php');
 require_once(__DIR__.'/classes/activity_tracker.php');
 
 use mod_vocabcoach\box_manager;
+use mod_vocabcoach\streak_manager;
+
 // Course module id.
 $cmid = optional_param('id', 0, PARAM_INT);
 
@@ -60,19 +62,16 @@ $PAGE->requires->js_call_amd('mod_vocabcoach/view', 'init', [$cmid, $USER->id, $
 $boxmanager = new box_manager($cmid, $USER->id);
 $boxdata = $boxmanager->get_box_details();
 
-$al = new activity_tracker($USER->id, $cmid);
-$al->log($al->typesdaily['ACT_LOGGED_IN']);
-if ($al->is_all_done($boxdata)) {
-    $al->log($al->typesdaily['ACT_CHECKED_ALL']);
-}
+$sm = new streak_manager($USER->id, $cm->id);
+$streakinfo = $sm->get_streak_info();
 
+$streakinfo =
 $userpreferences = new \mod_vocabcoach\user_preferences($cm->id, $USER->id);
 $prefcontext = $userpreferences->get_template_context();
 
 $templatecontext = [
     'boxdata' => $boxdata,
-    'days_logged_in' => $al->get_continuous_days($al->typesdaily['ACT_LOGGED_IN']),
-    'days_checked_all' => $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']),
+    'streakinfo' => $streakinfo,
     'cmid' => $cm->id,
     'userid' => $USER->id,
     'courseNotificationsEnabled' => $moduleinstance->notifications_enabled == 1,

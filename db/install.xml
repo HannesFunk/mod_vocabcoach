@@ -150,7 +150,6 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
         <FIELD NAME="type" TYPE="char" LENGTH="16" NOTNULL="true" SEQUENCE="false" COMMENT="Type of streak (login or checkall)." />
         <FIELD NAME="streak" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Current number of streaks." />
-        <FIELD NAME="state" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="State of streak (active, restorable)." />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
       </FIELDS>
       <KEYS>

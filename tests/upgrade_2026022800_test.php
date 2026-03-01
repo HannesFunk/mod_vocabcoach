@@ -68,7 +68,7 @@ class upgrade_2026022800_test extends \advanced_testcase {
 
         // Create activity log entries for user1 with a 5-day login streak.
         $tracker1 = new \activity_tracker($user1->id, $cmid);
-        $basedate = strtotime('2026-02-28'); // Today.
+        $basedate = strtotime('today');
 
         // User1: 5 consecutive days of login (including today).
         for ($i = 0; $i < 5; $i++) {
@@ -279,7 +279,7 @@ class upgrade_2026022800_test extends \advanced_testcase {
 
         // Create activity log with gaps.
         $tracker = new \activity_tracker($user->id, $cmid);
-        $basedate = strtotime('2026-02-28');
+        $basedate = strtotime('today');
 
         // Log for today and yesterday (2 consecutive days).
         for ($i = 0; $i < 2; $i++) {
@@ -344,7 +344,7 @@ class upgrade_2026022800_test extends \advanced_testcase {
         $cmid = $cm->id;
 
         $tracker = new \activity_tracker($user->id, $cmid);
-        $basedate = strtotime('2026-02-28');
+        $basedate = strtotime('today');
 
         // Create one activity log entry.
         $date = date('d.m.Y', $basedate);
@@ -403,7 +403,7 @@ class upgrade_2026022800_test extends \advanced_testcase {
         $tracker1 = new \activity_tracker($user->id, $cm1->id);
         $tracker2 = new \activity_tracker($user->id, $cm2->id);
 
-        $basedate = strtotime('2026-02-28');
+        $basedate = strtotime('today');
 
         // Create logs for first activity (3 days streak).
         for ($i = 0; $i < 3; $i++) {

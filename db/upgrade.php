@@ -144,7 +144,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'userid');
             $table->add_field('type', XMLDB_TYPE_CHAR, '16', null, XMLDB_NOTNULL, null, null, null, null, 'Type of streak (login or checkall).');
             $table->add_field('streak', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'Current number of streaks.');
-            $table->add_field('state', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'Current number of streaks.');
             $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, null, null, 'timemodified');
 
             $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
@@ -157,11 +156,27 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             $table_old = new xmldb_table('vocabcoach_activitylog');
 
             if ($dbman->table_exists($table_old)) {
-                $query = "SELECT DISTINCT cmid, userid FROM {vocabcoach_activitylog};";
-                $records = $DB->get_records_sql($query);
+
+                // For a incomprehensible reason, SELECT DISTINCT userid, cmid ... does not work.
+                $query = "SELECT DISTINCT cmid FROM {vocabcoach_activitylog};";
+                $cmids = $DB->get_records_sql($query);
+
+                $records = [];
+
+                foreach ($cmids as $cmid) {
+                    $query = 'SELECT DISTINCT userid FROM {vocabcoach_activitylog} WHERE cmid = ?;';
+                    $userids = $DB->get_records_sql($query, [$cmid->cmid]);
+                    foreach ($userids as $userid) {
+                        $records[] = (object) [
+                            'cmid' => $cmid->cmid,
+                            'userid' => $userid->userid,
+                        ];
+                    }
+                }
+
                 if (!empty($records)) {
                     foreach ($records as $record) {
-                        $al = new activity_tracker($record->cmid, $record->userid);
+                        $al = new activity_tracker($record->userid, $record->cmid);
                         $daysloggedin = $al->get_continuous_days($al->typesdaily['ACT_LOGGED_IN']);
                         $dayscheckall = $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']);
 
@@ -188,8 +203,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
                 }
             }
         }
-
-        upgrade_mod_savepoint(true, 2026022800, 'vocabcoach');
     }
 
     if ($oldversion < 2026022801) {
@@ -213,8 +226,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
 
             $dbman->create_table($table);
         }
-
-        upgrade_mod_savepoint(true, 2026022801, 'vocabcoach');
     }
 
     return true;

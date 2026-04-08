@@ -65,7 +65,6 @@ $boxdata = $boxmanager->get_box_details();
 $sm = new streak_manager($USER->id, $cm->id);
 $streakinfo = $sm->get_streak_info();
 
-$streakinfo =
 $userpreferences = new \mod_vocabcoach\user_preferences($cm->id, $USER->id);
 $prefcontext = $userpreferences->get_template_context();
 

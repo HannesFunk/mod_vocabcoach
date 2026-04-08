@@ -47,9 +47,7 @@ class streak_manager
         return $record;
     }
 
-
-    public function get_streak_info($selectedtype = null): object
-    {
+    public function get_streak_info($selectedtype = null): object {
         $info = [];
         if ($selectedtype && !in_array($selectedtype, $this->types)) {
             throw new \core\exception\invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
@@ -58,7 +56,6 @@ class streak_manager
         foreach ($types as $type) {
             $streak = $this->get_streak($type);
             $info[$type]['streak'] = $streak->streak;
-//            $info[$type]['status'] = $streak->status;
         }
         if ($selectedtype) {
             return (object)$info[$selectedtype];

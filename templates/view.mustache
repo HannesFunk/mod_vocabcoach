@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_vocabcoach/boxes
+    @template mod_vocabcoach/view
 
 
     Example context (json):
@@ -108,9 +108,4 @@
 
 <h4 class="mt-5">{{#str}}view_activity, mod_vocabcoach{{/str}}</h4>
 <hr>
-<div class="activity-report">
-    <span class="streak">{{#str}}view_logged_in_streak, mod_vocabcoach, {{days_logged_in}}{{/str}}</span>
-    <span class="streak">{{#str}}view_checked_all_streak, mod_vocabcoach, {{days_checked_all}}{{/str}}</span>
-</div>
-
-
+{{> mod_vocabcoach/streak}}

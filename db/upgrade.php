@@ -221,9 +221,6 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             $table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
             $table->add_key('fk_cmid', XMLDB_KEY_FOREIGN, ['cmid'], 'course_modules', ['id']);
 
-            $table->add_index('idx_userid', XMLDB_INDEX_NOTUNIQUE, ['userid']);
-            $table->add_index('idx_cmid', XMLDB_INDEX_NOTUNIQUE, ['cmid']);
-
             $dbman->create_table($table);
         }
     }

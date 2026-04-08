@@ -27,6 +27,8 @@
     font-size: xx-large;
     margin: auto;
     padding: 0.5rem 0.25rem;
+    overflow-wrap: anywhere;
+    hyphens: auto;
 }
 
 .check-summary {

@@ -91,14 +91,26 @@ class box_manager {
                 $nextdue = 'Jetzt';
             }
 
+
+
             $output[] = [
                 'stage' => $i,
                 'due' => $due,
                 'total' => $total,
-                'inactive' => $due == 0,
-                'next_due' => $nextdue,
+                'status' => self::compute_box_status($due, $total),
+                'nextdue' => $nextdue,
             ];
         }
         return $output;
+    }
+
+    private static function compute_box_status(int $due, int $total) : string {
+        if ($total == 0) {
+            return 'empty';
+        }
+        if ($due == 0) {
+            return 'done';
+        }
+        return 'todo';
     }
 }

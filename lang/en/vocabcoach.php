@@ -147,3 +147,5 @@ $string['vocabcoach:mod/vocabcoach:show_class_total_live'] = 'Show live updates 
 $string['settings'] = 'Settings';
 $string['email_notifications'] = 'Email notifications';
 $string['email_notifications_help'] = 'Receive email notifications when vocabulary is due for review.';
+
+$string['remove_from_box'] = "Remove from my box";

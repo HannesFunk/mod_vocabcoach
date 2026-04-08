@@ -151,3 +151,5 @@ $string['vocabcoach:distribute_lists'] = 'Vokabellisten an den Kurs verteilen';
 $string['vocabcoach:show_class_total'] = 'Gesamtzahl nicht wiederholter Vokabeln in der Klasse anzeigen';
 $string['vocabcoach:show_leaderboard'] = 'Leaderboard anzeigen';
 $string['vocabcoach:mod/vocabcoach:show_class_total_live'] = 'Live updates der fälligen Vokabeln anzeigen.';
+
+$string['remove_from_box'] = "Aus meinem Kasten entfernen";

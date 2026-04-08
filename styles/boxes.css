@@ -37,6 +37,7 @@
     background-color: var(--vc-top-bg);
     color: var(--bs-white);
     padding: 10px;
+    border-bottom: 3px solid var(--bs-white);
 }
 
 .box-bottom-line {

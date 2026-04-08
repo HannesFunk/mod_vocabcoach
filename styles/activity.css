@@ -1,15 +1,22 @@
-.streak {
-    background-color: white;
-    border-radius: .5rem;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid #dee2e6;
-    display: inline-block;
+.streak-container {
+    margin-left: auto;
 }
 
-.streak:hover {
-    background-color: #f5f9fc;
-    border: 1px solid #3584c9;
+.streak-weak::before,
+.streak-strong::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1.2rem;
+    margin-right: .35em;
+    color: var(--bs-primary);
+}
+
+.streak-weak::before {
+    content: "\f46a"; /* fa-fire-flame-simple */
+}
+
+.streak-strong::before {
+    content: "\f7e4"; /* fa-fire-flame-curved */
 }
 
 .leaderboard {

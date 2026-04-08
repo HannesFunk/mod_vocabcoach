@@ -29,8 +29,10 @@
 <hr>
 {{> mod_vocabcoach/view_actions}}
 
-
-<h4 class="mt-5">{{#str}}view_your_vocab_box, mod_vocabcoach{{/str}}</h4>
+<div class="d-flex align-items-end">
+    <h4 class="mt-5">{{#str}}view_your_vocab_box, mod_vocabcoach{{/str}}</h4>
+    {{> mod_vocabcoach/streak}}
+</div>
 <hr>
 <div id="vocabcoach-box-container">
 
@@ -104,8 +106,4 @@
 
 </div>
 
-<div class="clearfix"></div>
 
-<h4 class="mt-5">{{#str}}view_activity, mod_vocabcoach{{/str}}</h4>
-<hr>
-{{> mod_vocabcoach/streak}}

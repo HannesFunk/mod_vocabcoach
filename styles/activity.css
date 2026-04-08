@@ -2,6 +2,12 @@
     margin-left: auto;
 }
 
+.streak-weak,
+.streak-strong {
+    font-weight: 900;
+    font-size: 1.2rem;
+}
+
 .streak-weak::before,
 .streak-strong::before {
     font-family: "Font Awesome 6 Free";
@@ -11,12 +17,22 @@
     color: var(--bs-primary);
 }
 
+.class-total {
+    text-align: center;
+    background-color: var(--bs-white);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--bs-border-color);
+    font-size: 80px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
 .streak-weak::before {
-    content: "\f46a"; /* fa-fire-flame-simple */
+    content: "\f46a";
 }
 
 .streak-strong::before {
-    content: "\f7e4"; /* fa-fire-flame-curved */
+    content: "\f7e4";
 }
 
 .leaderboard {

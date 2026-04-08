@@ -1,6 +1,9 @@
-import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX, logCheckedVocabsAJAX, updateVocabAJAX} from "./repository";
+import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX,
+    logCheckedVocabsAJAX, updateVocabAJAX, editUserVocabAJAX}
+    from "./repository";
 import mustache from 'core/mustache';
 import {showElement, showElements} from "./general";
+import Modal from 'core/modal';
 
 let vocabArrayJSON = null;
 let knownCount = 0;
@@ -47,7 +50,6 @@ function addListeners() {
             const trigger = e.target.closest(Selectors.actions.revealCard);
             const label = trigger.querySelector('.vc-check-label');
             showElement(label, true);
-            // showElement('check-third', config.thirdActive);
         } else if (e.target.closest(Selectors.actions.updateVocab)) {
             checkDone(vocabArrayJSON[0].dataid, e.target.getAttribute('data-vocabcoach-known') === 'true');
         } else if (e.target.closest(Selectors.actions.endCheck)) {
@@ -63,6 +65,8 @@ function addListeners() {
             checkDone(vocabArrayJSON[0].dataid, true);
         } else if (e.target.closest(Selectors.actions.typedVocabUnknown)) {
             checkDone(vocabArrayJSON[0].dataid, false);
+        } else if (e.target.closest(Selectors.actions.editVocab)) {
+            editVocab(vocabArrayJSON[0]);
         }
     });
 
@@ -96,6 +100,7 @@ const Selectors = {
         revealTypedVocab: '[data-action="mod-vocabcoach/typed-vocab-reveal"]',
         typedVocabUnknown: '[data-action="mod-vocabcoach/typed-vocab-unknown"]',
         typedVocabOverride: '[data-action="mod-vocabcoach/typed-vocab-override"]',
+        editVocab: '[data-action="mod_vocabcoach/edit-vocab"]'
     },
     formElements: {
         mode: '[id="checkmode-select"]',
@@ -213,7 +218,7 @@ function updateLabels () {
     document.getElementById('check-container').setAttribute('data-vocab-data-id', vocabArrayJSON[0].dataid);
 }
 
-function adjustFontSizeToBoxHeight (elem) {
+function adjustFontSizeToBoxHeight(elem) {
     const parentHeight = elem.parentNode.offsetHeight;
     const elemDisplayOld = elem.style.display;
     elem.style.display = 'block';
@@ -226,10 +231,8 @@ function adjustFontSizeToBoxHeight (elem) {
         if (fontSize <= 18) {
             break;
         }
-
         elem.style.fontSize = (fontSize - 2) + 'px';
     }
-
     elem.style.display = elemDisplayOld;
 }
 
@@ -307,7 +310,7 @@ function showSummary() {
 }
 
 function getSummaryAchievement() {
-    const ratio = knownCount/(unknownCount + knownCount);
+    const ratio = knownCount / (unknownCount + knownCount);
 
     if (ratio > 0.9) {
         return 5;
@@ -375,7 +378,7 @@ let startAnimation = (el, animation) => {
     });
 };
 
-function cleanString (input) {
+function cleanString(input) {
     const replacements = [
         {'search': /\(/g, 'replace': ''},
         {'search': /\)/g, 'replace': ''},
@@ -396,4 +399,48 @@ function cleanString (input) {
     );
 
     return output.trim();
+}
+
+async function editVocab(vocab) {
+    const esc = s => String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+
+    let body = `
+        <div class="mb-3">
+            <label class="form-label" for="vc-edit-front">Front</label>
+            <input class="form-control" id="vc-edit-front" type="text" value="${esc(vocab.front)}" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="vc-edit-back">Back</label>
+            <input class="form-control" id="vc-edit-back" type="text" value="${esc(vocab.back)}" />
+        </div>`;
+
+    const modal = await Modal.create({
+        title: 'Edit vocab',
+        body: body,
+        footer: `<button type="button" class="btn btn-primary" data-action="vc-edit-save">Save</button>
+                 <button type="button" class="btn btn-secondary" data-action="vc-edit-cancel">Cancel</button>`,
+        show: true,
+        removeOnClose: true,
+    });
+
+    modal.getRoot()[0].addEventListener('click', (e) => {
+        if (e.target.closest('[data-action="vc-edit-save"]')) {
+            let updatedVocab = {
+                front: document.getElementById('vc-edit-front').value,
+                back: document.getElementById('vc-edit-back').value,
+                dataid: vocab.dataid
+            };
+            editUserVocabAJAX(updatedVocab).then(
+                // eslint-disable-next-line no-console
+                (text) => console.log(text)
+            );
+            modal.hide();
+        } else if (e.target.closest('[data-action="vc-edit-cancel"]')) {
+            modal.destroy();
+        }
+    });
 }

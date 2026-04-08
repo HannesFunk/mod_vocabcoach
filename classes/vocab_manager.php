@@ -45,6 +45,7 @@ class vocab_manager {
      * Inserts a new vocab item into the database.
      *
      * @param object $vocab a vocab item.
+     * @returns int The ID of the inserted vocab item.
      * @throws dml_exception
      */
     public function insert_vocab(object $vocab) : int {
@@ -263,5 +264,32 @@ class vocab_manager {
         global $DB;
         $record = $DB->get_record('vocabcoach_lists', ['id' => $listid], 'createdby');
         return $record->createdby == $userid;
+    }
+
+    public static function remove_if_unused($vocabid) {
+        global $DB;
+
+        $containedinlist = self::is_contained_in_list($vocabid);
+        $containedinuserbox = self::is_contained_in_userbox($vocabid);
+
+        if ($containedinlist || $containedinuserbox) {
+            return;
+        }
+
+        $DB->delete_records('vocabcoach_vocab', ['id' => $vocabid]);
+    }
+
+    public static function is_contained_in_list($vocabid) : bool {
+        global $DB;
+
+        $count = $DB->count_records('vocabcoach_list_contains', ['vocabid' => $vocabid]);
+        return $count > 0;
+    }
+
+    public static function is_contained_in_userbox($vocabid) : bool {
+        global $DB;
+
+        $count = $DB->count_records('vocabcoach_vocabdata', ['vocabid' => $vocabid]);
+        return $count > 0;
     }
 }

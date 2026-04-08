@@ -2,12 +2,23 @@ import {call as fetchMany} from 'core/ajax';
 
 export const updateVocabAJAX = (
     vocabid, userid, known
-) => fetchMany ([{
+) => fetchMany([{
     methodname: 'mod_vocabcoach_update_vocab',
     args: {
         dataid: vocabid,
         userid: userid,
         known: known
+    },
+}])[0];
+
+export const editUserVocabAJAX = (
+    updatedVocab,
+) => fetchMany([{
+    methodname: 'mod_vocabcoach_edit_user_vocab',
+    args: {
+        front: updatedVocab.front,
+        back: updatedVocab.back,
+        dataid: updatedVocab.dataid
     },
 }])[0];
 
@@ -34,6 +45,7 @@ export const getListArrayAJAX = (
         listid
     },
 }])[0];
+
 export const getListsAJAX = (
     cmid,
     userid,
@@ -68,6 +80,7 @@ export const addListToUserAJAX = (
         'cmid': cmid
     },
 }])[0];
+
 export const distributeListAJAX = (
     listid,
     cmid

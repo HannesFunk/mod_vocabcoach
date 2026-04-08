@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 require_once(__DIR__.'/../vocabhelper.php');
+require_once(__DIR__.'/../vocab_manager.php');
 require_once(__DIR__.'/../activity_tracker.php');
 
 use external_api;
@@ -329,5 +330,67 @@ class vocab_api extends external_api {
         $total = $vh->get_class_total($courseid);
 
         return ['total' => $total];
+    }
+
+
+    /**
+     * Returns description of get_class_total() parameters.
+     *
+     * @return external_function_parameters
+     */
+    public static function edit_user_vocab_parameters() : external_function_parameters {
+        return new external_function_parameters([
+                'front' => new external_value(PARAM_TEXT),
+                'back' => new external_value(PARAM_TEXT),
+                'dataid' => new external_value(PARAM_INT),
+        ]);
+    }
+
+    /**
+     * Returns description of get_class_total() result value.
+     *
+     * @return external_single_structure
+     */
+    public static function edit_user_vocab_returns() : external_single_structure {
+        return new external_single_structure([
+                'dataid' => new external_value(PARAM_INT, 'the dataid of the new vocab'),
+        ]);
+    }
+
+    /**
+     * Edit a user vocab, i.e. create a new vocab and replace the old vocabdata entry by the new one.
+     *
+     * @param string $front
+     * @param string $back
+     * @param int $dataid
+     * @return array
+     */
+    public static function edit_user_vocab(string $front, string $back, int $dataid) :array {
+
+        global $DB, $USER;
+
+        $vm = new \mod_vocabcoach\vocab_manager($USER->id);
+
+        $vocab = (object)[
+            'front' => $front,
+            'back' => $back,
+            'third' => "",
+        ];
+
+        $newvocabid = $vm->insert_vocab($vocab);
+        $datarecord = $DB->get_record('vocabcoach_vocabdata', ['id' => $dataid]);
+        $newvocabdata = (object)[
+            'stage' => $datarecord->stage,
+            'userid' => $datarecord->userid,
+            'lastchecked' => $datarecord->lastchecked,
+            'cmid' => $datarecord->cmid,
+            'vocabid' => $newvocabid,
+        ];
+
+        $newdataid = $DB->insert_record('vocabcoach_vocabdata', $newvocabdata);
+        $DB->delete_records('vocabcoach_vocabdata', ['id' => $dataid]);
+        $vm->remove_if_unused($datarecord->vocabid);
+
+        return ['dataid' => $newdataid];
     }
 }

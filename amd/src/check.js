@@ -1,6 +1,6 @@
 import {
     getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX,
-    logCheckedVocabsAJAX, updateVocabAJAX, editUserVocabAJAX, removeVocabFromUserAJAX
+    updateVocabAJAX, editUserVocabAJAX, removeVocabFromUserAJAX
 }
     from "./repository";
 import mustache from 'core/mustache';
@@ -303,9 +303,7 @@ function showSummary() {
     if (config.source === 'user') {
         logDetails.stage = config.stage;
     }
-    const logNumber = logCheckedVocabsAJAX(config.userid, config.cmid, JSON.stringify(logDetails));
-
-    Promise.all([getMsg, getTemplate, logNumber]).then(() => {
+    Promise.all([getMsg, getTemplate]).then(() => {
         const summaryContainer = document.querySelector('.check-summary');
         summaryContainer.innerHTML = mustache.render(template, templateData);
         showElement(summaryContainer, true);

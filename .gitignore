@@ -2,7 +2,6 @@
 /node_modules/
 stuff/
 .idea/
-/amd/build/
 .eslintrc
 .grunt/
 Gruntfile.js

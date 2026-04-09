@@ -17,6 +17,7 @@
     text-align: center;
     margin: 15px auto;
     overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 .check-box.hidden {
@@ -97,11 +98,6 @@ input.wrong {
     margin-bottom: 0.5rem;
     font-size: x-large;
     text-align: center;
-}
-
-#check-area {
-    overflow: hidden;
-    position: relative;
 }
 
 #check-type-area {

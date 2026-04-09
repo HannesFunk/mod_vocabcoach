@@ -24,7 +24,7 @@
     }
 }}
 
-<h2>Abfrage</h2>
+<h2>{{#str}} check, mod_vocabcoach {{/str}}</h2>
 <div id="check-container" data-vocab-data-id="-1">
     <div id="check-header">
 
@@ -40,6 +40,7 @@
     </div>
 
     <div id="check-type-area" class="hidden">
+        {{> mod_vocabcoach/check-edit-button}}
         <label for="input-vocab-front"></label>
         <input type="text" name="input-vocab-front" id="input-vocab-front" autocapitalize="off" autocomplete="none" spellcheck="false" data-action="typed-vocab-check" />
         <div>
@@ -49,7 +50,9 @@
             <input type="button" class="btn btn-secondary hidden" id="button-typed-vocab-override" value="Das hatte ich!" data-action="mod-vocabcoach/typed-vocab-override" />
         </div>
     </div>
+
     <div id="check-area">
+        {{> mod_vocabcoach/check-edit-button}}
         <div id="check-box-front" class="check-box d-flex" data-action="mod_vocabcoach/reveal-card">
             <div id="check-front" class="vc-check-label">{{#str}} loading, mod_vocabcoach {{/str}}</div>
         </div>

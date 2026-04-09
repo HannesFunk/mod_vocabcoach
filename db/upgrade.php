@@ -201,6 +201,7 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
 
                     }
                 }
+                $dbman->drop_table($table_old); // Welcome to the danger zone.
             }
         }
     }

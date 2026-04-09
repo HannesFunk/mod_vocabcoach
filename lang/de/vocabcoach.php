@@ -153,3 +153,4 @@ $string['vocabcoach:show_leaderboard'] = 'Leaderboard anzeigen';
 $string['vocabcoach:mod/vocabcoach:show_class_total_live'] = 'Live updates der fälligen Vokabeln anzeigen.';
 
 $string['remove_from_box'] = "Aus meinem Kasten entfernen";
+$string['check'] = 'Abfrage';

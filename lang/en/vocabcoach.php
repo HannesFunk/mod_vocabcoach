@@ -149,3 +149,4 @@ $string['email_notifications'] = 'Email notifications';
 $string['email_notifications_help'] = 'Receive email notifications when vocabulary is due for review.';
 
 $string['remove_from_box'] = "Remove from my box";
+$string['check'] = 'Check';

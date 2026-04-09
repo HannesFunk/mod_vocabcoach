@@ -71,13 +71,6 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
-    'mod_vocabcoach_get_feedback_line' => [
-        'classname' => 'mod_vocabcoach\external\feedback_api',
-        'methodname' => 'get_feedback_line',
-        'description' => 'Gets a feedback line, depending on the achievement.',
-        'type' => 'write',
-        'ajax' => true,
-    ],
     'mod_vocabcoach_remove_vocab_from_user' => [
         'classname' => 'mod_vocabcoach\external\vocab_api',
         'methodname' => 'remove_vocab_from_user',

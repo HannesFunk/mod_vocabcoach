@@ -155,3 +155,5 @@ $string['vocabcoach:mod/vocabcoach:show_class_total_live'] = 'Live updates der f
 $string['remove_from_box'] = "Aus meinem Kasten entfernen";
 $string['check'] = 'Abfrage';
 $string['confirm_delete_vocab'] = 'Vokabel wirklich aus dem Kasten entfernen?';
+$string['no_vocabs_to_check'] = 'Hier sind momentan keine Vokabeln enthalten.';
+$string['box'] = 'Box';

@@ -151,3 +151,5 @@ $string['email_notifications_help'] = 'Receive email notifications when vocabula
 $string['remove_from_box'] = "Remove from my box";
 $string['check'] = 'Check';
 $string['confirm_delete_vocab'] = 'Should this vocab really be deleted from your box?';
+$string['no_vocabs_to_check'] = 'No vocab here.';
+$string['box'] = 'box';

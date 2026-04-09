@@ -225,7 +225,7 @@ function showNext() {
         const summaryData = {
             known: knownCount,
             total: knownCount + unknownCount
-        }
+        };
         showSummaryBox(summaryLine, summaryData);
         return;
     }
@@ -345,13 +345,18 @@ function updateCount(known) {
     } else {
         unknownCount++;
     }
+    moveDot(known ? 'dot-green' : 'dot-red');
+}
 
+function moveDot(newClass) {
     let bullets = document.querySelectorAll('.vocab-dot.unchecked');
     let bullet = bullets[bullets.length - 1];
     const newShift = bullet.parentNode.getAttribute('data-new-shift');
     bullet.parentNode.style.transform = 'translateX(' + newShift + 'px)';
-    bullet.classList.add(known ? 'dot-green' : 'dot-red');
-    bullet.classList.remove('unchecked');
+    if (newClass !== "") {
+        bullet.classList.add(newClass);
+        bullet.classList.remove('unchecked');
+    }
 }
 
 function shuffle(array) {
@@ -462,6 +467,7 @@ function deleteVocab(dataid) {
         .then((result) => {
             if (result.success) {
                 showNext();
+                moveDot("");
             }
             return result;
         })

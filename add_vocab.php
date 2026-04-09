@@ -31,7 +31,6 @@ global $PAGE, $OUTPUT, $DB, $USER, $CFG;
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/classes/forms/add_vocab_form.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
-require_once(__DIR__.'/classes/activity_tracker.php');
 
 // Course module id.
 $id = required_param('id', PARAM_INT);
@@ -121,8 +120,6 @@ if ($mform->is_cancelled()) {
                 notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
             }
         }
-        $at = new activity_tracker($USER->id, $id);
-        $at->log($at->typesalways['ACT_ENTERED_VOCAB'], count($vocabarray));
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
             get_string('add_vocab_successful', 'mod_vocabcoach'));
     }
@@ -158,8 +155,6 @@ if ($mform->is_cancelled()) {
             notification::add('Fehler beim Eintragen der Vokabeln in die Liste. ', notification::ERROR);
             $redirect = false;
         }
-        $at = new activity_tracker($USER->id, $id);
-        $at->log($at->typesalways['ACT_CREATED_LIST'], $listid);
     }
 
     // Step 3: add list to user (if necessary).

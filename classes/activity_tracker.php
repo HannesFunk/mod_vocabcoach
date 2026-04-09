@@ -159,7 +159,7 @@ class activity_tracker {
         $day = $this->day_before($this->format_date('today'));
         $i = 1;
         while (1) {
-            if (!isset($activities[$i])) {
+            if (!isset($activities[$i]->date)) {
                 return $i;
             }
             if ($activities[$i]->date != $day) {

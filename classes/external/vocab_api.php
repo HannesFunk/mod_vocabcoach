@@ -20,8 +20,6 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 require_once(__DIR__.'/../vocabhelper.php');
-require_once(__DIR__.'/../vocab_manager.php');
-require_once(__DIR__.'/../activity_tracker.php');
 
 use external_api;
 use external_function_parameters;
@@ -207,49 +205,6 @@ class vocab_api extends external_api {
         } catch (\dml_exception $e) {
             return [];
         }
-    }
-
-    /**
-     * Returns description of log_checked_vocabs_vocabs() parameters.
-     *
-     * @return external_function_parameters
-     */
-    public static function log_checked_vocabs_parameters() : external_function_parameters {
-        return new external_function_parameters([
-                'cmid' => new external_value(PARAM_INT),
-                'userid' => new external_value(PARAM_INT),
-                'details' => new external_value(PARAM_TEXT),
-        ]);
-    }
-
-    /**
-     * Returns description of log_checked_vocabs() result value.
-     *
-     * @return external_single_structure
-     */
-    public static function log_checked_vocabs_returns() : external_single_structure {
-        return new external_single_structure([
-                'success' => new external_value(PARAM_BOOL, 'whether the update was successful.'),
-                'message' => new external_value(PARAM_TEXT, 'a message'),
-        ]);
-    }
-
-    /**
-     * logs the number of checked vocab items.
-     * @param int $cmid
-     * @param int $userid
-     * @param string $details
-     * @return array
-     * @throws \invalid_parameter_exception
-     */
-    public static function log_checked_vocabs(int $cmid, int $userid, string $details) :array {
-        self::validate_parameters(self::log_checked_vocabs_parameters(),
-                ['cmid' => $cmid, 'userid' => $userid, 'details' => $details]);
-
-        $at = new \activity_tracker($userid, $cmid);
-        $at->log($at->typesalways['ACT_CHECKED_VOCAB'], $details);
-
-        return ['success' => true, 'message' => 'Logged successfully.'];
     }
 
     /**

@@ -37,6 +37,7 @@ class box_manager {
      * @var int $userid  User ID
      */
     private int $cmid, $userid;
+    private array $boxdata = [];
 
     /**
      * Construct the class.
@@ -95,10 +96,29 @@ class box_manager {
                 'stage' => $i,
                 'due' => $due,
                 'total' => $total,
-                'inactive' => $due == 0,
-                'next_due' => $nextdue,
+                'status' => self::compute_box_status($due, $total),
+                'nextdue' => $nextdue,
             ];
         }
+        $this->boxdata = $output;
         return $output;
+    }
+
+    private static function compute_box_status(int $due, int $total) : string {
+        if ($total == 0) {
+            return 'empty';
+        }
+        if ($due == 0) {
+            return 'done';
+        }
+        return 'todo';
+    }
+
+    public function get_total_due(): int {
+        $total = 0;
+        foreach ($this->boxdata as $box) {
+            $total += $box['due'];
+        }
+        return $total;
     }
 }

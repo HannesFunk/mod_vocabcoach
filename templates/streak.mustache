@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_vocabcoach/view
+    @template mod_vocabcoach/streak
 
 
     Example context (json):
@@ -23,23 +23,13 @@
 
     }
 }}
-
-
-<h4 class="mt-5">{{#str}}view_actions, mod_vocabcoach{{/str}}</h4>
-<hr>
-{{> mod_vocabcoach/view_actions}}
-
-<div class="d-flex align-items-end">
-    <h4 class="mt-5">{{#str}}view_your_vocab_box, mod_vocabcoach{{/str}}</h4>
-    {{> mod_vocabcoach/streak}}
+<div class="streak-container">
+    {{#streakinfo}}
+        {{#login}}
+            <span class="streak streak-weak">{{streak}}</span>
+        {{/login}}
+        {{#checkall}}
+            <span class="streak streak-strong">{{streak}}</span>
+        {{/checkall}}
+    {{/streakinfo}}
 </div>
-<hr>
-<div id="vocabcoach-box-container">
-
-    {{#boxdata}}
-        {{> mod_vocabcoach/box}}
-    {{/boxdata}}
-
-</div>
-
-

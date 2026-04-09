@@ -92,15 +92,6 @@ export const distributeListAJAX = (
     },
 }])[0];
 
-export const getFeedbackLineAJAX = (
-    achievement
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_get_feedback_line',
-    args: {
-        'achievement': achievement
-    },
-}])[0];
-
 export const removeVocabFromUserAJAX = (
     dataid) =>
     fetchMany([{

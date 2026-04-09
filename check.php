@@ -55,9 +55,14 @@ $jsdata = [
 ];
 if ($source === 'user') {
     $jsdata['stage'] = required_param('stage', PARAM_INT);
+    $subheadline = get_string('box', 'mod_vocabcoach')." ".$jsdata['stage'];
 
 } else if ($source === 'list') {
     $jsdata['listid'] = required_param('listid', PARAM_INT);
+    $listrecord = $DB->get_record('vocabcoach_lists', ['id' => $jsdata['listid']], 'title', MUST_EXIST);
+    $subheadline = $listrecord->title;
+} else {
+    throw new \invalid_parameter_exception();
 }
 
 $PAGE->requires->js_call_amd(
@@ -68,7 +73,7 @@ $PAGE->requires->js_call_amd(
 
 $userprefs = new \mod_vocabcoach\user_preferences($id, $USER->id);
 $checkcontext = $userprefs->get_template_context();
-
+$checkcontext['content'] = $subheadline;
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/check', $checkcontext);
 echo $OUTPUT->footer();

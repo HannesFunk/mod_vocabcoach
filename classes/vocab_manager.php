@@ -66,11 +66,10 @@ class vocab_manager {
         global $DB;
         $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
         $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
-        $condition3 = $DB->sql_compare_text('third') . ' = ' . $DB->sql_compare_text(':third');
-        $query = "SELECT COUNT(*) FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2 AND $condition3";
+        $query = "SELECT COUNT(*) FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2";
         try {
             $count = $DB->count_records_sql($query,
-                    ['front' => $vocab->front, 'back' => $vocab->back, 'third' => $vocab->third]);
+                    ['front' => $vocab->front, 'back' => $vocab->back]);
             return $count > 0;
         } catch (dml_exception $e) {
             return false;
@@ -103,10 +102,9 @@ class vocab_manager {
 
         $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
         $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
-        $condition3 = $DB->sql_compare_text('third') . ' = ' . $DB->sql_compare_text(':third');
 
-        $query = "SELECT id FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2 AND $condition3";
-        $records = $DB->get_records_sql($query, ['front' => $vocab->front, 'back' => $vocab->back, 'third' => $vocab->third], 0, 1);
+        $query = "SELECT id FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2";
+        $records = $DB->get_records_sql($query, ['front' => $vocab->front, 'back' => $vocab->back], 0, 1);
         return array_values($records)[0]->id;
     }
 

@@ -47,7 +47,7 @@ export const init = (listidString = "-1") => {
                 spinner.remove();
                 for (let i=0; i<array.length; i++) {
                     let vocab = array[i];
-                    addRow(vocab.dataid, vocab.front, vocab.back, vocab.third);
+                    addRow(vocab.dataid, vocab.front, vocab.back);
                 }
                 addRow();
             }
@@ -68,17 +68,15 @@ export const init = (listidString = "-1") => {
  * @param {number} [id=0] - The ID of the vocabulary item. Defaults to 0.
  * @param {string} [front=""] - The front text of the vocabulary item. Defaults to an empty string.
  * @param {string} [back=""] - The back text of the vocabulary item. Defaults to an empty string.
- * @param {string} [third=""] - The third text of the vocabulary item. Defaults to an empty string.
  * @returns {boolean} - Returns true after adding the row.
  */
-function addRow(id = 0, front = "", back = "", third = "") {
+function addRow(id = 0, front = "", back = "") {
     const firstRow = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
     const lastRow = firstRow.parentNode.lastChild;
     const tempRow = template.cloneNode(true);
     tempRow.querySelectorAll('input[name="vocabid[]"]')[0].value = id;
     tempRow.querySelectorAll('input[name="front[]"]')[0].value = front;
     tempRow.querySelectorAll('input[name="back[]"]')[0].value = back;
-    tempRow.querySelectorAll('input[name="third[]"]')[0].value = third;
     lastRow.parentNode.insertBefore(tempRow, lastRow.nextSibling);
     return true;
 }

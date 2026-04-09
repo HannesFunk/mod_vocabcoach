@@ -97,10 +97,7 @@ function vocabcoach_delete_instance($id) {
 }
 
 function normalize_checkboxes ($moduleinstance) {
-
-
     // Normalise checkbox fields (unset / unchecked -> 0)
-    $moduleinstance->thirdactive   = !empty($moduleinstance->thirdactive)   ? 1 : 0;
     $moduleinstance->move_undue    = !empty($moduleinstance->move_undue)    ? 1 : 0;
     $moduleinstance->notifications_enabled = !empty($moduleinstance->notifications_enabled) ? 1 : 0;
     $moduleinstance->notifications_optout = !empty($moduleinstance->notifications_optout) ? 1 : 0;

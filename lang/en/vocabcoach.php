@@ -43,7 +43,6 @@ $string['info_boxtimes'] = 'Set the intervals after which words in the different
 $string['boxtime'] = 'Interval for box';
 $string['move_undue'] = 'Move words that are reviewed before the interval has elapsed to the next box.';
 $string['move_undue_help'] = 'Words can be reviewed at any time. If this box is ticked, words reviewed before the interval has elapsed will also be moved to the next box. Otherwise, they will remain in the current box.';
-$string['third_active'] = 'Enable third column for additional information.';
 
 $string['add_vocab_title'] = 'Add vocabulary';
 $string['add_vocab_user'] = 'Add words only for myself';

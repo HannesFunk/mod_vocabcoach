@@ -51,7 +51,7 @@ async function showSummaryBox(msg, data = null) {
     const summaryContainer = document.querySelector('.check-summary');
     summaryContainer.innerHTML = html;
     showElement(summaryContainer, true);
-    showElements(['check-box-front', 'check-box-back', 'check-type-area', 'check-box-third', 'check-buttons'], false);
+    showElements(['check-box-front', 'check-box-back', 'check-type-area', 'check-buttons'], false);
     const instructionElement = document.querySelector('.instruction-front-back-random');
     instructionElement.innerHTML = "Klicke in das Feld, um die Abfrage zu beenden.";
     showElement(instructionElement, true);
@@ -91,7 +91,6 @@ function addListeners() {
             document.getElementById('input-vocab-front').disabled = true;
 
             showElements(['button-typed-vocab-next', 'button-typed-vocab-override'], true);
-            showElement('check-third', config.thirdActive);
             showElements(['button-typed-vocab-check', 'button-typed-vocab-reveal'], false);
         } else if (e.target.closest(Selectors.actions.typedVocabOverride)) {
             checkDone(vocabArrayJSON[0].dataid, true);
@@ -246,11 +245,6 @@ function updateLabels() {
     frontBox.innerHTML = vocabArrayJSON[0].front;
     backBox.innerHTML = vocabArrayJSON[0].back;
 
-    const thirdBox = document.getElementById('check-third');
-    if (thirdBox !== null) {
-        thirdBox.innerHTML = vocabArrayJSON[0].third;
-    }
-
     [frontBox, backBox].forEach(
         elem => adjustFontSizeToBoxHeight(elem)
     );
@@ -277,7 +271,6 @@ function adjustFontSizeToBoxHeight(elem) {
 }
 
 function resetCheckFields() {
-    showElement('check-third', false);
     switch (mode) {
         case 'random': {
             const random = Math.floor(Math.random() * 2);

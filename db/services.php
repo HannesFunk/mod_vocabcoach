@@ -78,13 +78,6 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
-    'mod_vocabcoach_log_checked_vocabs' => [
-        'classname' => 'mod_vocabcoach\external\vocab_api',
-        'methodname' => 'log_checked_vocabs',
-        'description' => 'Logs the number and type of checked vocabs.',
-        'type' => 'write',
-        'ajax' => true,
-    ],
     'mod_vocabcoach_remove_vocab_from_user' => [
         'classname' => 'mod_vocabcoach\external\vocab_api',
         'methodname' => 'remove_vocab_from_user',

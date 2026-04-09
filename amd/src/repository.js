@@ -101,19 +101,6 @@ export const getFeedbackLineAJAX = (
     },
 }])[0];
 
-export const logCheckedVocabsAJAX = (
-    userid,
-    cmid,
-    details
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_log_checked_vocabs',
-    args: {
-        'userid': userid,
-        'cmid': cmid,
-        'details': details
-    },
-}])[0];
-
 export const removeVocabFromUserAJAX = (
     dataid) =>
     fetchMany([{

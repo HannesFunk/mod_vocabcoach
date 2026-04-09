@@ -136,7 +136,51 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         upgrade_mod_savepoint(true, 2026020801, 'vocabcoach');
     }
 
-    if ($oldversion < 2026022800) {
+    // The new streak management - the code is a mess since
+    // we need to avoid the weird old activity_tracker functions.
+    if ($oldversion < 2026040906) {
+        $typedailylogin = 1;
+        $typedailycheckall = 2;
+
+        $formatdayint = static function(int $timestamp): int {
+            $year = (int)date('y', $timestamp);
+            $dayofyear = (int)date('z', $timestamp);
+            return $year * 1000 + $dayofyear;
+        };
+
+        $daybefore = static function(int $dayint): int {
+            $day = $dayint % 1000;
+            $year = ($dayint - $day) / 1000;
+            if ($day !== 0) {
+                return $dayint - 1;
+            }
+            $leapyearcorrection = (($year - 1) % 4 === 0) ? 1 : 0;
+            return ($year - 1) * 1000 + 365 + $leapyearcorrection;
+        };
+
+        $getcontinuousdays = static function(int $userid, int $cmid, int $type) use ($DB, $formatdayint, $daybefore): int {
+            $conditions = [
+                'userid' => $userid,
+                'cmid' => $cmid,
+                'type' => $type,
+            ];
+            $records = $DB->get_records('vocabcoach_activitylog', $conditions, 'date DESC');
+            $activities = array_values($records);
+
+            $day = $daybefore($formatdayint(strtotime("yesterday midnight")));
+            $i = 1;
+            while (true) {
+                if (!isset($activities[$i]->date)) {
+                    return $i;
+                }
+                if ((int)$activities[$i]->date !== $day) {
+                    return $i;
+                }
+                $i++;
+                $day = $daybefore($day);
+            }
+        };
+
         $table = new xmldb_table('vocabcoach_streaks');
         if (!$dbman->table_exists($table)) {
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null, 'primary key');
@@ -152,60 +196,59 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             $table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
 
             $dbman->create_table($table);
+        }
 
-            $table_old = new xmldb_table('vocabcoach_activitylog');
+        $table_old = new xmldb_table('vocabcoach_activitylog');
 
-            if ($dbman->table_exists($table_old)) {
+        if ($dbman->table_exists($table_old)) {
+            // For an incomprehensible reason, SELECT DISTINCT userid, cmid ... does not work.
+            $query = "SELECT DISTINCT cmid FROM {vocabcoach_activitylog};";
+            $cmids = $DB->get_records_sql($query);
 
-                // For a incomprehensible reason, SELECT DISTINCT userid, cmid ... does not work.
-                $query = "SELECT DISTINCT cmid FROM {vocabcoach_activitylog};";
-                $cmids = $DB->get_records_sql($query);
+            $records = [];
 
-                $records = [];
-
-                foreach ($cmids as $cmid) {
-                    $query = 'SELECT DISTINCT userid FROM {vocabcoach_activitylog} WHERE cmid = ?;';
-                    $userids = $DB->get_records_sql($query, [$cmid->cmid]);
-                    foreach ($userids as $userid) {
-                        $records[] = (object) [
-                            'cmid' => $cmid->cmid,
-                            'userid' => $userid->userid,
-                        ];
-                    }
+            foreach ($cmids as $cmid) {
+                $query = 'SELECT DISTINCT userid FROM {vocabcoach_activitylog} WHERE cmid = ?;';
+                $userids = $DB->get_records_sql($query, [$cmid->cmid]);
+                foreach ($userids as $userid) {
+                    $records[] = (object) [
+                        'cmid' => $cmid->cmid,
+                        'userid' => $userid->userid,
+                    ];
                 }
-
-                if (!empty($records)) {
-                    foreach ($records as $record) {
-                        $al = new activity_tracker($record->userid, $record->cmid);
-                        $daysloggedin = $al->get_continuous_days($al->typesdaily['ACT_LOGGED_IN']);
-                        $dayscheckall = $al->get_continuous_days($al->typesdaily['ACT_CHECKED_ALL']);
-
-                        $streaklogin = (object) [
-                            'cmid' => $record->cmid,
-                            'userid' => $record->userid,
-                            'type' => 'login',
-                            'streak' => $daysloggedin,
-                            'timemodified' => time(),
-                        ];
-
-                        $streakcheckall = (object) [
-                            'cmid' => $record->cmid,
-                            'userid' => $record->userid,
-                            'type' => 'checkall',
-                            'streak' => $dayscheckall,
-                            'timemodified' => time(),
-                        ];
-
-                        $DB->insert_record('vocabcoach_streaks', $streaklogin);
-                        $DB->insert_record('vocabcoach_streaks', $streakcheckall);
-
-                    }
-                }
-                $dbman->drop_table($table_old); // Welcome to the danger zone.
             }
+
+            if (!empty($records)) {
+                foreach ($records as $record) {
+                    $daysloggedin = $getcontinuousdays((int)$record->userid, (int)$record->cmid, $typedailylogin);
+                    $dayscheckall = $getcontinuousdays((int)$record->userid, (int)$record->cmid, $typedailycheckall);
+
+                    $streaklogin = (object) [
+                        'cmid' => $record->cmid,
+                        'userid' => $record->userid,
+                        'type' => 'login',
+                        'streak' => $daysloggedin,
+                        'timemodified' => time(),
+                    ];
+
+                    $streakcheckall = (object) [
+                        'cmid' => $record->cmid,
+                        'userid' => $record->userid,
+                        'type' => 'checkall',
+                        'streak' => $dayscheckall,
+                        'timemodified' => time(),
+                    ];
+
+                    $DB->insert_record('vocabcoach_streaks', $streaklogin);
+                    $DB->insert_record('vocabcoach_streaks', $streakcheckall);
+
+                }
+            }
+            $dbman->drop_table($table_old);
         }
     }
 
+    // The will have to be dealt with later anyway.
     if ($oldversion < 2026022801) {
         $table = new xmldb_table('vocabcoach_streak_restores');
         if (!$dbman->table_exists($table)) {

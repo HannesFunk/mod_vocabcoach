@@ -86,7 +86,7 @@ class streak_manager_test extends \advanced_testcase {
         $this->create_streak_record($user->id, $cm->id, 17, strtotime('-2 hours'));
 
         $sm = new streak_manager($user->id, $cm->id);
-        $sm->update_type('login');
+        $sm->update('login');
         $streakinfo = $sm->get_streak_info('login');
 
         $this->assertEquals(17, $streakinfo->streak);
@@ -103,7 +103,7 @@ class streak_manager_test extends \advanced_testcase {
         $this->create_streak_record($user->id, $cm->id, 4, $yesterday);
 
         $sm = new streak_manager($user->id, $cm->id);
-        $sm->update_type('login');
+        $sm->update('login');
         $streakinfo = $sm->get_streak_info('login');
 
         $this->assertEquals(5, $streakinfo->streak);
@@ -120,7 +120,7 @@ class streak_manager_test extends \advanced_testcase {
         $this->create_streak_record($user->id, $cm->id, 9, $olderthanrestorewindow);
 
         $sm = new streak_manager($user->id, $cm->id);
-        $sm->update_type('login');
+        $sm->update('login');
         $streakinfo = $sm->get_streak_info('login');
 
         $this->assertEquals(1, $streakinfo->streak);

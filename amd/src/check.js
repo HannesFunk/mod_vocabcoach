@@ -4,6 +4,7 @@ import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX,
 import mustache from 'core/mustache';
 import {showElement, showElements} from "./general";
 import Modal from 'core/modal';
+import notification from "core/notification";
 
 let vocabArrayJSON = null;
 let knownCount = 0;
@@ -435,10 +436,21 @@ async function editVocab(vocab) {
                 dataid: vocab.dataid
             };
             editUserVocabAJAX(updatedVocab).then(
-                // eslint-disable-next-line no-console
-                (text) => console.log(text)
+                (result) => {
+                    if (result.dataid === -1) {
+                        notification.addNotification({
+                            type: 'error',
+                            message: 'Error editing vocab. Please try again later.'
+                        });
+                        return null;
+                    }
+                    updatedVocab.dataid = result.dataid;
+                    vocabArrayJSON[0] = updatedVocab;
+                    updateLabels();
+                    return updatedVocab;
+                }
             );
-            modal.hide();
+            modal.destroy();
         } else if (e.target.closest('[data-action="vc-edit-cancel"]')) {
             modal.destroy();
         }

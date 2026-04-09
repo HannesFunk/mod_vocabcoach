@@ -92,6 +92,13 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
+    'mod_vocabcoach_edit_user_vocab' => [
+        'classname' => 'mod_vocabcoach\external\vocab_api',
+        'methodname' => 'edit_user_vocab',
+        'description' => 'Edit a users vocab item.',
+        'type' => 'write',
+        'ajax' => true,
+    ],
     'mod_vocabcoach_get_class_total' => [
         'classname' => 'mod_vocabcoach\external\vocab_api',
         'methodname' => 'get_class_total',

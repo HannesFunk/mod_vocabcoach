@@ -26,7 +26,6 @@ require(__DIR__.'/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__ . '/classes/external/vocab_api.php');
-require_once(__DIR__.'/classes/forms/view_box_form.php');
 require_once(__DIR__.'/classes/vocab_manager.php');
 
 $id = required_param('id', PARAM_INT);
@@ -40,7 +39,7 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_context($modulecontext);
-$PAGE->set_url('/mod/vocabcoach/viewlist.php');
+$PAGE->set_url('/mod/vocabcoach/viewbox.php', ['id' => $id, 'stage' => $stage]);
 $PAGE->set_title('Vokabelcoach - Liste');
 $PAGE->set_heading('Vokabelcoach - Liste');
 $PAGE->navbar->add("Box ".$stage);
@@ -50,17 +49,14 @@ $PAGE->requires->js_call_amd('mod_vocabcoach/viewbox', 'init');
 $checkapi = new \mod_vocabcoach\external\vocab_api();
 $vocabarray = $checkapi->get_user_vocabs($USER->id, $id, $stage, true);
 
-$mform = new view_box_form(null,
-        ['vocabdata' => json_encode($vocabarray),
-        'id' => $id,
-        'third_active' => $moduleinstance->thirdactive,
-]);
-
-if ($mform->is_cancelled()) {
-    redirect(new moodle_url('/mod/vocabcoach/lists.php', ['id' => $id]));
-}
+$templatecontext = [
+    'usesthird' => $moduleinstance->thirdactive == 1,
+    'fronttitle' => $moduleinstance->desc_front,
+    'backtitle' => $moduleinstance->desc_back,
+    'vocabs' => $vocabarray,
+];
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading('Box '.$stage);
-$mform->display();
+echo $OUTPUT->render_from_template('mod_vocabcoach/viewbox', (object)$templatecontext);
 echo $OUTPUT->footer();

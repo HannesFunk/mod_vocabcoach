@@ -40,6 +40,7 @@
     </div>
 
     <div id="check-type-area" class="hidden">
+        {{> mod_vocabcoach/check-edit-button}}
         <label for="input-vocab-front"></label>
         <input type="text" name="input-vocab-front" id="input-vocab-front" autocapitalize="off" autocomplete="none" spellcheck="false" data-action="typed-vocab-check" />
         <div>
@@ -49,7 +50,9 @@
             <input type="button" class="btn btn-secondary hidden" id="button-typed-vocab-override" value="Das hatte ich!" data-action="mod-vocabcoach/typed-vocab-override" />
         </div>
     </div>
+
     <div id="check-area">
+        {{> mod_vocabcoach/check-edit-button}}
         <div id="check-box-front" class="check-box d-flex" data-action="mod_vocabcoach/reveal-card">
             <div id="check-front" class="vc-check-label">{{#str}} loading, mod_vocabcoach {{/str}}</div>
         </div>
@@ -69,10 +72,6 @@
 
 <div id="check-buttons">
     <input type="button" id="check-button-no" class="btn btn-secondary" data-action="mod_vocabcoach/update-vocab" data-vocabcoach-known="false" value="Didn't know that!" />
-    <button id="edit-button" class="btn btn-secondary"
-            data-action="mod_vocabcoach/edit-vocab">
-        <i class="fa fa-pen-to-square" aria-hidden="true"></i>
-    </button>
     <input type="button" id="check-button-yes" class="btn btn-primary" data-action="mod_vocabcoach/update-vocab" data-vocabcoach-known="true" value="Got it!" />
 </div>
 

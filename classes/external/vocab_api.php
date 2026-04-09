@@ -271,7 +271,6 @@ class vocab_api extends external_api {
     public static function remove_vocab_from_user_returns() : external_single_structure {
         return new external_single_structure([
                 'success' => new external_value(PARAM_BOOL, 'whether the removal was successful.'),
-                'message' => new external_value(PARAM_TEXT, 'a message'),
         ]);
     }
 
@@ -287,11 +286,8 @@ class vocab_api extends external_api {
                 ['dataid' => $dataid]);
 
         global $DB;
-
         $DB->delete_records('vocabcoach_vocabdata', ['id' => $dataid]);
-
-        return ['success' => true, 'message' => 'Removed successfully.'];
-
+        return ['success' => true];
     }
 
     /**

@@ -1,10 +1,13 @@
-import {getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX,
-    logCheckedVocabsAJAX, updateVocabAJAX, editUserVocabAJAX}
+import {
+    getBoxArrayAJAX, getFeedbackLineAJAX, getListArrayAJAX,
+    logCheckedVocabsAJAX, updateVocabAJAX, editUserVocabAJAX, removeVocabFromUserAJAX
+}
     from "./repository";
 import mustache from 'core/mustache';
 import {showElement, showElements} from "./general";
 import Modal from 'core/modal';
 import notification from "core/notification";
+import {getString} from 'core/str';
 
 let vocabArrayJSON = null;
 let knownCount = 0;
@@ -68,6 +71,8 @@ function addListeners() {
             checkDone(vocabArrayJSON[0].dataid, false);
         } else if (e.target.closest(Selectors.actions.editVocab)) {
             editVocab(vocabArrayJSON[0]);
+        } else if (e.target.closest(Selectors.actions.deleteVocab)) {
+            deleteVocab(vocabArrayJSON[0].dataid);
         }
     });
 
@@ -101,7 +106,8 @@ const Selectors = {
         revealTypedVocab: '[data-action="mod-vocabcoach/typed-vocab-reveal"]',
         typedVocabUnknown: '[data-action="mod-vocabcoach/typed-vocab-unknown"]',
         typedVocabOverride: '[data-action="mod-vocabcoach/typed-vocab-override"]',
-        editVocab: '[data-action="mod_vocabcoach/edit-vocab"]'
+        editVocab: '[data-action="mod_vocabcoach/edit-vocab"]',
+        deleteVocab: '[data-action="mod_vocabcoach/delete-vocab"]',
     },
     formElements: {
         mode: '[id="checkmode-select"]',
@@ -455,4 +461,20 @@ async function editVocab(vocab) {
             modal.destroy();
         }
     });
+}
+
+function deleteVocab(dataid) {
+    notification.deleteCancelPromise(
+        getString('confirm', 'core'),
+        getString('confirm_delete_vocab', 'mod_vocabcoach'),
+        getString('delete', 'core')
+    )
+        .then(() => removeVocabFromUserAJAX(dataid))
+        .then((result) => {
+            if (result.success) {
+                showNext();
+            }
+            return result;
+        })
+        .catch(() => null);
 }

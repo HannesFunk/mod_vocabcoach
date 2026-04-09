@@ -37,7 +37,6 @@ class view_list_form extends moodleform {
         $vocabarray = json_decode($this->_customdata['vocabdata']);
 
         $id = $this->_customdata['id'];
-        $usesthird = $this->_customdata['third_active'] == 1;
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
@@ -50,7 +49,8 @@ class view_list_form extends moodleform {
         <tr>
             <th></th>
             <th></th>
-            <th></th>'.($usesthird ? '<th>Zusatzinfo</th>' : '').'</tr>';
+            <th></th>
+        </tr>';
         $mform->addElement('html', $tableheaderhtml);
 
         foreach ($vocabarray as $vocab) {
@@ -59,9 +59,6 @@ class view_list_form extends moodleform {
             $vocabrow[] =& $mform->createElement('checkbox', 'vocab-'.$vocab->dataid);
             $vocabrow[] =& $mform->createElement('html', '</td>');
             $vocabitemhtml = '<td>'.$vocab->front.'</td><td>'.$vocab->back.'</td>';
-            if ($usesthird) {
-                $vocabitemhtml .= '<td>' . $vocab->third . '</td>';
-            }
             $vocabrow[] =& $mform->createElement('html', $vocabitemhtml.'</tr>');
             $mform->addGroup(
                     $vocabrow,

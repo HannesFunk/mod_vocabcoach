@@ -70,7 +70,6 @@ $formparameters = [
         'mode' => $mode,
         'id' => $id,
         'year' => $moduleinstance->year,
-        'third_active' => $instanceinfo->thirdactive,
         'desc_front' => $instanceinfo->desc_front,
         'desc_back' => $instanceinfo->desc_back,
 ];
@@ -108,7 +107,6 @@ if ($mform->is_cancelled()) {
         $vocab->correct_everywhere = false;
         $vocab->front = trim($_POST['front'][$i]);
         $vocab->back = trim($_POST['back'][$i]);
-        $vocab->third = trim($_POST['third'][$i]);
         $vocabarray[] = $vocab;
     }
 

@@ -79,8 +79,6 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         $mform->setType('desc_back', PARAM_TEXT);
         $mform->setDefault('desc_back', 'Deutsch');
 
-        $mform->addElement('checkbox', 'thirdactive', get_string('third_active', 'vocabcoach'));
-
         $mform->addElement('header', 'boxtimes', get_string('boxtimes', 'mod_vocabcoach'));
         $mform->addElement('static', 'info_boxtimes', '', get_string('info_boxtimes', 'mod_vocabcoach'));
         $defaultboxtimes = [0, 1, 2, 5, 10, 30];

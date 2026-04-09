@@ -50,7 +50,6 @@ $checkapi = new \mod_vocabcoach\external\vocab_api();
 $vocabarray = $checkapi->get_user_vocabs($USER->id, $id, $stage, true);
 
 $templatecontext = [
-    'usesthird' => $moduleinstance->thirdactive == 1,
     'fronttitle' => $moduleinstance->desc_front,
     'backtitle' => $moduleinstance->desc_back,
     'vocabs' => $vocabarray,

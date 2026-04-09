@@ -42,8 +42,6 @@ class add_vocab_form extends moodleform {
         $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
-
-        $usesthird = $moduleinstance->thirdactive;
         $desc_front = $moduleinstance->desc_front;
         $desc_back = $moduleinstance->desc_back;
         $instructions = $moduleinstance->instructions;
@@ -111,11 +109,7 @@ class add_vocab_form extends moodleform {
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
         $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="'.$desc_front .'"');
         $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="'.$desc_back.'"');
-        if ($usesthird) {
-            $vocabrow[] =& $mform->createElement('text', 'third[]', '', 'placeholder="Zusatzinformation"');
-        } else {
-            $vocabrow[] =& $mform->createElement('hidden', 'third[]', '');
-        }
+
         $mform->addGroup(
             $vocabrow,
             'vocabrow',
@@ -126,7 +120,6 @@ class add_vocab_form extends moodleform {
         $mform->setType('vocabid[]', PARAM_INT);
         $mform->setType('front[]', PARAM_TEXT);
         $mform->setType('back[]', PARAM_TEXT);
-        $mform->setType('third[]', PARAM_TEXT);
 
         $this->add_action_buttons();
     }

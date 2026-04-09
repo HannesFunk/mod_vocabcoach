@@ -51,7 +51,6 @@ $jsdata = [
     'force' => optional_param('force', false, PARAM_BOOL),
     'cmid' => $id,
     'source' => $source,
-    'thirdActive' => $moduleinstance->thirdactive,
 ];
 if ($source === 'user') {
     $jsdata['stage'] = required_param('stage', PARAM_INT);

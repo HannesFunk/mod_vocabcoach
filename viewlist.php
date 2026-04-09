@@ -68,7 +68,6 @@ $mform = new view_list_form(null,
         ['vocabdata' => json_encode($vocabarray),
         'id' => $id,
         'listid' => $listid,
-        'third_active' => $moduleinstance->thirdactive,
         ]);
 
 if ($mform->is_cancelled()) {

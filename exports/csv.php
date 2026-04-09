@@ -50,7 +50,7 @@ header("Content-Type:application/csv");
 header("Content-Disposition:attachment;filename=vocab.csv");
 
 foreach ($vocabarray as $vocab) {
-    fputcsv($stream, [$vocab->front, $vocab->back, $vocab->third]);
+    fputcsv($stream, [$vocab->front, $vocab->back]);
 }
 
 fclose($stream);

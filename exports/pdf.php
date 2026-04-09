@@ -37,10 +37,9 @@ class _pdf extends TCPDF {
      * Include a coloured table
      * @param array $headers
      * @param array $data
-     * @param bool $usesthird
      * @return void
      */
-    public function colored_table(array $headers, array $data, bool $usesthird) : void {
+    public function colored_table(array $headers, array $data) : void {
         // Colors, line width and bold font.
         $this->SetFillColor(15, 108, 191);
         $this->SetTextColor(255);
@@ -48,11 +47,8 @@ class _pdf extends TCPDF {
         $this->SetLineWidth(0.3);
         $this->SetFont('', 'B');
 
-        if ($usesthird) {
-            $w = [50, 50, 0];
-        } else {
-            $w = [80, 80];
-        }
+        $w = [80, 80];
+
         for ($i = 0; $i < count($headers); ++$i) {
             $this->Cell($w[$i], 7, $headers[$i], false, 0, 'L', 1);
         }
@@ -68,11 +64,7 @@ class _pdf extends TCPDF {
             // Calculate row height based on content.
             $frontheight = $this->getStringHeight($w[0], $vocab->front);
             $backheight = $this->getStringHeight($w[1], $vocab->back);
-            $thirdheight = 0;
-            if ($usesthird && !empty($vocab->third)) {
-                $thirdheight = $this->getStringHeight($w[2] ?: 60, $vocab->third);
-            }
-            $rowheight = max($frontheight, $backheight, $thirdheight, 5);
+            $rowheight = max($frontheight, $backheight, 0, 5);
 
             // Check if we need a page break before this row.
             $pagebreak = $this->GetY() + $rowheight > ($this->getPageHeight() - $this->getBreakMargin());
@@ -91,19 +83,11 @@ class _pdf extends TCPDF {
             $this->MultiCell($w[1], $rowheight, $vocab->back, 0, 'L', $fill, 0,
                     $startx + $w[0], $starty, true, 0, false, true, $rowheight, 'M');
 
-            if ($usesthird) {
-                if ($vocab->third === null) {
-                    $vocab->third = '';
-                }
-                $this->MultiCell($w[2], $rowheight, $vocab->third, 0, 'L', $fill, 1,
-                        $startx + $w[0] + $w[1], $starty, true, 0, false, true, $rowheight, 'M');
-            } else {
-                $this->SetY($starty + $rowheight);
-            }
+            $this->SetY($starty + $rowheight);
 
             $fill = !$fill;
         }
-        $this->Cell($usesthird ? 0 : array_sum($w), 0, '', 'T');
+        $this->Cell(array_sum($w), 0, '', 'T');
     }
 }
 
@@ -141,14 +125,10 @@ $pdf->AddPage();
 $cmid = required_param('cmid', PARAM_INT);
 $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
 $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
-$usesthird = $instanceinfo->thirdactive == 1;
 $desc_front = $instanceinfo->desc_front;
 $desc_back = $instanceinfo->desc_back;
 
 $tableheaders = [$desc_front, $desc_back];
-if ($usesthird) {
-    $tableheaders[] = '';
-}
 
 if (isset($_GET['listid'])) {
     $checkapi = new \mod_vocabcoach\external\vocab_api();
@@ -160,5 +140,5 @@ if (isset($_GET['listid'])) {
     $data = null;
 }
 
-$pdf->colored_table($tableheaders, $data, $usesthird);
+$pdf->colored_table($tableheaders, $data);
 $pdf->Output('vokabelliste.pdf');

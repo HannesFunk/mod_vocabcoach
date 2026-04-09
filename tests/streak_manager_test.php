@@ -27,54 +27,102 @@ namespace mod_vocabcoach;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/vocabcoach/classes/streak_restorer.php');
+require_once($CFG->dirroot . '/mod/vocabcoach/classes/streak_manager.php');
 
 /**
- * Test class for streak_restorer.
+ * Test class for streak_manager.
  *
  * @package   mod_vocabcoach
  * @copyright 2026 onwards, Johannes Funk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \mod_vocabcoach\streak_restorer
+ * @covers    \mod_vocabcoach\streak_manager
  */
-class streak_manager_test extends \advanced_testcase
-{
+class streak_manager_test extends \advanced_testcase {
 
     /**
-     * Test can restore streak when limit not reached.
+     * Create a course module for vocabcoach tests.
+     *
+     * @return object[]
      */
-    public function test_correctly_updates_streak()
-    {
+    private function create_test_context(): array {
+        $datagen = $this->getDataGenerator();
+        $course = $datagen->create_course();
+        $user = $datagen->create_user();
+        $vocabcoach = $datagen->create_module('vocabcoach', ['course' => $course->id]);
+        $cm = get_coursemodule_from_instance('vocabcoach', $vocabcoach->id);
+
+        return [$course, $user, $vocabcoach, $cm];
+    }
+
+    /**
+     * Seed a streak record.
+     *
+     * @param int $userid
+     * @param int $cmid
+     * @param int $streak
+     * @param int $timemodified
+     * @param string $type
+     * @return int
+     */
+    private function create_streak_record(int $userid, int $cmid, int $streak, int $timemodified, string $type = 'login'): int {
         global $DB;
+
+        return $DB->insert_record('vocabcoach_streaks', (object)[
+            'userid' => $userid,
+            'cmid' => $cmid,
+            'streak' => $streak,
+            'timemodified' => $timemodified,
+            'type' => $type,
+        ]);
+    }
+
+    /**
+     * Test streak remains unchanged when already updated today.
+     */
+    public function test_update_type_keeps_today_streak(): void {
         $this->resetAfterTest(true);
 
-        $datagen = $this->getDataGenerator();
+        [, $user, , $cm] = $this->create_test_context();
+        $this->create_streak_record($user->id, $cm->id, 17, strtotime('-2 hours'));
 
-        $course = $datagen->create_course();
-
-        $user1 = $datagen->create_user();
-//        $user2 = $datagen->create_user();
-//        $user3 = $datagen->create_user();
-//        $user4 = $datagen->create_user();
-
-        $vc = $datagen->create_module('vocabcoach', ['course' => $course->id]);
-        $cm = get_coursemodule_from_instance('vocabcoach', $vc->id);
-
-        // User 1: Has already logged in today. Streak should remain
-        $streak = (object)[
-            'userid' => $user1->id,
-            'cmid' => $cm->id,
-            'streak' => 17,
-            'lastmodified' => strtotime("-2 hours"),
-            'type' => 'login',
-        ];
-
-        $DB->insert_record('vocabcoach_streaks', $streak);
-
-        $sm = new streak_manager($user1->id, $cm->id);
+        $sm = new streak_manager($user->id, $cm->id);
         $sm->update_type('login');
         $streakinfo = $sm->get_streak_info('login');
 
-        $this->assertEquals($streakinfo->streak, 17);
+        $this->assertEquals(17, $streakinfo->streak);
+    }
+
+    /**
+     * Test streak increments when the last update was yesterday.
+     */
+    public function test_update_type_increments_yesterday_streak(): void {
+        $this->resetAfterTest(true);
+
+        [, $user, , $cm] = $this->create_test_context();
+        $yesterday = strtotime('yesterday 12:00');
+        $this->create_streak_record($user->id, $cm->id, 4, $yesterday);
+
+        $sm = new streak_manager($user->id, $cm->id);
+        $sm->update_type('login');
+        $streakinfo = $sm->get_streak_info('login');
+
+        $this->assertEquals(5, $streakinfo->streak);
+    }
+
+    /**
+     * Test streak resets when the last update is older than yesterday.
+     */
+    public function test_update_type_resets_after_gap(): void {
+        $this->resetAfterTest(true);
+
+        [, $user, , $cm] = $this->create_test_context();
+        $olderthanrestorewindow = strtotime('-3 days 12:00');
+        $this->create_streak_record($user->id, $cm->id, 9, $olderthanrestorewindow);
+
+        $sm = new streak_manager($user->id, $cm->id);
+        $sm->update_type('login');
+        $streakinfo = $sm->get_streak_info('login');
+
+        $this->assertEquals(1, $streakinfo->streak);
     }
 }

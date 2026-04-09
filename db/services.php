@@ -32,13 +32,6 @@ $functions = [
         'description' => 'Updates vocabulary and moves them to stage 1 or the next stage',
         'type' => 'write',
         'ajax' => true,
-    ],
-    'mod_vocabcoach_get_vocabs' => [
-        'classname' => 'mod_vocabcoach\external\vocab_api',
-        'methodname' => 'get_vocabs',
-        'description' => 'Updates vocabulary and moves them to stage 1 or the next stage',
-        'type' => 'write',
-        'ajax' => true,
     ], 'mod_vocabcoach_get_lists' => [
         'classname' => 'mod_vocabcoach\external\lists_api',
         'methodname' => 'get_lists',

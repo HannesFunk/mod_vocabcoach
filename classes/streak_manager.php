@@ -42,6 +42,7 @@ class streak_manager
                 'cmid' => $this->cmid,
                 'type' => $type,
                 'streak' => 1,
+                'timemodified' => 0,
             ];
         }
         return $record;
@@ -64,14 +65,7 @@ class streak_manager
         }
     }
 
-    public function update(): void
-    {
-        foreach ($this->types as $type) {
-            $this->update_type($type);
-        }
-    }
-
-    public function update_type(string $type): void
+   public function update(string $type): void
     {
         if (!in_array($type, $this->types)) {
             throw new invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
@@ -79,14 +73,20 @@ class streak_manager
         global $DB;
         $streak = $this->get_streak($type);
 
+        if (empty($streak->id)) {
+            $streak->timemodified = time();
+            $DB->insert_record('vocabcoach_streaks', $streak);
+            return;
+        }
+
         // Streak can no longer be restored
-        if ($streak->lastmodified < strtotime("-2 days midnight")) {
-            $streak->lastmodified = time();
+        if ($streak->timemodified < strtotime("-2 days midnight")) {
+            $streak->timemodified = time();
             $streak->streak = 1;
             $DB->update_record('vocabcoach_streaks', $streak);
         } // streak has not yet been updated and doesn't need to be restored
-        else if ($streak->lastmodified < strtotime("today midnight")) {
-            $streak->lastmodified = time();
+        else if ($streak->timemodified < strtotime("today midnight")) {
+            $streak->timemodified = time();
             $streak->streak++;
             $DB->update_record('vocabcoach_streaks', $streak);
         }

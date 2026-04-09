@@ -37,6 +37,7 @@ class box_manager {
      * @var int $userid  User ID
      */
     private int $cmid, $userid;
+    private array $boxdata = [];
 
     /**
      * Construct the class.
@@ -91,8 +92,6 @@ class box_manager {
                 $nextdue = 'Jetzt';
             }
 
-
-
             $output[] = [
                 'stage' => $i,
                 'due' => $due,
@@ -101,6 +100,7 @@ class box_manager {
                 'nextdue' => $nextdue,
             ];
         }
+        $this->boxdata = $output;
         return $output;
     }
 
@@ -112,5 +112,13 @@ class box_manager {
             return 'done';
         }
         return 'todo';
+    }
+
+    public function get_total_due(): int {
+        $total = 0;
+        foreach ($this->boxdata as $box) {
+            $total += $box['due'];
+        }
+        return $total;
     }
 }

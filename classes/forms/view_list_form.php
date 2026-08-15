@@ -71,7 +71,7 @@ class view_list_form extends moodleform {
 
         $mform->addElement('html', '</tbody></table>');
 
-        $this->add_action_buttons(true, "Zum eigenen Vokabelkasten hinzufügen");
+        $this->add_action_buttons(true, get_string('add_to_own_box', 'mod_vocabcoach'));
     }
 
     /**

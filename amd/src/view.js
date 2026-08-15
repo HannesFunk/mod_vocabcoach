@@ -113,25 +113,25 @@ export function init(cmid, userid, courseid) {
     }
 }
 
+/**
+ * Shows an info notification with the given string.
+ *
+ * @param {String} key The string identifier in mod_vocabcoach.
+ * @param {*} [param=null] Optional parameter for the string.
+ */
+function notifyInfo(key, param = null) {
+    getString(key, 'mod_vocabcoach', param).then((message) => {
+        return notification.addNotification({type: 'info', message: message});
+    }).catch((err) => notification.exception(err));
+}
+
 function checkBox(cmid, box, force = false) {
     if (parseInt(box.getAttribute('data-total')) === 0) {
-        const msgData = {
-            type: "info",
-            message: 'In dieser Box sind zur Zeit keine Vokabeln enthalten.'
-        };
-        notification.addNotification(msgData).then(null);
+        notifyInfo('view_box_empty');
     } else if (force && parseInt(box.getAttribute('data-due')) > 0) {
-        notification.addNotification({type: 'info',
-            message: 'Wiederhole zuerst die aktuell fälligen Vokabeln in dieser Box. ' +
-                'Erst danach kannst du auch die anderen abfragen.'}).then(null);
+        notifyInfo('view_box_due_first');
     } else if (!force && parseInt(box.getAttribute('data-due')) === 0) {
-        const dueTime =  box.getAttribute('data-next-due');
-        const msgData = {
-            type: "info",
-            message : "In dieser Box hast du bereits alle Vokabeln gelernt. Die nächsten Vokabeln sind in " + dueTime
-                +" fällig."
-        };
-        notification.addNotification(msgData).then(null);
+        notifyInfo('view_box_all_done', box.getAttribute('data-next-due'));
     } else {
         const stage = box.getAttribute('data-stage');
         location.href = 'check.php?id=' + cmid + '&stage=' + stage + "&force=" + force;

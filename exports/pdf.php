@@ -94,9 +94,9 @@ class _pdf extends TCPDF {
 $pdf = new _pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Moodle / Vocabcoach');
-$pdf->SetTitle('Vokabelliste');
-$pdf->SetSubject('Vokabelliste');
+$pdf->SetAuthor(get_string('pluginname', 'mod_vocabcoach'));
+$pdf->SetTitle(get_string('vocablist', 'mod_vocabcoach'));
+$pdf->SetSubject(get_string('vocablist', 'mod_vocabcoach'));
 
 $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
 $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
@@ -109,14 +109,18 @@ $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
 global $DB, $USER;
 
+$createdfor = get_string('pdf_created_for', 'mod_vocabcoach', [
+    'name' => fullname($USER),
+    'date' => userdate(time(), get_string('strftimedate', 'langconfig')),
+]);
+
 if (isset($_GET['listid'])) {
     $list = $DB->get_record('vocabcoach_lists', ['id' => $_GET['listid']]);
-    $header = $list->title.' ('.$list->book.', '.$list->unit.'). Erstellt für '
-            .$USER->firstname.' '.$USER->lastname.' am '.date('d.m.Y');
-    $pdf->SetHeaderData('', 0, 'Vokabelliste', $header);
+    $header = $list->title.' ('.$list->book.', '.$list->unit.'). '.$createdfor;
+    $pdf->SetHeaderData('', 0, get_string('vocablist', 'mod_vocabcoach'), $header);
 } else if (isset($_GET['userid'])) {
-    $header = 'Erstellt für '.$USER->firstname.' '.$USER->lastname.' am '.date('d.m.Y');
-    $pdf->SetHeaderData('', 0, 'Vokabelliste (Box '.$_GET['stage'].')', $header);
+    $header = $createdfor;
+    $pdf->SetHeaderData('', 0, get_string('pdf_title_box', 'mod_vocabcoach', $_GET['stage']), $header);
 }
 
 $pdf->SetFont('helvetica', '', 12);
@@ -141,4 +145,4 @@ if (isset($_GET['listid'])) {
 }
 
 $pdf->colored_table($tableheaders, $data);
-$pdf->Output('vokabelliste.pdf');
+$pdf->Output(get_string('pdf_filename', 'mod_vocabcoach'));

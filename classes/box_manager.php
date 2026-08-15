@@ -89,7 +89,7 @@ class box_manager {
                     $nextdue = '-';
                 }
             } else {
-                $nextdue = 'Jetzt';
+                $nextdue = get_string('duetime_now', 'mod_vocabcoach');
             }
 
             $output[] = [

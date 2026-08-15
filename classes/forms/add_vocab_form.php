@@ -62,13 +62,13 @@ class add_vocab_form extends moodleform {
         if ($mode === 'list' || $mode === 'edit') {
             $mform->addElement('header', 'listsectionheader', get_string('listprops', 'mod_vocabcoach'));
 
-            $mform->addElement('text', 'list_title', 'Name der Liste');
+            $mform->addElement('text', 'list_title', get_string('list_title', 'mod_vocabcoach'));
             $mform->setType('list_title', PARAM_TEXT);
-            $mform->addRule('list_title', 'Darf nicht leer sein.', 'required');
+            $mform->addRule('list_title', get_string('err_required', 'form'), 'required');
 
-            $mform->addElement('text', 'list_book', 'Schulbuch');
+            $mform->addElement('text', 'list_book', get_string('book', 'mod_vocabcoach'));
             $mform->setType('list_book', PARAM_TEXT);
-            $mform->setDefault('list_book', 'Access');
+            $mform->setDefault('list_book', get_string('list_book_default', 'mod_vocabcoach'));
 
             $years = [];
             for ($i = 5; $i <= 13; $i++) {

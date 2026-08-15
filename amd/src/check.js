@@ -7,7 +7,7 @@ import Templates from 'core/templates';
 import {showElement, showElements} from "./general";
 import Modal from 'core/modal';
 import notification from "core/notification";
-import {getString} from 'core/str';
+import {getString, getStrings} from 'core/str';
 
 let vocabArrayJSON = null;
 let knownCount = 0;
@@ -24,11 +24,7 @@ export const init = (configuration) => {
     getVocabArray(config)
         .then((vocabnumber) => {
             if (vocabnumber === 0) {
-                getString('no_vocabs_to_check', 'mod_vocabcoach').then(
-                    (msg) => {
-                        showSummaryBox(msg, true);
-                    }
-                );
+                showSummaryBox(getString('no_vocabs_to_check', 'mod_vocabcoach'));
             } else {
                 initDots();
                 changeMode();
@@ -40,10 +36,21 @@ export const init = (configuration) => {
 
 };
 
+/**
+ * Renders the summary box at the end of a check.
+ *
+ * @param {String|Promise} msg The message to show, or a promise resolving to it.
+ * @param {Object} [data=null] Optional object with the known/total counts.
+ */
 async function showSummaryBox(msg, data = null) {
     const templateData = {
-        numbers: data,
-        message: msg
+        numbers: data && data.total !== undefined ? {
+            resulttext: await getString('check_summary_result', 'mod_vocabcoach', {
+                known: '<span class="check-summary-known">' + data.known + '</span>',
+                total: '<span class="check-summary-total">' + data.total + '</span>',
+            })
+        } : null,
+        message: await msg
     };
 
     const {html} = await Templates.renderForPromise('mod_vocabcoach/check_summary', templateData, "");
@@ -53,7 +60,7 @@ async function showSummaryBox(msg, data = null) {
     showElement(summaryContainer, true);
     showElements(['check-box-front', 'check-box-back', 'check-type-area', 'check-buttons'], false);
     const instructionElement = document.querySelector('.instruction-front-back-random');
-    instructionElement.innerHTML = "Klicke in das Feld, um die Abfrage zu beenden.";
+    instructionElement.innerHTML = await getString('check_end_instruction', 'mod_vocabcoach');
     showElement(instructionElement, true);
 }
 
@@ -216,8 +223,11 @@ function showNext() {
     vocabArrayJSON.splice(0, 1);
 
     const numberRemaining = vocabArrayJSON.length;
-    document.querySelector('.check-number-remaining').innerHTML = 'Noch ' + numberRemaining +
-        ' Vokabel' + (numberRemaining === 1 ? '' : 'n');
+    getString(numberRemaining === 1 ? 'check_remaining_one' : 'check_remaining', 'mod_vocabcoach', numberRemaining)
+        .then((str) => {
+            document.querySelector('.check-number-remaining').innerHTML = str;
+            return str;
+        }).catch(() => null);
 
     if (numberRemaining === 0) {
         const summaryLine = getSummaryMessage(knownCount, unknownCount);
@@ -298,22 +308,27 @@ function endCheck() {
     location.href = '../../mod/vocabcoach/view.php?id=' + config.cmid;
 }
 
+/**
+ * Picks the closing message for a finished check.
+ *
+ * @param {Number} knownCount Number of words answered correctly.
+ * @param {Number} unknownCount Number of words answered incorrectly.
+ * @returns {Promise<String>} The localised message.
+ */
 function getSummaryMessage(knownCount, unknownCount) {
     const ratio = knownCount / (unknownCount + knownCount);
 
+    let key = 'check_result_poor';
     if (ratio > 0.9) {
-        return "Sehr gut gemacht!";
+        key = 'check_result_excellent';
+    } else if (ratio > 0.7) {
+        key = 'check_result_good';
+    } else if (ratio > 0.5) {
+        key = 'check_result_solid';
+    } else if (ratio > 0.3) {
+        key = 'check_result_ok';
     }
-    if (ratio > 0.7) {
-        return "Gute Arbeit";
-    }
-    if (ratio > 0.5) {
-        return "Solide!";
-    }
-    if (ratio > 0.3) {
-        return "Okay.";
-    }
-    return "Hm. Da ist Luft nach oben!";
+    return getString(key, 'mod_vocabcoach');
 }
 
 function checkDone(vocabId, known) {
@@ -402,21 +417,30 @@ async function editVocab(vocab) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 
+    const [frontLabel, backLabel, title, saveLabel, cancelLabel, editError] = await getStrings([
+        {key: 'front', component: 'mod_vocabcoach'},
+        {key: 'back', component: 'mod_vocabcoach'},
+        {key: 'edit_vocab_title', component: 'mod_vocabcoach'},
+        {key: 'save', component: 'core'},
+        {key: 'cancel', component: 'core'},
+        {key: 'error_edit_vocab', component: 'mod_vocabcoach'},
+    ]);
+
     let body = `
         <div class="mb-3">
-            <label class="form-label" for="vc-edit-front">Front</label>
+            <label class="form-label" for="vc-edit-front">${esc(frontLabel)}</label>
             <input class="form-control" id="vc-edit-front" type="text" value="${esc(vocab.front)}" />
         </div>
         <div class="mb-3">
-            <label class="form-label" for="vc-edit-back">Back</label>
+            <label class="form-label" for="vc-edit-back">${esc(backLabel)}</label>
             <input class="form-control" id="vc-edit-back" type="text" value="${esc(vocab.back)}" />
         </div>`;
 
     const modal = await Modal.create({
-        title: 'Edit vocab',
+        title: title,
         body: body,
-        footer: `<button type="button" class="btn btn-primary" data-action="vc-edit-save">Save</button>
-                 <button type="button" class="btn btn-secondary" data-action="vc-edit-cancel">Cancel</button>`,
+        footer: `<button type="button" class="btn btn-primary" data-action="vc-edit-save">${esc(saveLabel)}</button>
+                 <button type="button" class="btn btn-secondary" data-action="vc-edit-cancel">${esc(cancelLabel)}</button>`,
         show: true,
         removeOnClose: true,
     });
@@ -433,7 +457,7 @@ async function editVocab(vocab) {
                     if (result.dataid === -1) {
                         notification.addNotification({
                             type: 'error',
-                            message: 'Error editing vocab. Please try again later.'
+                            message: editError
                         });
                         return null;
                     }

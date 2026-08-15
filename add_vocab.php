@@ -115,7 +115,7 @@ if ($mform->is_cancelled()) {
         foreach ($vocabarray as $vocab) {
             $vocabid = $vocabmanager->insert_vocab($vocab);
             if (!$vocabmanager->add_vocab_to_user($vocabid, $id)) {
-                notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
+                notification::add(get_string('error_add_vocab_to_user', 'mod_vocabcoach'), notification::ERROR);
             }
         }
         redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
@@ -141,7 +141,7 @@ if ($mform->is_cancelled()) {
 
     $listid = $vocabmanager->add_list($listinfo);
     if ($listid == -1) {
-        notification::add('Fehler beim Anlegen der Liste. ', notification::ERROR);
+        notification::add(get_string('error_create_list', 'mod_vocabcoach'), notification::ERROR);
         $redirect = false;
     }
     $listinfo['id'] = $listid;
@@ -150,7 +150,7 @@ if ($mform->is_cancelled()) {
     foreach ($vocabarray as $vocab) {
         $vocabid = $vocabmanager->insert_vocab($vocab);
         if (!$vocabmanager->add_vocab_to_list($vocabid, $listid)) {
-            notification::add('Fehler beim Eintragen der Vokabeln in die Liste. ', notification::ERROR);
+            notification::add(get_string('error_add_vocab_to_list', 'mod_vocabcoach'), notification::ERROR);
             $redirect = false;
         }
     }
@@ -158,7 +158,7 @@ if ($mform->is_cancelled()) {
     // Step 3: add list to user (if necessary).
     if (isset($formdata->add_to_user_database) && $formdata->add_to_user_database == 1) {
         if (!$vocabmanager->add_list_to_user_database($listid, $id)) {
-            notification::add('Fehler beim Hinzufügen der Vokabeln zu deinem Kasten. ', notification::ERROR);
+            notification::add(get_string('error_add_vocab_to_user', 'mod_vocabcoach'), notification::ERROR);
             $redirect = false;
         }
     }

@@ -1,12 +1,12 @@
-<h4 class="mt-5">Leaderboard</h4>
+<h4 class="mt-5">{{#str}}leaderboard, mod_vocabcoach{{/str}}</h4>
 <hr>
 
 <table class="generaltable table">
     <tbody>
     <tr>
-        <th class="rank">Rang</th>
-        <th class="name">Name</th>
-        <th class="number">Fällige Vokabeln</th>
+        <th class="rank">{{#str}}leaderboard_rank, mod_vocabcoach{{/str}}</th>
+        <th class="name">{{#str}}name, mod_vocabcoach{{/str}}</th>
+        <th class="number">{{#str}}leaderboard_due, mod_vocabcoach{{/str}}</th>
     </tr>
     {{#leaders}}
     <tr class="leader{{#self}} self{{/self}}">

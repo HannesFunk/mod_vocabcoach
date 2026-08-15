@@ -37,12 +37,11 @@ require_once($CFG->dirroot . '/mod/vocabcoach/classes/streak_restorer.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers    \mod_vocabcoach\streak_restorer
  */
-class streak_restorer_test extends \advanced_testcase {
-
+final class streak_restorer_test extends \advanced_testcase {
     /**
      * Test can restore streak when limit not reached.
      */
-    public function test_can_restore_streak_within_limit() {
+    public function test_can_restore_streak_within_limit(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -58,7 +57,7 @@ class streak_restorer_test extends \advanced_testcase {
     /**
      * Test cannot restore streak when limit reached.
      */
-    public function test_cannot_restore_streak_after_limit() {
+    public function test_cannot_restore_streak_after_limit(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -78,13 +77,13 @@ class streak_restorer_test extends \advanced_testcase {
         ]);
 
         // Create restore records to reach the limit.
-        $month_year = \mod_vocabcoach\streak_restorer::get_current_month();
+        $monthyear = \mod_vocabcoach\streak_restorer::get_current_month();
         $DB->insert_record('vocabcoach_streak_restores', (object)[
             'userid' => $user->id,
             'cmid' => $cm->id,
             'streak_type' => 'login',
             'restore_count' => 3,
-            'month_year' => $month_year,
+            'month_year' => $monthyear,
             'timemodified' => time(),
         ]);
 
@@ -94,7 +93,7 @@ class streak_restorer_test extends \advanced_testcase {
     /**
      * Test get remaining restores.
      */
-    public function test_get_remaining_restores() {
+    public function test_get_remaining_restores(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -109,13 +108,13 @@ class streak_restorer_test extends \advanced_testcase {
         $this->assertEquals(3, $remaining);
 
         // Create one restore record.
-        $month_year = \mod_vocabcoach\streak_restorer::get_current_month();
+        $monthyear = \mod_vocabcoach\streak_restorer::get_current_month();
         $DB->insert_record('vocabcoach_streak_restores', (object)[
             'userid' => $user->id,
             'cmid' => $cm->id,
             'streak_type' => 'login',
             'restore_count' => 1,
-            'month_year' => $month_year,
+            'month_year' => $monthyear,
             'timemodified' => time(),
         ]);
 
@@ -126,7 +125,7 @@ class streak_restorer_test extends \advanced_testcase {
     /**
      * Test restore streak increments streak value.
      */
-    public function test_restore_streak_increments_value() {
+    public function test_restore_streak_increments_value(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -162,7 +161,7 @@ class streak_restorer_test extends \advanced_testcase {
     /**
      * Test restore streak tracks restore count.
      */
-    public function test_restore_streak_tracks_usage() {
+    public function test_restore_streak_tracks_usage(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -187,21 +186,21 @@ class streak_restorer_test extends \advanced_testcase {
         }
 
         // Verify restore count.
-        $month_year = \mod_vocabcoach\streak_restorer::get_current_month();
-        $restore_record = $DB->get_record('vocabcoach_streak_restores', [
+        $monthyear = \mod_vocabcoach\streak_restorer::get_current_month();
+        $restorerecord = $DB->get_record('vocabcoach_streak_restores', [
             'userid' => $user->id,
             'cmid' => $cm->id,
             'streak_type' => 'login',
-            'month_year' => $month_year,
+            'month_year' => $monthyear,
         ]);
 
-        $this->assertEquals(3, $restore_record->restore_count);
+        $this->assertEquals(3, $restorerecord->restore_count);
     }
 
     /**
      * Test get restore stats.
      */
-    public function test_get_restore_stats() {
+    public function test_get_restore_stats(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -233,7 +232,7 @@ class streak_restorer_test extends \advanced_testcase {
     /**
      * Test restore fails when streak record doesn't exist.
      */
-    public function test_restore_fails_when_streak_not_found() {
+    public function test_restore_fails_when_streak_not_found(): void {
         $this->resetAfterTest(true);
 
         $course = $this->getDataGenerator()->create_course();
@@ -249,7 +248,7 @@ class streak_restorer_test extends \advanced_testcase {
     /**
      * Test multiple restores in succession.
      */
-    public function test_multiple_restores_in_succession() {
+    public function test_multiple_restores_in_succession(): void {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -297,7 +296,7 @@ class streak_restorer_test extends \advanced_testcase {
     /**
      * Test different streak types are tracked separately.
      */
-    public function test_different_streak_types_separate() {
+    public function test_different_streak_types_separate(): void {
         global $DB;
 
         $this->resetAfterTest(true);

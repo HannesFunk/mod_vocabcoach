@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 /**
  * Module instance settings form.
@@ -35,11 +35,10 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_vocabcoach_mod_form extends moodleform_mod {
-
     /**
      * Defines forms elements
      */
-    public function definition() :void {
+    public function definition(): void {
         global $CFG;
 
         $mform = $this->_form;
@@ -83,9 +82,9 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         $mform->addElement('static', 'info_boxtimes', '', get_string('info_boxtimes', 'mod_vocabcoach'));
         $defaultboxtimes = [0, 1, 2, 5, 10, 30];
         for ($i = 1; $i <= 5; $i++) {
-            $mform->addElement('text', 'boxtime_'.$i, get_string('boxtime', 'mod_vocabcoach').' '.$i);
-            $mform->setType('boxtime_'.$i, PARAM_INT);
-            $mform->setDefault('boxtime_'.$i, $defaultboxtimes[$i]);
+            $mform->addElement('text', 'boxtime_' . $i, get_string('boxtime', 'mod_vocabcoach') . ' ' . $i);
+            $mform->setType('boxtime_' . $i, PARAM_INT);
+            $mform->setDefault('boxtime_' . $i, $defaultboxtimes[$i]);
         }
 
         $mform->addElement('advcheckbox', 'move_undue', get_string('move_undue', 'vocabcoach'));

@@ -22,10 +22,10 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
-require_once(__DIR__.'/lib.php');
-require_once(__DIR__.'/classes/vocab_manager.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/classes/vocab_manager.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -54,8 +54,7 @@ $jsdata = [
 ];
 if ($source === 'user') {
     $jsdata['stage'] = required_param('stage', PARAM_INT);
-    $subheadline = get_string('box', 'mod_vocabcoach')." ".$jsdata['stage'];
-
+    $subheadline = get_string('box', 'mod_vocabcoach') . " " . $jsdata['stage'];
 } else if ($source === 'list') {
     $jsdata['listid'] = required_param('listid', PARAM_INT);
     $listrecord = $DB->get_record('vocabcoach_lists', ['id' => $jsdata['listid']], 'title', MUST_EXIST);
@@ -65,9 +64,9 @@ if ($source === 'user') {
 }
 
 $PAGE->requires->js_call_amd(
-        'mod_vocabcoach/check',
-        'init',
-        [json_encode($jsdata)]
+    'mod_vocabcoach/check',
+    'init',
+    [json_encode($jsdata)]
 );
 
 $userprefs = new \mod_vocabcoach\user_preferences($id, $USER->id);

@@ -61,10 +61,10 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
 
     if ($oldversion < 2025100222) {
         $table = new xmldb_table('vocabcoach');
-        $field_front = new xmldb_field('desc_front', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, "Englisch", null);
-        $field_back = new xmldb_field('desc_back', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, "Deutsch", null);
+        $fieldfront = new xmldb_field('desc_front', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, "Englisch", null);
+        $fieldback = new xmldb_field('desc_back', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, "Deutsch", null);
 
-        foreach ([$field_front, $field_back] as $field) {
+        foreach ([$fieldfront, $fieldback] as $field) {
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
             }
@@ -142,13 +142,13 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
         $typedailylogin = 1;
         $typedailycheckall = 2;
 
-        $formatdayint = static function(int $timestamp): int {
+        $formatdayint = static function (int $timestamp): int {
             $year = (int)date('y', $timestamp);
             $dayofyear = (int)date('z', $timestamp);
             return $year * 1000 + $dayofyear;
         };
 
-        $daybefore = static function(int $dayint): int {
+        $daybefore = static function (int $dayint): int {
             $day = $dayint % 1000;
             $year = ($dayint - $day) / 1000;
             if ($day !== 0) {
@@ -158,7 +158,7 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             return ($year - 1) * 1000 + 365 + $leapyearcorrection;
         };
 
-        $getcontinuousdays = static function(int $userid, int $cmid, int $type) use ($DB, $formatdayint, $daybefore): int {
+        $getcontinuousdays = static function (int $userid, int $cmid, int $type) use ($DB, $formatdayint, $daybefore): int {
             $conditions = [
                 'userid' => $userid,
                 'cmid' => $cmid,
@@ -183,12 +183,78 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
 
         $table = new xmldb_table('vocabcoach_streaks');
         if (!$dbman->table_exists($table)) {
-            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null, 'primary key');
-            $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'cmid');
-            $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'userid');
-            $table->add_field('type', XMLDB_TYPE_CHAR, '16', null, XMLDB_NOTNULL, null, null, null, null, 'Type of streak (login or checkall).');
-            $table->add_field('streak', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'Current number of streaks.');
-            $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, null, null, 'timemodified');
+            $table->add_field(
+                'id',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                XMLDB_SEQUENCE,
+                null,
+                null,
+                null,
+                'primary key'
+            );
+            $table->add_field(
+                'cmid',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'cmid'
+            );
+            $table->add_field(
+                'userid',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'userid'
+            );
+            $table->add_field(
+                'type',
+                XMLDB_TYPE_CHAR,
+                '16',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'Type of streak (login or checkall).'
+            );
+            $table->add_field(
+                'streak',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'Current number of streaks.'
+            );
+            $table->add_field(
+                'timemodified',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                0,
+                null,
+                null,
+                'timemodified'
+            );
 
             $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
             $table->add_key('uniq_cmid_user_type', XMLDB_KEY_UNIQUE, ['cmid', 'userid', 'type']);
@@ -198,9 +264,9 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
             $dbman->create_table($table);
         }
 
-        $table_old = new xmldb_table('vocabcoach_activitylog');
+        $oldtable = new xmldb_table('vocabcoach_activitylog');
 
-        if ($dbman->table_exists($table_old)) {
+        if ($dbman->table_exists($oldtable)) {
             // For an incomprehensible reason, SELECT DISTINCT userid, cmid ... does not work.
             $query = "SELECT DISTINCT cmid FROM {vocabcoach_activitylog};";
             $cmids = $DB->get_records_sql($query);
@@ -241,24 +307,100 @@ function xmldb_vocabcoach_upgrade(int $oldversion): bool {
 
                     $DB->insert_record('vocabcoach_streaks', $streaklogin);
                     $DB->insert_record('vocabcoach_streaks', $streakcheckall);
-
                 }
             }
-            $dbman->drop_table($table_old);
+            $dbman->drop_table($oldtable);
         }
     }
 
-    // The will have to be dealt with later anyway.
+    // This will have to be dealt with later anyway.
     if ($oldversion < 2026022801) {
         $table = new xmldb_table('vocabcoach_streak_restores');
         if (!$dbman->table_exists($table)) {
-            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null, 'primary key');
-            $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'User ID');
-            $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null, 'Course module ID');
-            $table->add_field('streak_type', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null, null, null, 'Type of streak (login, checkall)');
-            $table->add_field('restore_count', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, 0, null, null, 'Number of restores used this month');
-            $table->add_field('month_year', XMLDB_TYPE_CHAR, '7', null, XMLDB_NOTNULL, null, null, null, null, 'Month and year (YYYY-MM)');
-            $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, null, null, 'Last modified timestamp');
+            $table->add_field(
+                'id',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                XMLDB_SEQUENCE,
+                null,
+                null,
+                null,
+                'primary key'
+            );
+            $table->add_field(
+                'userid',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'User ID'
+            );
+            $table->add_field(
+                'cmid',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'Course module ID'
+            );
+            $table->add_field(
+                'streak_type',
+                XMLDB_TYPE_CHAR,
+                '20',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'Type of streak (login, checkall)'
+            );
+            $table->add_field(
+                'restore_count',
+                XMLDB_TYPE_INTEGER,
+                '3',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                0,
+                null,
+                null,
+                'Number of restores used this month'
+            );
+            $table->add_field(
+                'month_year',
+                XMLDB_TYPE_CHAR,
+                '7',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                null,
+                null,
+                null,
+                'Month and year (YYYY-MM)'
+            );
+            $table->add_field(
+                'timemodified',
+                XMLDB_TYPE_INTEGER,
+                '10',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                0,
+                null,
+                null,
+                'Last modified timestamp'
+            );
 
             $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
             $table->add_key('uniq_restore_tracker', XMLDB_KEY_UNIQUE, ['userid', 'cmid', 'streak_type', 'month_year']);

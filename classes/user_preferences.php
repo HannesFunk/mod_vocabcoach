@@ -16,10 +16,12 @@
 
 namespace mod_vocabcoach;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Helper to get/set per-user check mode preferences per activity.
+ * @package   mod_vocabcoach
+ * @author  Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2023 onwards, Johannes Funk
  */
 class user_preferences {
     /** @var int Course module ID */
@@ -28,7 +30,7 @@ class user_preferences {
     /** @var int User ID */
     private int $userid;
     /** @var mixed existing DB user preferences */
-    private mixed $existing_prefs;
+    private mixed $existingprefs;
 
     /**
      * Constructor.
@@ -40,7 +42,7 @@ class user_preferences {
         global $DB;
         $this->cmid = $cmid;
         $this->userid = $userid;
-        $this->existing_prefs = $DB->get_record('vocabcoach_userprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
+        $this->existingprefs = $DB->get_record('vocabcoach_userprefs', ['cmid' => $this->cmid, 'userid' => $this->userid]);
     }
 
     /**
@@ -57,7 +59,7 @@ class user_preferences {
      * @return string
      */
     public function get_mode(): string {
-        $record = $this->existing_prefs;
+        $record = $this->existingprefs;
         if (!$record) {
             return 'random';
         }
@@ -67,7 +69,12 @@ class user_preferences {
         return $record->mode;
     }
 
-    public function get_template_context() : array {
+    /**
+     * Get the template context for rendering the user preferences.
+     *
+     * @return array
+     */
+    public function get_template_context(): array {
         $mode = $this->get_mode();
         return [
             'frontSelected' => $mode === 'front',
@@ -96,7 +103,7 @@ class user_preferences {
             'mode' => $mode,
             'timemodified' => $now,
         ];
-        $existing = $this->existing_prefs;
+        $existing = $this->existingprefs;
         if ($existing) {
             $data->id = $existing->id;
             $DB->update_record('vocabcoach_userprefs', $data);
@@ -112,7 +119,7 @@ class user_preferences {
      */
     public function get_email_notifications_enabled(): bool {
         global $DB;
-        $record = $this->existing_prefs;
+        $record = $this->existingprefs;
         if ($record) {
             return $record->email_notifications;
         }
@@ -138,7 +145,7 @@ class user_preferences {
             'timemodified' => $now,
         ];
 
-        $existing = $this->existing_prefs;
+        $existing = $this->existingprefs;
         if ($existing) {
             $data->id = $existing->id;
             $DB->update_record('vocabcoach_userprefs', $data);

@@ -25,12 +25,12 @@ namespace mod_vocabcoach;
  * @author    Johannes Funk
  */
 class course_features {
-    /**
-     * @var int $courseid Course ID
-     * @var int $cmid Course Module ID
-     * @var int $userid  User ID
-     */
-    private int $courseid, $cmid, $userid;
+    /** @var int $courseid Course ID */
+    private int $courseid;
+    /** @var int $cmid Course Module ID */
+    private int $cmid;
+    /** @var int $userid User ID */
+    private int $userid;
 
     /**
      * Construct the class.
@@ -49,7 +49,7 @@ class course_features {
      * @return array the list of the first three leaders and the user.
      * @throws \dml_exception
      */
-    public function get_leaderboard() : array {
+    public function get_leaderboard(): array {
         global $DB;
         $vh = new vocabhelper($this->cmid);
         $boxconditions = $vh->get_sql_box_conditions();
@@ -77,7 +77,7 @@ class course_features {
                 ORDER BY number;";
         $nonperfect = $DB->get_records_sql($query);
 
-        // array of all records in the DB
+        // Merge all records in the DB.
         $records = array_merge($perfect, $nonperfect);
         if (count($records) == 0) {
             return [];
@@ -85,7 +85,7 @@ class course_features {
 
         // Ranking algorithm: array is already ordered, now compute the (dense) rank and edit rows accordingly.
         $rank = 1;
-        // the index of the last record in the top three
+        // Compute the index of the last record in the top three.
         $lasttopthree = 0;
         $records = array_values($records);
         $ownindex = null;
@@ -113,12 +113,12 @@ class course_features {
 
         if ($ownindex && $ownindex > $lasttopthree) {
             $topthree[] = (object)['id' => 0, 'firstname' => "...", 'lastname' => "", 'number' => ""];
-            $topthree[] = $records[$ownindex]; //undefined array key 0
+            $topthree[] = $records[$ownindex];
         }
         return $topthree;
     }
 
-   /**
+    /**
      * Get all students using the standard 'student' archetype role.
      * @return array Array of user objects
      * @throws \dml_exception
@@ -135,7 +135,11 @@ class course_features {
         return get_role_users($studentrole->id, $coursecontext, false, 'u.*');
     }
 
-    public function get_class_total () :int {
+    /**
+     * Counts the number of vocab items that are due for all students in the course.
+     * @return int Total count of due vocab items
+     */
+    public function get_class_total(): int {
         $userids = $this->get_student_users();
         return self::get_due_count($userids);
     }
@@ -146,7 +150,7 @@ class course_features {
      * @return int
      * @throws \dml_exception
      */
-    public function get_due_count (array $userids) : int {
+    public function get_due_count(array $userids): int {
         if (empty($userids)) {
             return -1;
         }
@@ -164,5 +168,4 @@ class course_features {
         }
         return $record->total;
     }
-
 }

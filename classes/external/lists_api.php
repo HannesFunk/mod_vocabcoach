@@ -44,7 +44,7 @@ class lists_api extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function get_lists_parameters() : external_function_parameters {
+    public static function get_lists_parameters(): external_function_parameters {
         return new external_function_parameters([
             'cmid' => new external_value(PARAM_INT, VALUE_OPTIONAL),
             'userid' => new external_value(PARAM_INT, VALUE_OPTIONAL),
@@ -57,7 +57,7 @@ class lists_api extends external_api {
      *
      * @return external_multiple_structure
      */
-    public static function get_lists_returns() : external_multiple_structure {
+    public static function get_lists_returns(): external_multiple_structure {
         return new external_multiple_structure(
             new external_single_structure([
             'id' => new external_value(PARAM_INT),
@@ -81,23 +81,25 @@ class lists_api extends external_api {
      * @return array
      * @throws invalid_parameter_exception
      */
-    public static function get_lists(int $cmid, int $userid, bool $onlyownlists = false) : array {
+    public static function get_lists(int $cmid, int $userid, bool $onlyownlists = false): array {
 
-        self::validate_parameters(self::get_lists_parameters(),
-            ['cmid' => $cmid, 'userid' => $userid, 'onlyownlists' => $onlyownlists]);
+        self::validate_parameters(
+            self::get_lists_parameters(),
+            ['cmid' => $cmid, 'userid' => $userid, 'onlyownlists' => $onlyownlists]
+        );
 
         global $DB;
 
         try {
-            $conditions = 'cmid = '.$cmid.' AND (private = 0 OR createdby = '.$userid.')';
+            $conditions = 'cmid = ' . $cmid . ' AND (private = 0 OR createdby = ' . $userid . ')';
             if ($onlyownlists) {
-                $conditions .= ' AND createdby = '.$userid;
+                $conditions .= ' AND createdby = ' . $userid;
             }
             $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby, private
-                FROM {vocabcoach_lists} WHERE ".$conditions);
+                FROM {vocabcoach_lists} WHERE " . $conditions);
             $output = [];
             foreach ($records as $record) {
-                $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_contains} WHERE listid = ".$record->id.";";
+                $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_contains} WHERE listid = " . $record->id . ";";
                 $vocabnumber = $DB->count_records_sql($query);
                 $record->number = $vocabnumber;
                 $creator = \core_user::get_user($record->createdby);
@@ -115,7 +117,7 @@ class lists_api extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function delete_list_parameters() : external_function_parameters {
+    public static function delete_list_parameters(): external_function_parameters {
         return new external_function_parameters([
             'listid' => new external_value(PARAM_INT, 'ID of the list to be deleted', VALUE_REQUIRED),
         ]);
@@ -126,7 +128,7 @@ class lists_api extends external_api {
      *
      * @return external_single_structure
      */
-    public static function delete_list_returns() : external_single_structure {
+    public static function delete_list_returns(): external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
@@ -138,7 +140,7 @@ class lists_api extends external_api {
      * @return false[]|true[]
      * @throws invalid_parameter_exception
      */
-    public static function delete_list(int $listid) : array {
+    public static function delete_list(int $listid): array {
         self::validate_parameters(self::delete_list_parameters(), ['listid' => $listid]);
 
         global $DB;
@@ -157,7 +159,7 @@ class lists_api extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function add_list_to_user_parameters() : external_function_parameters {
+    public static function add_list_to_user_parameters(): external_function_parameters {
         return new external_function_parameters([
             'listid' => new external_value(PARAM_INT, 'ID of the list', VALUE_REQUIRED),
             'userid' => new external_value(PARAM_INT,  'User ID', VALUE_REQUIRED),
@@ -173,7 +175,7 @@ class lists_api extends external_api {
      * @return false[]|true[]
      * @throws invalid_parameter_exception
      */
-    public static function add_list_to_user(int $listid, int $userid, int $cmid) : array {
+    public static function add_list_to_user(int $listid, int $userid, int $cmid): array {
         self::validate_parameters(self::add_list_to_user_parameters(), ['listid' => $listid, 'userid' => $userid, 'cmid' => $cmid]);
 
         global $DB;
@@ -209,7 +211,7 @@ class lists_api extends external_api {
      *
      * @return external_single_structure
      */
-    public static function add_list_to_user_returns() : external_single_structure {
+    public static function add_list_to_user_returns(): external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);
@@ -220,7 +222,7 @@ class lists_api extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function distribute_list_parameters() : external_function_parameters {
+    public static function distribute_list_parameters(): external_function_parameters {
         return new external_function_parameters([
                 'listid' => new external_value(PARAM_INT, 'ID of the list', VALUE_REQUIRED),
                 'cmid' => new external_value(PARAM_INT, 'course module ID', VALUE_REQUIRED),
@@ -234,7 +236,7 @@ class lists_api extends external_api {
      * @return true[]
      * @throws invalid_parameter_exception
      */
-    public static function distribute_list(int $listid, int $cmid) : array {
+    public static function distribute_list(int $listid, int $cmid): array {
         self::validate_parameters(self::distribute_list_parameters(), ['listid' => $listid, 'cmid' => $cmid]);
 
         $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
@@ -254,7 +256,7 @@ class lists_api extends external_api {
      *
      * @return external_single_structure
      */
-    public static function distribute_list_returns() : external_single_structure {
+    public static function distribute_list_returns(): external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether Delete was successful.'),
         ]);

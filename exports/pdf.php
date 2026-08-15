@@ -23,10 +23,11 @@
  * @author    Johannes Funk
  */
 
-// defined('MOODLE_INTERNAL') || die();
 
-require_once('../../../lib/tcpdf/tcpdf.php');
 require(__DIR__ . '/../../../config.php');
+require_once('../../../lib/tcpdf/tcpdf.php');
+
+defined('MOODLE_INTERNAL') || die();
 require_login();
 
 /**
@@ -39,7 +40,7 @@ class _pdf extends TCPDF {
      * @param array $data
      * @return void
      */
-    public function colored_table(array $headers, array $data) : void {
+    public function colored_table(array $headers, array $data): void {
         // Colors, line width and bold font.
         $this->SetFillColor(15, 108, 191);
         $this->SetTextColor(255);
@@ -76,12 +77,42 @@ class _pdf extends TCPDF {
             $startx = $this->GetX();
 
             // Front column.
-            $this->MultiCell($w[0], $rowheight, $vocab->front, 0, 'L', $fill, 0,
-                    $startx, $starty, true, 0, false, true, $rowheight, 'M');
+            $this->MultiCell(
+                $w[0],
+                $rowheight,
+                $vocab->front,
+                0,
+                'L',
+                $fill,
+                0,
+                $startx,
+                $starty,
+                true,
+                0,
+                false,
+                true,
+                $rowheight,
+                'M'
+            );
 
             // Back column.
-            $this->MultiCell($w[1], $rowheight, $vocab->back, 0, 'L', $fill, 0,
-                    $startx + $w[0], $starty, true, 0, false, true, $rowheight, 'M');
+            $this->MultiCell(
+                $w[1],
+                $rowheight,
+                $vocab->back,
+                0,
+                'L',
+                $fill,
+                0,
+                $startx + $w[0],
+                $starty,
+                true,
+                0,
+                false,
+                true,
+                $rowheight,
+                'M'
+            );
 
             $this->SetY($starty + $rowheight);
 
@@ -116,7 +147,7 @@ $createdfor = get_string('pdf_created_for', 'mod_vocabcoach', [
 
 if (isset($_GET['listid'])) {
     $list = $DB->get_record('vocabcoach_lists', ['id' => $_GET['listid']]);
-    $header = $list->title.' ('.$list->book.', '.$list->unit.'). '.$createdfor;
+    $header = $list->title . ' (' . $list->book . ', ' . $list->unit . '). ' . $createdfor;
     $pdf->SetHeaderData('', 0, get_string('vocablist', 'mod_vocabcoach'), $header);
 } else if (isset($_GET['userid'])) {
     $header = $createdfor;
@@ -129,10 +160,10 @@ $pdf->AddPage();
 $cmid = required_param('cmid', PARAM_INT);
 $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
 $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*');
-$desc_front = $instanceinfo->desc_front;
-$desc_back = $instanceinfo->desc_back;
+$descfront = $instanceinfo->desc_front;
+$descback = $instanceinfo->desc_back;
 
-$tableheaders = [$desc_front, $desc_back];
+$tableheaders = [$descfront, $descback];
 
 if (isset($_GET['listid'])) {
     $checkapi = new \mod_vocabcoach\external\vocab_api();

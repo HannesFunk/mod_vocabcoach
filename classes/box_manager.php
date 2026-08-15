@@ -28,15 +28,16 @@ require('vocabhelper.php');
  * @author    Johannes Funk
  */
 class box_manager {
-    /**
-     * @var vocabhelper The instance of vocabhelper to do basic vocab operations
-     */
+    /** @var vocabhelper The instance of vocabhelper to do basic vocab operations */
     private vocabhelper $vocabhelper;
-    /**
-     * @var int $cmid Course Module ID
-     * @var int $userid  User ID
-     */
-    private int $cmid, $userid;
+
+    /** @var int $cmid Course Module ID */
+    private int $cmid;
+
+    /** @var int $userid User ID */
+    private int $userid;
+
+    /** @var array $boxdata Box data */
     private array $boxdata = [];
 
     /**
@@ -56,21 +57,26 @@ class box_manager {
      * Returns an array to display all the information used on the first page
      * @return array
      */
-    public function get_box_details() : array {
+    public function get_box_details(): array {
         global $DB;
 
         $output = [];
         for ($i = 1; $i <= $this->vocabhelper->boxnumber; $i++) {
             try {
-                $total = $DB->count_records_select('vocabcoach_vocabdata', 'userid = ? AND cmid = ? AND stage = ?',
-                    [$this->userid, $this->cmid, $i]);
+                $total = $DB->count_records_select(
+                    'vocabcoach_vocabdata',
+                    'userid = ? AND cmid = ? AND stage = ?',
+                    [$this->userid, $this->cmid, $i]
+                );
 
                 $mindayssincecheck = $this->vocabhelper->boxtimes[$i];
-                $due = $DB->count_records_select('vocabcoach_vocabdata',
+                $due = $DB->count_records_select(
+                    'vocabcoach_vocabdata',
                     'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?',
-                    [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($mindayssincecheck)]);
+                    [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($mindayssincecheck)]
+                );
             } catch (\dml_exception $e) {
-                die ($e->getMessage());
+                die($e->getMessage());
             }
 
             if ($due === 0) {
@@ -104,7 +110,14 @@ class box_manager {
         return $output;
     }
 
-    private static function compute_box_status(int $due, int $total) : string {
+    /**
+     * Computes the status of a box based on due and total counts.
+     *
+     * @param int $due Number of due items
+     * @param int $total Total number of items
+     * @return string Status of the box ('empty', 'done', or 'todo')
+     */
+    private static function compute_box_status(int $due, int $total): string {
         if ($total == 0) {
             return 'empty';
         }
@@ -113,7 +126,11 @@ class box_manager {
         }
         return 'todo';
     }
-
+    /**
+     * Returns the total number of due items across all boxes.
+     *
+     * @return int Total number of due items
+     */
     public function get_total_due(): int {
         $total = 0;
         foreach ($this->boxdata as $box) {

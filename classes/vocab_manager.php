@@ -45,10 +45,10 @@ class vocab_manager {
      * Inserts a new vocab item into the database.
      *
      * @param object $vocab a vocab item.
-     * @returns int The ID of the inserted vocab item.
+     * @return int The ID of the inserted vocab item.
      * @throws dml_exception
      */
-    public function insert_vocab(object $vocab) : int {
+    public function insert_vocab(object $vocab): int {
         if ($this->does_vocab_exist($vocab)) {
             return $this->determine_id($vocab);
         } else {
@@ -62,14 +62,16 @@ class vocab_manager {
      * @param object $vocab
      * @return bool
      */
-    private function does_vocab_exist(object $vocab) : bool {
+    private function does_vocab_exist(object $vocab): bool {
         global $DB;
         $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
         $condition2 = $DB->sql_compare_text('back') . ' = ' . $DB->sql_compare_text(':back');
         $query = "SELECT COUNT(*) FROM {vocabcoach_vocab} WHERE $condition1 AND $condition2";
         try {
-            $count = $DB->count_records_sql($query,
-                    ['front' => $vocab->front, 'back' => $vocab->back]);
+            $count = $DB->count_records_sql(
+                $query,
+                ['front' => $vocab->front, 'back' => $vocab->back]
+            );
             return $count > 0;
         } catch (dml_exception $e) {
             return false;
@@ -81,7 +83,7 @@ class vocab_manager {
      * @param object $vocab
      * @return int The ID of the created element.
      */
-    public function create_record (object $vocab) : int {
+    public function create_record(object $vocab): int {
         global $DB;
 
         try {
@@ -97,7 +99,7 @@ class vocab_manager {
      * @return int
      * @throws dml_exception
      */
-    private function determine_id(object $vocab) : int {
+    private function determine_id(object $vocab): int {
         global $DB;
 
         $condition1 = $DB->sql_compare_text('front') . '  = ' . $DB->sql_compare_text(':front');
@@ -115,11 +117,16 @@ class vocab_manager {
      * @throws dml_exception
      * @return bool
      */
-    public function add_vocab_to_user(int $vocabid, int $cmid) : bool {
+    public function add_vocab_to_user(int $vocabid, int $cmid): bool {
         global $DB;
 
-        if ($DB->count_records_select('vocabcoach_vocabdata',
-                "vocabid = ? AND userid = ? AND cmid = ?", [$vocabid, $this->userid, $cmid]) > 0) {
+        if (
+            $DB->count_records_select(
+                'vocabcoach_vocabdata',
+                "vocabid = ? AND userid = ? AND cmid = ?",
+                [$vocabid, $this->userid, $cmid]
+            ) > 0
+        ) {
             return true;
         } else {
             $newdata = new stdClass();
@@ -143,7 +150,7 @@ class vocab_manager {
      * @param array $listinfo
      * @return int
      */
-    public function add_list(array $listinfo) : int {
+    public function add_list(array $listinfo): int {
         global $DB;
 
         try {
@@ -159,7 +166,7 @@ class vocab_manager {
      * @param int $listid
      * @return bool
      */
-    public function add_vocab_to_list (int $vocabid, int $listid) : bool {
+    public function add_vocab_to_list(int $vocabid, int $listid): bool {
         global $DB;
         $conditions = [
             'vocabid' => $vocabid,
@@ -183,7 +190,7 @@ class vocab_manager {
      * @param int $listid
      * @return bool
      */
-    public function remove_vocab_from_list (int $vocabid, int $listid) : bool {
+    public function remove_vocab_from_list(int $vocabid, int $listid): bool {
         global $DB;
 
         try {
@@ -200,7 +207,7 @@ class vocab_manager {
      * @param int $cmid
      * @return bool
      */
-    public function add_list_to_user_database (int $listid, int $cmid) : bool {
+    public function add_list_to_user_database(int $listid, int $cmid): bool {
         global $DB;
 
         $time = strtotime('2000-01-01 00:00:00');
@@ -237,7 +244,7 @@ class vocab_manager {
      * @return void
      * @throws dml_exception
      */
-    public function edit_list(int $listid, array $vocabarray) :void {
+    public function edit_list(int $listid, array $vocabarray): void {
         global $DB;
 
         foreach ($vocabarray as $vocab) {
@@ -258,13 +265,19 @@ class vocab_manager {
      * @return bool
      * @throws dml_exception
      */
-    public function user_owns_list (int $userid, int $listid) : bool {
+    public function user_owns_list(int $userid, int $listid): bool {
         global $DB;
         $record = $DB->get_record('vocabcoach_lists', ['id' => $listid], 'createdby');
         return $record->createdby == $userid;
     }
 
-    public static function remove_if_unused($vocabid) {
+    /**
+     * Removes a vocab item from the database if it is not contained in any list or userbox.
+     * @param int $vocabid
+     * @return void
+     * @throws dml_exception
+     */
+    public static function remove_if_unused(int $vocabid): void {
         global $DB;
 
         $containedinlist = self::is_contained_in_list($vocabid);
@@ -277,14 +290,26 @@ class vocab_manager {
         $DB->delete_records('vocabcoach_vocab', ['id' => $vocabid]);
     }
 
-    public static function is_contained_in_list($vocabid) : bool {
+    /**
+     * Checks whether a vocab item is contained in any list.
+     * @param int $vocabid
+     * @return bool
+     * @throws dml_exception
+     */
+    public static function is_contained_in_list(int $vocabid): bool {
         global $DB;
 
         $count = $DB->count_records('vocabcoach_list_contains', ['vocabid' => $vocabid]);
         return $count > 0;
     }
 
-    public static function is_contained_in_userbox($vocabid) : bool {
+    /**
+     * Checks whether a vocab item is contained in any userbox.
+     * @param int $vocabid
+     * @return bool
+     * @throws dml_exception
+     */
+    public static function is_contained_in_userbox(int $vocabid): bool {
         global $DB;
 
         $count = $DB->count_records('vocabcoach_vocabdata', ['vocabid' => $vocabid]);

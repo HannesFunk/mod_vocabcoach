@@ -56,16 +56,16 @@ class view_list_form extends moodleform {
         foreach ($vocabarray as $vocab) {
             $vocabrow = [];
             $vocabrow[] =& $mform->createElement('html', '<tr><td>');
-            $vocabrow[] =& $mform->createElement('checkbox', 'vocab-'.$vocab->dataid);
+            $vocabrow[] =& $mform->createElement('checkbox', 'vocab-' . $vocab->dataid);
             $vocabrow[] =& $mform->createElement('html', '</td>');
-            $vocabitemhtml = '<td>'.$vocab->front.'</td><td>'.$vocab->back.'</td>';
-            $vocabrow[] =& $mform->createElement('html', $vocabitemhtml.'</tr>');
+            $vocabitemhtml = '<td>' . $vocab->front . '</td><td>' . $vocab->back . '</td>';
+            $vocabrow[] =& $mform->createElement('html', $vocabitemhtml . '</tr>');
             $mform->addGroup(
-                    $vocabrow,
-                    'vocabrow',
-                    '',
-                    '',
-                    false
+                $vocabrow,
+                'vocabrow',
+                '',
+                '',
+                false
             );
         }
 

@@ -44,8 +44,7 @@ if (!function_exists('str_contains')) {
 $id = required_param('id', PARAM_INT);
 $userid = $USER->id;
 $listid = required_param('listid', PARAM_INT);
-$listinfo = $DB->get_record('vocabcoach_lists', ['id' => $listid],
-        'title, book, unit, year');
+$listinfo = $DB->get_record('vocabcoach_lists', ['id' => $listid], 'title', MUST_EXIST);
 
 $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);

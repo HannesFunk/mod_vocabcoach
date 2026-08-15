@@ -79,10 +79,10 @@ class vocabhelper {
         $secondsleft = $nextdue - $lastchecked;
         if ($secondsleft > 60 * 60 * 24) {
             $time = floor($secondsleft / (60 * 60 * 24));
-            return $time.($time > 1 ? ' Tagen' : ' Tag');
+            return get_string($time > 1 ? 'duetime_days' : 'duetime_day', 'mod_vocabcoach', $time);
         } else {
             $time = floor ($secondsleft / (60 * 60));
-            return $time.($time > 1 ? ' Stunden' : ' Stunde');
+            return get_string($time > 1 ? 'duetime_hours' : 'duetime_hour', 'mod_vocabcoach', $time);
         }
     }
 

@@ -2,20 +2,16 @@ import {addListToUserAJAX, deleteListAJAX, distributeListAJAX, getListsAJAX} fro
 import Template from 'core/templates';
 import notification, {saveCancel} from 'core/notification';
 import Log from 'core/log';
+import {getString, getStrings} from 'core/str';
 
 let cmid;
 let userId;
 
 function addListToUser(listid) {
-    addListToUserAJAX(listid, userId, cmid).then(
-        () => {
-            const notificationData = {
-                message: "Neue Vokabeln von dieser Liste wurden deinem Karteikarten hinzugefügt.",
-                type: "success",
-            };
-            notification.addNotification(notificationData).then(null);
-        }
-    );
+    addListToUserAJAX(listid, userId, cmid)
+        .then(() => getString('lists_added_to_box', 'mod_vocabcoach'))
+        .then((message) => notification.addNotification({message: message, type: "success"}))
+        .catch((error) => Log.debug(error));
 }
 
 export function init(moduleId, userIdString, capabilitiesInfo) {
@@ -94,29 +90,34 @@ export function printLists(capInfo, onlyOwnLists = false) {
 }
 
 function deleteList(listid) {
-    saveCancel('Bestätigung', 'Soll diese Liste wirklich gelöscht werden?', 'Bestätigen', () => {
-        deleteListAJAX(listid).then(
-            () => {
-                document.querySelectorAll('tr[data-list-id="' + listid +'"]')[0].remove();
-                notification.addNotification({type: 'success', message: 'Liste gelöscht.'}).then(null);
-            }
-        );
-    }, null).catch ((error) => Log.debug(error));
+    getStrings([
+        {key: 'confirm', component: 'core'},
+        {key: 'lists_confirm_delete', component: 'mod_vocabcoach'},
+        {key: 'delete', component: 'core'},
+        {key: 'lists_deleted', component: 'mod_vocabcoach'},
+    ]).then(([title, question, buttonLabel, successMessage]) => {
+        return saveCancel(title, question, buttonLabel, () => {
+            deleteListAJAX(listid).then(
+                () => {
+                    document.querySelectorAll('tr[data-list-id="' + listid + '"]')[0].remove();
+                    return notification.addNotification({type: 'success', message: successMessage});
+                }
+            ).catch((error) => Log.debug(error));
+        }, null);
+    }).catch((error) => Log.debug(error));
 }
 
 function distributeList(listid, vocabcoachId) {
-    const doIt = () => {
-        distributeListAJAX(listid, vocabcoachId).then(() => {
-            notification.addNotification(
-                {type: 'success', message: 'Liste an alle Teilnehmer in diesem Kurs verteilt.'}
-            ).then(null);
-        });
-    };
-
-    saveCancel('Bestätigung',
-        'Soll diese Liste wirklich an alle Teilnehmer in diesem Kurs verteilt werden?',
-        'Bestätigen',
-        doIt,
-        null).
-    catch((error) => Log.debug(error));
+    getStrings([
+        {key: 'confirm', component: 'core'},
+        {key: 'lists_confirm_distribute', component: 'mod_vocabcoach'},
+        {key: 'confirm', component: 'core'},
+        {key: 'lists_distributed', component: 'mod_vocabcoach'},
+    ]).then(([title, question, buttonLabel, successMessage]) => {
+        return saveCancel(title, question, buttonLabel, () => {
+            distributeListAJAX(listid, vocabcoachId).then(
+                () => notification.addNotification({type: 'success', message: successMessage})
+            ).catch((error) => Log.debug(error));
+        }, null);
+    }).catch((error) => Log.debug(error));
 }

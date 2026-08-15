@@ -87,7 +87,7 @@ class vocab_api extends external_api {
             return ['success' => false, 'message' => $e->getMessage()];
         }
 
-        return ['success' => true, 'message' => 'That worked.'];
+        return ['success' => true, 'message' => get_string('update_vocab_success', 'mod_vocabcoach')];
     }
 
     /**

@@ -1,12 +1,12 @@
-<h2>Vokabelliste {{title}}</h2>
+<h2>{{#str}}viewlist_heading, mod_vocabcoach, {{title}}{{/str}}</h2>
 
 <form action="#" method="post" class="mform">
 <table id="table-list" class="table generaltable">
 <tbody>
 <tr>
     <td></td>
-    <td>Englisch</td>
-    <td>Deutsch</td>
+    <td>{{#str}}front, mod_vocabcoach{{/str}}</td>
+    <td>{{#str}}back, mod_vocabcoach{{/str}}</td>
 </tr>
 {{#vocabarray}}
 <tr>
@@ -28,13 +28,13 @@
                 <div class="d-flex flex-wrap align-items-center">
                     <div class="form-group fitem">
     <span data-fieldtype="submit">
-        <input type="submit" class="btn btn-primary" name="submitbutton" id="id_submitbutton" value="Zum eigenen Vokabelkasten hinzufügen">
+        <input type="submit" class="btn btn-primary" name="submitbutton" id="id_submitbutton" value="{{#str}}add_to_own_box, mod_vocabcoach{{/str}}">
     </span>
         <div class="form-control-feedback invalid-feedback" id="id_error_submitbutton"></div>
                     </div>
                     <div class="form-group  fitem   btn-cancel">
     <span data-fieldtype="submit">
-        <input type="submit" class="btn btn-secondary" name="cancel" id="id_cancel" value="Cancel" data-skip-validation="1" data-cancel="1" onclick="skipClientValidation = true; return true;">
+        <input type="submit" class="btn btn-secondary" name="cancel" id="id_cancel" value="{{#str}}cancel, core{{/str}}" data-skip-validation="1" data-cancel="1" onclick="skipClientValidation = true; return true;">
     </span>
             <div class="form-control-feedback invalid-feedback" id="id_error_cancel">
                         </div>

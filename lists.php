@@ -44,9 +44,9 @@ $info = [
 
 $PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/lists.php', ['id' => $id]);
-$PAGE->set_title('Vokabelcoach - Vokabellisten');
-$PAGE->set_heading('Vokabelcoach - Vokabellisten');
-$PAGE->navbar->add('Vokabellisten');
+$PAGE->set_title(get_string('lists_pagetitle', 'mod_vocabcoach'));
+$PAGE->set_heading(get_string('lists_pagetitle', 'mod_vocabcoach'));
+$PAGE->navbar->add(get_string('lists', 'mod_vocabcoach'));
 
 $PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init',
         [$id, $USER->id, json_encode($info)]);

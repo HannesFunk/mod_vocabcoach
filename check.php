@@ -38,10 +38,9 @@ $modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/check.php');
-$checktitle = get_string('check', 'mod_vocabcoach');
-$PAGE->set_title($checktitle);
-$PAGE->set_heading($checktitle);
-$PAGE->navbar->add($checktitle);
+$PAGE->set_title(get_string('check_pagetitle', 'mod_vocabcoach'));
+$PAGE->set_heading(get_string('check_pagetitle', 'mod_vocabcoach'));
+$PAGE->navbar->add(get_string('check', 'mod_vocabcoach'));
 
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');

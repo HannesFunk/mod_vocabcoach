@@ -40,9 +40,9 @@ $modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/viewbox.php', ['id' => $id, 'stage' => $stage]);
-$PAGE->set_title('Vokabelcoach - Liste');
-$PAGE->set_heading('Vokabelcoach - Liste');
-$PAGE->navbar->add("Box ".$stage);
+$PAGE->set_title(get_string('list_pagetitle', 'mod_vocabcoach'));
+$PAGE->set_heading(get_string('list_pagetitle', 'mod_vocabcoach'));
+$PAGE->navbar->add(get_string('view_box_title', 'mod_vocabcoach', $stage));
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->js_call_amd('mod_vocabcoach/viewbox', 'init');
 
@@ -56,6 +56,6 @@ $templatecontext = [
 ];
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Box '.$stage);
+echo $OUTPUT->heading(get_string('view_box_title', 'mod_vocabcoach', $stage));
 echo $OUTPUT->render_from_template('mod_vocabcoach/viewbox', (object)$templatecontext);
 echo $OUTPUT->footer();

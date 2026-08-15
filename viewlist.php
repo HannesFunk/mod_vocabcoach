@@ -55,8 +55,8 @@ $modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/viewlist.php');
-$PAGE->set_title('Vokabelcoach - Liste');
-$PAGE->set_heading('Vokabelcoach - Liste');
+$PAGE->set_title(get_string('list_pagetitle', 'mod_vocabcoach'));
+$PAGE->set_heading(get_string('list_pagetitle', 'mod_vocabcoach'));
 $PAGE->navbar->add($listinfo->title);
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 
@@ -84,6 +84,6 @@ if ($mform->is_cancelled()) {
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Vokabelliste '.$listinfo->title);
+echo $OUTPUT->heading(get_string('viewlist_heading', 'mod_vocabcoach', $listinfo->title));
 $mform->display();
 echo $OUTPUT->footer();

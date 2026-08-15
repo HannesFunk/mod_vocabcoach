@@ -71,13 +71,13 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
         for ($i = 5; $i <= 13; $i++) {
             $years[$i] = $i;
         }
-        $mform->addElement('select', 'year', 'Jahrgangsstufe', $years);
+        $mform->addElement('select', 'year', get_string('year', 'mod_vocabcoach'), $years);
 
-        $mform->addElement('text', 'desc_front', 'Vorderseite');
-        $mform->addElement('text', 'desc_back', 'Rückseite');
+        $mform->addElement('text', 'desc_front', get_string('front', 'mod_vocabcoach'));
+        $mform->addElement('text', 'desc_back', get_string('back', 'mod_vocabcoach'));
         $mform->setType('desc_front', PARAM_TEXT);
         $mform->setType('desc_back', PARAM_TEXT);
-        $mform->setDefault('desc_back', 'Deutsch');
+        $mform->setDefault('desc_back', get_string('desc_back_default', 'mod_vocabcoach'));
 
         $mform->addElement('header', 'boxtimes', get_string('boxtimes', 'mod_vocabcoach'));
         $mform->addElement('static', 'info_boxtimes', '', get_string('info_boxtimes', 'mod_vocabcoach'));

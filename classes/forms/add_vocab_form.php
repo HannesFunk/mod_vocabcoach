@@ -31,7 +31,7 @@ class add_vocab_form extends moodleform {
      * Defines the form.
      * @return void
      */
-    public function definition() :void {
+    public function definition(): void {
         $mform = $this->_form;
 
         global $DB;
@@ -42,8 +42,8 @@ class add_vocab_form extends moodleform {
         $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
-        $desc_front = $moduleinstance->desc_front;
-        $desc_back = $moduleinstance->desc_back;
+        $descfront = $moduleinstance->desc_front;
+        $descback = $moduleinstance->desc_back;
         $instructions = $moduleinstance->instructions;
 
         $mform->addElement('hidden', 'id', $id);
@@ -55,8 +55,8 @@ class add_vocab_form extends moodleform {
 
         if (!empty($instructions)) {
             $mform->addElement('header', 'instructionsheader', get_string('instructions', 'mod_vocabcoach'));
-            $instructions_formatted = '<div class="pl-5 pr-3 pt-3 pb-3">'.$instructions.'</div>';
-            $mform->addElement('html', $instructions_formatted);
+            $instructionsformatted = '<div class="pl-5 pr-3 pt-3 pb-3">' . $instructions . '</div>';
+            $mform->addElement('html', $instructionsformatted);
         }
 
         if ($mode === 'list' || $mode === 'edit') {
@@ -84,22 +84,34 @@ class add_vocab_form extends moodleform {
             $mform->addElement('advcheckbox', 'add_to_user_database', get_string('add_vocab_add_to_user_database', 'mod_vocabcoach'));
             $mform->addHelpButton('add_to_user_database', 'add_vocab_add_to_user_database', 'mod_vocabcoach');
 
-            $mform->addElement('advcheckbox', 'list_private',
-                    get_string('list_private', 'mod_vocabcoach'), '', null, [false, true]);
+            $mform->addElement(
+                'advcheckbox',
+                'list_private',
+                get_string('list_private', 'mod_vocabcoach'),
+                '',
+                null,
+                [false, true]
+            );
             $mform->addHelpButton('list_private', 'list_private', 'mod_vocabcoach');
 
-            $mform->addElement('advcheckbox', 'list_distribute_now',
-                    get_string('list_distribute_now', 'mod_vocabcoach'), '', null, [false, true]);
+            $mform->addElement(
+                'advcheckbox',
+                'list_distribute_now',
+                get_string('list_distribute_now', 'mod_vocabcoach'),
+                '',
+                null,
+                [false, true]
+            );
             $mform->addHelpButton('list_distribute_now', 'list_distribute_now', 'mod_vocabcoach');
             $mform->setDefault('list_distribute_now', 1);
         }
 
-        $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural',  'mod_vocabcoach'));
+        $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural', 'mod_vocabcoach'));
         $mform->setExpanded('vocabsectionheader');
 
         if ($mode === 'edit') {
-            $text = get_string('add_vocab_info_lines', 'mod_vocabcoach').
-                    ' '.get_string('edit_vocab_instructions', 'mod_vocabcoach');
+            $text = get_string('add_vocab_info_lines', 'mod_vocabcoach') .
+                    ' ' . get_string('edit_vocab_instructions', 'mod_vocabcoach');
             $mform->addElement('static', 'info_lines', '', $text);
         } else {
             $mform->addElement('static', 'info_lines', '', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
@@ -107,8 +119,8 @@ class add_vocab_form extends moodleform {
 
         $vocabrow = [];
         $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
-        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="'.$desc_front .'"');
-        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="'.$desc_back.'"');
+        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="' . $descfront . '"');
+        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="' . $descback . '"');
 
         $mform->addGroup(
             $vocabrow,
@@ -133,8 +145,4 @@ class add_vocab_form extends moodleform {
     public function validation($data, $files): array {
         return [];
     }
-
-    /**
-     * @var string $instructions Class hints on vocab formats.
-     */
 }

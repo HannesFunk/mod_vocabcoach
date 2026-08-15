@@ -31,7 +31,7 @@ require("../classes/external/vocab_api.php");
 use mod_vocabcoach\external\vocab_api;
 
 if (!isset($_GET['mode'])) {
-    die (get_string('error_wrong_parameters', 'mod_vocabcoach'));
+    die(get_string('error_wrong_parameters', 'mod_vocabcoach'));
 }
 
 if ($_GET['mode'] == 'list') {
@@ -43,11 +43,11 @@ if ($_GET['mode'] == 'list') {
 
 $stream = fopen('php://output', 'w');
 if (!$stream) {
-    die (get_string('error_csv_output', 'mod_vocabcoach'));
+    die(get_string('error_csv_output', 'mod_vocabcoach'));
 }
 
 header("Content-Type:application/csv");
-header("Content-Disposition:attachment;filename=".get_string('csv_filename', 'mod_vocabcoach'));
+header("Content-Disposition:attachment;filename=" . get_string('csv_filename', 'mod_vocabcoach'));
 
 foreach ($vocabarray as $vocab) {
     fputcsv($stream, [$vocab->front, $vocab->back]);

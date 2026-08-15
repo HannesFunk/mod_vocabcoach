@@ -22,10 +22,10 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 global $DB, $PAGE, $OUTPUT;
 
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -69,11 +69,13 @@ foreach ($vocabcoachs as $vocabcoach) {
         $link = html_writer::link(
             new moodle_url('/mod/vocabcoach/view.php', ['id' => $vocabcoach->coursemodule]),
             format_string($vocabcoach->name),
-            ['class' => 'dimmed']);
+            ['class' => 'dimmed']
+        );
     } else {
         $link = html_writer::link(
             new moodle_url('/mod/vocabcoach/view.php', ['id' => $vocabcoach->coursemodule]),
-            format_string($vocabcoach->name));
+            format_string($vocabcoach->name)
+        );
     }
 
     if ($course->format == 'weeks' || $course->format == 'topics') {

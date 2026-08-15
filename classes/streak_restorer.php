@@ -23,14 +23,12 @@
  */
 
 namespace mod_vocabcoach;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class for managing streak restores with monthly limits.
  */
-class streak_restorer
-{
-
+class streak_restorer {
+    /** @var int MAX_RESTORES_PER_MONTH maximum restores allowed per month */
     const MAX_RESTORES_PER_MONTH = 3;
 
     /**
@@ -38,8 +36,7 @@ class streak_restorer
      *
      * @return string
      */
-    public static function get_current_month()
-    {
+    public static function get_current_month(): string {
         return date('Y-m');
     }
 
@@ -48,20 +45,19 @@ class streak_restorer
      *
      * @param int $userid User ID
      * @param int $cmid Course module ID
-     * @param string $streak_type Type of streak (login, checkall)
+     * @param string $streaktype Type of streak (login, checkall)
      * @return bool True if user can restore, false otherwise
      */
-    public static function can_restore_streak($userid, $cmid, $streak_type)
-    {
+    public static function can_restore_streak(int $userid, int $cmid, string $streaktype): bool {
         global $DB;
 
-        $month_year = self::get_current_month();
+        $monthyear = self::get_current_month();
 
         $record = $DB->get_record('vocabcoach_streak_restores', [
             'userid' => $userid,
             'cmid' => $cmid,
-            'streak_type' => $streak_type,
-            'month_year' => $month_year,
+            'streak_type' => $streaktype,
+            'month_year' => $monthyear,
         ]);
 
         if (!$record) {
@@ -76,20 +72,19 @@ class streak_restorer
      *
      * @param int $userid User ID
      * @param int $cmid Course module ID
-     * @param string $streak_type Type of streak (login, checkall)
+     * @param string $streaktype Type of streak (login, checkall)
      * @return int Number of restores remaining (0-3)
      */
-    public static function get_remaining_restores($userid, $cmid, $streak_type)
-    {
+    public static function get_remaining_restores(int $userid, int $cmid, string $streaktype): int {
         global $DB;
 
-        $month_year = self::get_current_month();
+        $monthyear = self::get_current_month();
 
         $record = $DB->get_record('vocabcoach_streak_restores', [
             'userid' => $userid,
             'cmid' => $cmid,
-            'streak_type' => $streak_type,
-            'month_year' => $month_year,
+            'streak_type' => $streaktype,
+            'month_year' => $monthyear,
         ]);
 
         if (!$record) {
@@ -104,24 +99,23 @@ class streak_restorer
      *
      * @param int $userid User ID
      * @param int $cmid Course module ID
-     * @param string $streak_type Type of streak (login, checkall)
+     * @param string $streaktype Type of streak (login, checkall)
      * @return bool True on success, false if restore limit reached
      * @throws \Exception If streak record not found
      */
-    public static function restore_streak($userid, $cmid, $streak_type)
-    {
+    public static function restore_streak(int $userid, int $cmid, string $streaktype): bool {
         global $DB;
 
         $transaction = $DB->start_delegated_transaction();
 
         try {
-            $month_year = self::get_current_month();
+            $monthyear = self::get_current_month();
 
             $record = $DB->get_record('vocabcoach_streak_restores', [
                 'userid' => $userid,
                 'cmid' => $cmid,
-                'streak_type' => $streak_type,
-                'month_year' => $month_year,
+                'streak_type' => $streaktype,
+                'month_year' => $monthyear,
             ]);
 
             if ($record) {
@@ -132,9 +126,9 @@ class streak_restorer
                 $record = (object)[
                     'userid' => $userid,
                     'cmid' => $cmid,
-                    'streak_type' => $streak_type,
+                    'streak_type' => $streaktype,
                     'restore_count' => 1,
-                    'month_year' => $month_year,
+                    'month_year' => $monthyear,
                     'timemodified' => time(),
                 ];
                 $DB->insert_record('vocabcoach_streak_restores', $record);
@@ -143,7 +137,7 @@ class streak_restorer
             $streak = $DB->get_record('vocabcoach_streaks', [
                 'userid' => $userid,
                 'cmid' => $cmid,
-                'type' => $streak_type,
+                'type' => $streaktype,
             ]);
 
             if (!$streak) {
@@ -167,12 +161,11 @@ class streak_restorer
      *
      * @param int $userid User ID
      * @param int $cmid Course module ID
-     * @param string $streak_type Type of streak (login, checkall)
+     * @param string $streaktype Type of streak (login, checkall)
      * @return object Object with used and remaining properties
      */
-    public static function get_restore_stats($userid, $cmid, $streak_type)
-    {
-        $remaining = self::get_remaining_restores($userid, $cmid, $streak_type);
+    public static function get_restore_stats(int $userid, int $cmid, string $streaktype): object {
+        $remaining = self::get_remaining_restores($userid, $cmid, $streaktype);
         $used = self::MAX_RESTORES_PER_MONTH - $remaining;
 
         return (object)[

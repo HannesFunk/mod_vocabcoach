@@ -25,12 +25,12 @@
 use core\notification;
 use mod_vocabcoach\vocab_manager;
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER, $CFG;
 
-require_once(__DIR__.'/lib.php');
-require_once(__DIR__.'/classes/forms/add_vocab_form.php');
-require_once(__DIR__.'/classes/vocab_manager.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/classes/forms/add_vocab_form.php');
+require_once(__DIR__ . '/classes/vocab_manager.php');
 
 // Course module id.
 $id = required_param('id', PARAM_INT);
@@ -51,9 +51,11 @@ if ($mode === 'edit') {
     $canedit = has_capability('mod/vocabcoach:delete_lists', $modulecontext) ||
         $vocabmanager->user_owns_list($USER->id, $editlistid);
     if (!$canedit) {
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+        redirect(
+            new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
             get_string('edit_list_not_allowed', 'mod_vocabcoach'),
-            notification::ERROR);
+            notification::ERROR
+        );
     }
 }
 
@@ -77,19 +79,22 @@ $formparameters = [
 if ($mode === 'edit') {
     $formparameters['listid'] = $editlistid;
     $mform = new add_vocab_form(null, $formparameters);
-    $listinfo = $DB->get_record('vocabcoach_lists', ['id' => $editlistid],
+    $listinfo = $DB->get_record(
+        'vocabcoach_lists',
+        ['id' => $editlistid],
         'title AS list_title,
         book AS list_book,
         unit AS list_unit,
         year AS list_year,
-        private AS list_private');
+        private AS list_private'
+    );
     $mform->set_data($listinfo);
 } else {
     $mform = new add_vocab_form(null, $formparameters);
 }
 
 if ($mform->is_cancelled()) {
-    redirect($CFG->wwwroot.'/mod/vocabcoach/view.php?id='.$cm->id);
+    redirect($CFG->wwwroot . '/mod/vocabcoach/view.php?id=' . $cm->id);
 } else if ($formdata = $mform->get_data()) {
     global $USER;
     $userid = $USER->id;
@@ -99,7 +104,7 @@ if ($mform->is_cancelled()) {
     // Step 0a: construct $vocab_array directly from $_POST - this is a dirty hack, but all I can think of right now.
     $vocabarray = [];
     for ($i = 0; $i < count($_POST['front']); $i++) {
-        if ($_POST['front'][$i] === '' && $_POST['back'][$i] === '' ) {
+        if ($_POST['front'][$i] === '' && $_POST['back'][$i] === '') {
             continue;
         }
         $vocab = new stdClass();
@@ -118,8 +123,10 @@ if ($mform->is_cancelled()) {
                 notification::add(get_string('error_add_vocab_to_user', 'mod_vocabcoach'), notification::ERROR);
             }
         }
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
-            get_string('add_vocab_successful', 'mod_vocabcoach'));
+        redirect(
+            new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+            get_string('add_vocab_successful', 'mod_vocabcoach')
+        );
     }
 
     // Step 0b: Gather list information.
@@ -133,8 +140,10 @@ if ($mform->is_cancelled()) {
         $listinfo['id'] = $editlistid;
         $DB->update_record('vocabcoach_lists', (object) $listinfo);
         $vocabmanager->edit_list($editlistid, $vocabarray);
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
-            get_string('edit_vocab_successful', 'mod_vocabcoach'));
+        redirect(
+            new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+            get_string('edit_vocab_successful', 'mod_vocabcoach')
+        );
     }
 
     // Step 1: Generate List.
@@ -170,8 +179,10 @@ if ($mform->is_cancelled()) {
     }
 
     if ($redirect) {
-        redirect(new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
-            get_string('add_vocab_successful', 'mod_vocabcoach'));
+        redirect(
+            new moodle_url('/mod/vocabcoach/view.php', ['id' => $cm->id]),
+            get_string('add_vocab_successful', 'mod_vocabcoach')
+        );
     }
 }
 

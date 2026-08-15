@@ -37,8 +37,7 @@ require_once($CFG->dirroot . '/mod/vocabcoach/classes/streak_manager.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers    \mod_vocabcoach\streak_manager
  */
-class streak_manager_test extends \advanced_testcase {
-
+final class streak_manager_test extends \advanced_testcase {
     /**
      * Create a course module for vocabcoach tests.
      *

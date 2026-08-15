@@ -50,7 +50,7 @@ class vocabhelper {
         $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
         $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance]);
         for ($i = 1; $i <= 5; $i++) {
-            $this->boxtimes[$i] = $instanceinfo->{'boxtime_'.$i};
+            $this->boxtimes[$i] = $instanceinfo->{'boxtime_' . $i};
         }
     }
 
@@ -59,7 +59,7 @@ class vocabhelper {
      * @param int $daysago Number of days before now
      * @return int
      */
-    public function old_timestamp(int $daysago) : int {
+    public function old_timestamp(int $daysago): int {
         $now = time();
         return $now - ($daysago - 0.5) * 60 * 60 * 24;
     }
@@ -70,7 +70,7 @@ class vocabhelper {
      * @param int $boxtime
      * @return string
      */
-    public function compute_due_time_string (int|null $lastchecked, int $boxtime) : string {
+    public function compute_due_time_string(int|null $lastchecked, int $boxtime): string {
         if ($lastchecked === null) {
             return '-';
         }
@@ -81,7 +81,7 @@ class vocabhelper {
             $time = floor($secondsleft / (60 * 60 * 24));
             return get_string($time > 1 ? 'duetime_days' : 'duetime_day', 'mod_vocabcoach', $time);
         } else {
-            $time = floor ($secondsleft / (60 * 60));
+            $time = floor($secondsleft / (60 * 60));
             return get_string($time > 1 ? 'duetime_hours' : 'duetime_hour', 'mod_vocabcoach', $time);
         }
     }
@@ -90,13 +90,13 @@ class vocabhelper {
      * Return SQL conditions for vocabs to be due in a box.
      * @return string
      */
-    public function get_sql_box_conditions() : string {
+    public function get_sql_box_conditions(): string {
         $boxconditions = "";
         for ($i = 1; $i <= $this->boxnumber; $i++) {
             if ($i != 1) {
                 $boxconditions .= " OR ";
             }
-            $boxconditions .= " (vd.stage = $i AND lastchecked < " . $this->old_timestamp($this->boxtimes[$i]).")";
+            $boxconditions .= " (vd.stage = $i AND lastchecked < " . $this->old_timestamp($this->boxtimes[$i]) . ")";
         }
         return $boxconditions;
     }

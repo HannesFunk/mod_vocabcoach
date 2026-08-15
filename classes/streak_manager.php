@@ -15,23 +15,24 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_vocabcoach;
+use dml_exception;
 use invalid_parameter_exception;
-defined('MOODLE_INTERNAL') || die();
 
 /**
- * Stream Manager
+ * Streak manager. Provides information about the streaks of a user in a vocabcoach instance.
  *
  * @package   mod_vocabcoach
- * @copyright 2026 onwards, Johannes Funk
+ * @copyright 2026, Johannes Funk
+ * @author Johannes Funk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author    Johannes Funk
  */
-class streak_manager {
-    /**
-     * @var int $userid User ID
-     * @var int $cmid Course Module ID
-     */
-    private int $userid, $cmid;
+class streak_manager
+{
+    /** @var int $userid User ID  */
+    private int $userid;
+    /** @var int $cmid Course Module ID */
+    private int $cmid;
+    /** @var array $types Allowed streak types */
     private array $types = ['login', 'checkall'];
 
     /**
@@ -39,8 +40,7 @@ class streak_manager {
      * @param int $userid User id
      * @param int $cmid Course module id
      */
-    public function __construct(int $userid, int $cmid)
-    {
+    public function __construct(int $userid, int $cmid) {
         $this->userid = $userid;
         $this->cmid = $cmid;
     }
@@ -49,8 +49,7 @@ class streak_manager {
      * Get the current streak info of the user.
      * @return object Current streak
      */
-    public function get_streak(string $type): object
-    {
+    public function get_streak(string $type): object {
         global $DB;
         $record = $DB->get_record(
             'vocabcoach_streaks',
@@ -69,10 +68,16 @@ class streak_manager {
         return $record;
     }
 
+    /**
+     * Get the current streak info of the user.
+     * @param string|null $selectedtype Optional type to get streak info for. If null, returns info for all types.
+     * @return object Current streak information
+     * @throws \core\exception\invalid_parameter_exception
+     */
     public function get_streak_info(string|null $selectedtype = null): object {
         $info = [];
         if ($selectedtype && !in_array($selectedtype, $this->types)) {
-            throw new \core\exception\invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
+            throw new invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
         }
         $types = $selectedtype ? [$selectedtype] : $this->types;
         foreach ($types as $type) {
@@ -86,7 +91,12 @@ class streak_manager {
         }
     }
 
-   public function update(string $type, bool $maintained = true): void {
+    /**
+     * Update the streak info of the user.
+     * @param string $type Streak type
+     * @throws \core\exception\invalid_parameter_exception|dml_exception
+     */
+    public function update(string $type): void {
         if (!in_array($type, $this->types)) {
             throw new invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
         }
@@ -100,11 +110,12 @@ class streak_manager {
         }
 
         if ($streak->timemodified < strtotime("-2 days midnight")) {
+            // Streak can no longer be restored.
             $streak->timemodified = time();
             $streak->streak = 1;
             $DB->update_record('vocabcoach_streaks', $streak);
-        }
-        else if ($streak->timemodified < strtotime("today midnight") && $maintained) {
+        } else if ($streak->timemodified < strtotime("today midnight")) {
+            // Streak has not yet been updated and doesn't need to be restored.
             $streak->timemodified = time();
             $streak->streak++;
             $DB->update_record('vocabcoach_streaks', $streak);

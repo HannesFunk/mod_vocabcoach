@@ -22,12 +22,12 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 require_once(__DIR__ . '/classes/external/vocab_api.php');
-require_once(__DIR__.'/classes/forms/view_list_form.php');
-require_once(__DIR__.'/classes/vocab_manager.php');
+require_once(__DIR__ . '/classes/forms/view_list_form.php');
+require_once(__DIR__ . '/classes/vocab_manager.php');
 
 if (!function_exists('str_contains')) {
     /**
@@ -63,11 +63,13 @@ $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $checkapi = new \mod_vocabcoach\external\vocab_api();
 $vocabarray = $checkapi->get_list_vocabs($listid);
 
-$mform = new view_list_form(null,
-        ['vocabdata' => json_encode($vocabarray),
+$mform = new view_list_form(
+    null,
+    ['vocabdata' => json_encode($vocabarray),
         'id' => $id,
         'listid' => $listid,
-        ]);
+    ]
+);
 
 if ($mform->is_cancelled()) {
     redirect(new moodle_url('/mod/vocabcoach/lists.php', ['id' => $id]));

@@ -22,9 +22,9 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -48,8 +48,11 @@ $PAGE->set_title(get_string('lists_pagetitle', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('lists_pagetitle', 'mod_vocabcoach'));
 $PAGE->navbar->add(get_string('lists', 'mod_vocabcoach'));
 
-$PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init',
-        [$id, $USER->id, json_encode($info)]);
+$PAGE->requires->js_call_amd(
+    'mod_vocabcoach/lists',
+    'init',
+    [$id, $USER->id, json_encode($info)]
+);
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 

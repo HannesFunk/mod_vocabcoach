@@ -79,6 +79,7 @@ function vocabcoach_update_instance($moduleinstance, $mform = null) {
     return $DB->update_record('vocabcoach', $moduleinstance);
 }
 
+// TODO: Remove orphaned vocabitems here.
 /**
  * Removes an instance of the mod_vocabcoach from the database.
  *

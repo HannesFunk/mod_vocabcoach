@@ -79,7 +79,7 @@ class course_features {
 
         // array of all records in the DB
         $records = array_merge($perfect, $nonperfect);
-        if (sizeof($records) == 0) {
+        if (count($records) == 0) {
             return [];
         }
 

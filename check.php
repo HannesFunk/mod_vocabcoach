@@ -37,10 +37,11 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_context($modulecontext);
-$PAGE->set_url('/mod/vocabcoach/view.php');
-$PAGE->set_title('Vokabelcoach - Abfrage');
-$PAGE->set_heading('Vokabelcoach - Abfrage');
-$PAGE->navbar->add('Abfrage');
+$PAGE->set_url('/mod/vocabcoach/check.php');
+$checktitle = get_string('check', 'mod_vocabcoach');
+$PAGE->set_title($checktitle);
+$PAGE->set_heading($checktitle);
+$PAGE->navbar->add($checktitle);
 
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');

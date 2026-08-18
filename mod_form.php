@@ -88,15 +88,15 @@ class mod_vocabcoach_mod_form extends moodleform_mod {
             $mform->setDefault('boxtime_'.$i, $defaultboxtimes[$i]);
         }
 
-        $mform->addElement('checkbox', 'move_undue', get_string('move_undue', 'vocabcoach'));
+        $mform->addElement('advcheckbox', 'move_undue', get_string('move_undue', 'vocabcoach'));
         $mform->addHelpButton('move_undue', 'move_undue', 'mod_vocabcoach');
 
         // Option to enable/disable due-vocab notifications for this instance.
-        $mform->addElement('checkbox', 'notifications_enabled', get_string('notifications_enabled', 'mod_vocabcoach'));
+        $mform->addElement('advcheckbox', 'notifications_enabled', get_string('notifications_enabled', 'mod_vocabcoach'));
         $mform->setDefault('notifications_enabled', 0);
         $mform->addHelpButton('notifications_enabled', 'notifications_enabled', 'mod_vocabcoach');
 
-        $mform->addElement('checkbox', 'notifications_optout', get_string('notifications_optout', 'mod_vocabcoach'));
+        $mform->addElement('advcheckbox', 'notifications_optout', get_string('notifications_optout', 'mod_vocabcoach'));
         $mform->setDefault('notifications_optout', 0);
         $mform->addHelpButton('notifications_optout', 'notifications_optout', 'mod_vocabcoach');
 

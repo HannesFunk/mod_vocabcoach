@@ -63,9 +63,7 @@ $boxdata = $boxmanager->get_box_details();
 
 $sm = new streak_manager($USER->id, $cm->id);
 $sm->update('login');
-if ($boxmanager->get_total_due() == 0) {
-    $sm->update('checkall');
-}
+$sm->update('checkall', $boxmanager->get_total_due() == 0);
 $streakinfo = $sm->get_streak_info();
 
 $userpreferences = new \mod_vocabcoach\user_preferences($cm->id, $USER->id);

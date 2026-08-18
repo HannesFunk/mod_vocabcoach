@@ -21,11 +21,11 @@ global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 require_once(__DIR__.'/../vocabhelper.php');
 
-use external_api;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
-use external_multiple_structure;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
 use mod_vocabcoach\vocabhelper;
 
 /**
@@ -97,10 +97,10 @@ class vocab_api extends external_api {
      */
     public static function get_user_vocabs_parameters() : external_function_parameters {
         return new external_function_parameters([
-            'userid' => new external_value(PARAM_INT, VALUE_REQUIRED),
-            'cmid' => new external_value(PARAM_INT, VALUE_REQUIRED),
-            'stage' => new external_value(PARAM_INT, VALUE_REQUIRED),
-            'force' => new external_value(PARAM_BOOL, VALUE_REQUIRED),
+            'userid' => new external_value(PARAM_INT, 'userid', VALUE_REQUIRED),
+            'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED),
+            'stage' => new external_value(PARAM_INT, 'stage', VALUE_REQUIRED),
+            'force' => new external_value(PARAM_BOOL, 'force', VALUE_REQUIRED),
         ]);
     }
 
@@ -137,7 +137,7 @@ class vocab_api extends external_api {
                 JOIN {vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID
                WHERE vd.userID= ? AND vd.stage = ? AND vd.cmid = ?";
         if (!$force) {
-            $query .= "AND vd.lastchecked < ?;";
+            $query .= " AND vd.lastchecked < ?;";
         } else {
             $query .= ';';
         }

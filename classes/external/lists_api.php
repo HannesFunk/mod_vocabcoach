@@ -21,11 +21,11 @@ global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 
 use context_course;
-use external_api;
-use external_function_parameters;
-use external_value;
-use external_multiple_structure;
-use external_single_structure;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
 use dml_exception;
 use invalid_parameter_exception;
 use stdClass;
@@ -117,7 +117,7 @@ class lists_api extends external_api {
      */
     public static function delete_list_parameters() : external_function_parameters {
         return new external_function_parameters([
-            'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+            'listid' => new external_value(PARAM_INT, 'ID of the list to be deleted', VALUE_REQUIRED),
         ]);
     }
 
@@ -159,9 +159,9 @@ class lists_api extends external_api {
      */
     public static function add_list_to_user_parameters() : external_function_parameters {
         return new external_function_parameters([
-            'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
-            'userid' => new external_value(PARAM_INT, VALUE_REQUIRED),
-            'cmid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+            'listid' => new external_value(PARAM_INT, 'ID of the list', VALUE_REQUIRED),
+            'userid' => new external_value(PARAM_INT,  'User ID', VALUE_REQUIRED),
+            'cmid' => new external_value(PARAM_INT, 'course module ID', VALUE_REQUIRED),
         ]);
     }
 
@@ -222,8 +222,8 @@ class lists_api extends external_api {
      */
     public static function distribute_list_parameters() : external_function_parameters {
         return new external_function_parameters([
-                'listid' => new external_value(PARAM_INT, VALUE_REQUIRED),
-                'cmid' => new external_value(PARAM_INT, VALUE_REQUIRED),
+                'listid' => new external_value(PARAM_INT, 'ID of the list', VALUE_REQUIRED),
+                'cmid' => new external_value(PARAM_INT, 'course module ID', VALUE_REQUIRED),
         ]);
     }
 

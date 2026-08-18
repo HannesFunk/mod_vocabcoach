@@ -133,7 +133,7 @@ class vocab_manager {
                 $DB->insert_record('vocabcoach_vocabdata', $newdata, false);
                 return true;
             } catch (dml_exception $e) {
-                die($e->getMessage());
+                throw $e;
             }
         }
     }

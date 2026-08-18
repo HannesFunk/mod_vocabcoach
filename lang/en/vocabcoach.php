@@ -152,3 +152,15 @@ $string['check'] = 'Check';
 $string['confirm_delete_vocab'] = 'Should this vocab really be deleted from your box?';
 $string['no_vocabs_to_check'] = 'No vocab here.';
 $string['box'] = 'box';
+
+$string['streak_restore_title'] = 'Streak Restore';
+$string['streak_restore_description'] = 'Restore your broken streak';
+$string['streak_restore_button'] = 'Restore Streak';
+$string['streak_restores_remaining'] = 'Restores remaining this month: {$a}';
+$string['streak_restores_limit_reached'] = 'You have reached the monthly limit of streak restores. Try again next month!';
+$string['streak_restore_success'] = 'Your streak has been restored!';
+$string['streak_restore_failed'] = 'Failed to restore streak. Please try again.';
+$string['streak_restore_limit'] = 'You can restore your streak {$a} times per month.';
+$string['streak_login'] = 'Login streak';
+$string['streak_checkall'] = 'Check-all streak';
+$string['restores_used'] = 'Restores used: {$a->used}/{$a->max}';

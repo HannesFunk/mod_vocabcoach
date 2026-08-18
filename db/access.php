@@ -55,7 +55,7 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
-        'mod/vocabcoach:distribute_lists' => [
+    'mod/vocabcoach:distribute_lists' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [

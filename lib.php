@@ -79,14 +79,13 @@ function vocabcoach_update_instance($moduleinstance, $mform = null) {
     return $DB->update_record('vocabcoach', $moduleinstance);
 }
 
-// TODO: Remove orphaned vocabitems here.
 /**
  * Removes an instance of the mod_vocabcoach from the database.
  *
  * @param int $id Id of the module instance.
  * @return bool True if successful, false on failure.
  */
-function vocabcoach_delete_instance($id) {
+function vocabcoach_delete_instance(int $id): bool {
     global $DB;
 
     $exists = $DB->get_record('vocabcoach', ['id' => $id]);
@@ -99,13 +98,17 @@ function vocabcoach_delete_instance($id) {
     return true;
 }
 
-function normalize_checkboxes ($moduleinstance) {
-    // Normalise checkbox fields (unset / unchecked -> 0)
-    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue)    ? 1 : 0;
+/**
+ * Normalize checkbox ouput - can probably be removed with advcheckboxes
+ *d
+ * @param object $moduleinstance An object from the form in mod_form.php.
+ * @return object The updated instance.
+ */
+function normalize_checkboxes($moduleinstance) {
+    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue) ? 1 : 0;
     $moduleinstance->notifications_enabled = !empty($moduleinstance->notifications_enabled) ? 1 : 0;
     $moduleinstance->notifications_optout = !empty($moduleinstance->notifications_optout) ? 1 : 0;
 
-    // Handle editor fields - extract text from array.
     if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
         $moduleinstance->instructions = $moduleinstance->instructions['text'];
     }

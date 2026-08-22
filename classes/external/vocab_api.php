@@ -74,8 +74,8 @@ class vocab_api extends external_api {
         global $DB, $USER;
 
         ['id' => $id, 'known' => $known] = self::validate_parameters(
-                self::update_vocab_parameters(),
-                ['id' => $id, 'known' => $known, 'cmid' => $cmid]
+            self::update_vocab_parameters(),
+            ['id' => $id, 'known' => $known, 'cmid' => $cmid]
         );
         $context = \core\context\module::instance($cmid);
         self::validate_context($context);
@@ -85,7 +85,8 @@ class vocab_api extends external_api {
             'vocabcoach_vocabdata',
             ['vocabid' => $id, 'userid' => $USER->id, 'cmid' => $cmid],
             '*',
-            MUST_EXIST);
+            MUST_EXIST
+        );
 
         $record->stage = $known ? min($record->stage + 1, 5) : 1;
         $record->lastchecked = time();
@@ -139,7 +140,6 @@ class vocab_api extends external_api {
         $context = \core\context\module::instance($cmid);
         self::validate_context($context);
         require_capability('mod/vocabcoach:view', $context);
-
 
         $query = "SELECT vocab.id AS id, front, back FROM {vocabcoach_vocab} vocab
                    JOIN {vocabcoach_vocabdata} vd ON vocab.id = vd.vocabid

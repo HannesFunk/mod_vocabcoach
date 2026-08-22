@@ -91,7 +91,8 @@ class course_features {
         $ownindex = null;
         $records[0]->rank = 1;
 
-        for ($i = 1; $i < count($records); $i++) {
+        $total = count($records);
+        for ($i = 1; $i < $total; $i++) {
             if ($records[$i - 1]->number < $records[$i]->number) {
                 $rank++;
                 $records[$i]->rank = $rank;

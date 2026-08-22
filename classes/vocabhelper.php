@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_vocabcoach;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Vocabhelper - several methods to deal with database-display interaction

@@ -81,7 +81,11 @@ class add_vocab_form extends moodleform {
             $mform->addElement('text', 'list_unit', get_string('unit', 'mod_vocabcoach'));
             $mform->setType('list_unit', PARAM_TEXT);
 
-            $mform->addElement('advcheckbox', 'add_to_user_database', get_string('add_vocab_add_to_user_database', 'mod_vocabcoach'));
+            $mform->addElement(
+                'advcheckbox',
+                'add_to_user_database',
+                get_string('add_vocab_add_to_user_database', 'mod_vocabcoach')
+            );
             $mform->addHelpButton('add_to_user_database', 'add_vocab_add_to_user_database', 'mod_vocabcoach');
 
             $mform->addElement(

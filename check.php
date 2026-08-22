@@ -57,7 +57,7 @@ $checkcontext = [
     'force' => $force,
     'cmid' => $cmid,
     'source' => $source,
-    'mode'  => 'front'
+    'mode'  => 'front',
 ];
 if ($source === 'user') {
     $stage = required_param('stage', PARAM_INT);

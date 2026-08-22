@@ -47,6 +47,7 @@ class streak_manager
 
     /**
      * Get the current streak info of the user.
+     * @param string $type Type of the streak
      * @return object Current streak
      */
     public function get_streak(string $type): object {

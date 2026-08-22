@@ -126,10 +126,10 @@ class vocab_manager {
         }
 
         $userhasvocab = $DB->count_records_select(
-                'vocabcoach_vocabdata',
-                "vocabid = ? AND userid = ? AND cmid = ?",
-                [$vocabid, $this->userid, $cmid]
-            ) > 0;
+            'vocabcoach_vocabdata',
+            "vocabid = ? AND userid = ? AND cmid = ?",
+            [$vocabid, $this->userid, $cmid]
+        ) > 0;
         if ($userhasvocab) {
             return true;
         } else {

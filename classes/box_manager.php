@@ -62,22 +62,18 @@ class box_manager {
 
         $output = [];
         for ($i = 1; $i <= $this->vocabhelper->boxnumber; $i++) {
-            try {
-                $total = $DB->count_records_select(
-                    'vocabcoach_vocabdata',
-                    'userid = ? AND cmid = ? AND stage = ?',
-                    [$this->userid, $this->cmid, $i]
-                );
+            $total = $DB->count_records_select(
+                'vocabcoach_vocabdata',
+                'userid = ? AND cmid = ? AND stage = ?',
+                [$this->userid, $this->cmid, $i]
+            );
 
-                $mindayssincecheck = $this->vocabhelper->boxtimes[$i];
-                $due = $DB->count_records_select(
-                    'vocabcoach_vocabdata',
-                    'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?',
-                    [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($mindayssincecheck)]
-                );
-            } catch (\dml_exception $e) {
-                die($e->getMessage());
-            }
+            $mindayssincecheck = $this->vocabhelper->boxtimes[$i];
+            $due = $DB->count_records_select(
+                'vocabcoach_vocabdata',
+                'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?',
+                [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($mindayssincecheck)]
+            );
 
             if ($due === 0) {
                 $query = "SELECT MIN(vd.lastchecked) AS recent

@@ -26,14 +26,22 @@ import {useState} from 'react';
 import CheckCard from './CheckCard';
 import {Mode, Vocab} from "./types";
 import CheckSettings from "./CheckSettings";
+import {updateVocab} from "./repository";
+import {requireAsync} from "@moodle/lms/core/amd";
+import {isMoodleAjaxError} from "@moodle/lms/core/ajax";
+import {MoodleAjaxError} from "../../../../../lib/js/esm/src/ajax";
 
 export type CheckProps = {
     items: Vocab[],
     cmid: number,
     modelabels: Record<Mode, string>,
     currentmode: Mode
-};
+}
 
+type NotificationModule = {
+    addNotification: (n: {message: string, type?: string}) => Promise<void>;
+    exception: (err: MoodleAjaxError | Error) => Promise<void>;
+}
 
 export default function Check({items, cmid, modelabels, currentmode}: CheckProps) {
     const [vocabs, setVocabs] = useState(items);
@@ -58,13 +66,24 @@ export default function Check({items, cmid, modelabels, currentmode}: CheckProps
         </div>
     );
 
-    function handleAnswer(known: boolean) {
-        setVocabs(prev => prev.slice(1));
+    async function handleAnswer(known: boolean) {
+        try {
+            await updateVocab(current.id, known);
+            setVocabs(prev => prev.slice(1));
+        } catch (err) {
+            const Notification = await requireAsync<NotificationModule>('core/notification');
+            if (isMoodleAjaxError(err)) {
+                await Notification.exception(err);
+            } else {
+                await Notification.addNotification({
+                    message: err instanceof Error ? err.message : String(err),
+                    type: 'error'
+                });
+            }
+        }
     }
 
     function handleModeChange(newMode: Mode) {
         setMode(newMode);
     }
-
 }
-

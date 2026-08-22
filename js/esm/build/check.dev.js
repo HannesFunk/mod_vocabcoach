@@ -11,6 +11,9 @@ import { jsxDEV } from "react/jsx-dev-runtime";
 import { useState } from "react";
 import CheckCard from "./CheckCard";
 import CheckSettings from "./CheckSettings";
+import { updateVocab } from "./repository";
+import { requireAsync } from "@moodle/lms/core/amd";
+import { isMoodleAjaxError } from "@moodle/lms/core/ajax";
 function Check({ items, cmid, modelabels, currentmode }) {
   const [vocabs, setVocabs] = useState(items);
   const [mode, setMode] = useState(currentmode);
@@ -19,7 +22,7 @@ function Check({ items, cmid, modelabels, currentmode }) {
   if (total === 0) {
     return /* @__PURE__ */ jsxDEV("span", { children: "Done!" }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-      lineNumber: 45,
+      lineNumber: 53,
       columnNumber: 17
     }, this);
   }
@@ -36,7 +39,7 @@ function Check({ items, cmid, modelabels, currentmode }) {
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-          lineNumber: 51,
+          lineNumber: 59,
           columnNumber: 17
         },
         this
@@ -46,12 +49,12 @@ function Check({ items, cmid, modelabels, currentmode }) {
         " left"
       ] }, void 0, true, {
         fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-        lineNumber: 53,
+        lineNumber: 61,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-      lineNumber: 50,
+      lineNumber: 58,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV(
@@ -65,18 +68,31 @@ function Check({ items, cmid, modelabels, currentmode }) {
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-        lineNumber: 55,
+        lineNumber: 63,
         columnNumber: 13
       },
       this
     )
   ] }, void 0, true, {
     fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-    lineNumber: 49,
+    lineNumber: 57,
     columnNumber: 9
   }, this);
-  function handleAnswer(known) {
-    setVocabs((prev) => prev.slice(1));
+  async function handleAnswer(known) {
+    try {
+      await updateVocab(current.id, known);
+      setVocabs((prev) => prev.slice(1));
+    } catch (err) {
+      const Notification = await requireAsync("core/notification");
+      if (isMoodleAjaxError(err)) {
+        await Notification.exception(err);
+      } else {
+        await Notification.addNotification({
+          message: err instanceof Error ? err.message : String(err),
+          type: "error"
+        });
+      }
+    }
   }
   __name(handleAnswer, "handleAnswer");
   function handleModeChange(newMode) {

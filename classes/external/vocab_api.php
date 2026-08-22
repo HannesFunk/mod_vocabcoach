@@ -46,7 +46,6 @@ class vocab_api extends external_api {
     public static function update_vocab_parameters(): external_function_parameters {
         return new external_function_parameters([
             'dataid' => new external_value(PARAM_INT),
-            'userid' => new external_value(PARAM_INT),
             'known' => new external_value(PARAM_BOOL),
         ]);
     }
@@ -58,36 +57,37 @@ class vocab_api extends external_api {
      */
     public static function update_vocab_returns(): external_single_structure {
         return new external_single_structure([
-            'success' => new external_value(PARAM_BOOL, 'whether the update was successful.'),
-            'message' => new external_value(PARAM_TEXT, 'a message'),
+            'success' => new external_value(PARAM_BOOL, 'true.'),
         ]);
     }
 
     /**
      * Updates a given vocab item. Called after a check.
      * @param int $dataid ID of the vocabdata.
-     * @param int $userid User ID
      * @param bool $known
-     * @return array
+     * @return bool
      * @throws \invalid_parameter_exception
+     * @throws \moodle_exception
      */
-    public static function update_vocab(int $dataid, int $userid, bool $known): array {
-        global $DB;
+    public static function update_vocab(int $dataid, bool $known): bool {
+        global $DB, $USER;
 
-        self::validate_parameters(self::update_vocab_parameters(), ['dataid' => $dataid, 'userid' => $userid, 'known' => $known]);
+        ['dataid' => $dataid, 'known' => $known] = self::validate_parameters(
+                self::update_vocab_parameters(),
+                ['dataid' => $dataid, 'known' => $known]
+        );
 
-        try {
-            $record = $DB->get_record_sql("SELECT * FROM {vocabcoach_vocabdata} WHERE id = ?;", [$dataid], MUST_EXIST);
+        $record = $DB->get_record('vocabcoach_vocabdata', ['id' => $dataid], '*', MUST_EXIST);
+        self::validate_context($record->cmid);
 
-            $record->stage = $known ? min($record->stage + 1, 5) : 1;
-            $record->lastchecked = time();
-
-            $DB->update_record('vocabcoach_vocabdata', $record);
-        } catch (\dml_exception $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
+        if ((int) $record->userid !== (int) $USER->id) {
+            throw new \moodle_exception('accessdenied', 'admin');
         }
 
-        return ['success' => true, 'message' => get_string('update_vocab_success', 'mod_vocabcoach')];
+        $record->stage = $known ? min($record->stage + 1, 5) : 1;
+        $record->lastchecked = time();
+
+        return $DB->update_record('vocabcoach_vocabdata', $record);
     }
 
     /**

@@ -82,6 +82,7 @@ class vocab_manager {
      * Creates a new vocab item.
      * @param object $vocab
      * @return int The ID of the created element.
+     * @throws dml_exception
      */
     public function create_record(object $vocab): int {
         global $DB;
@@ -89,7 +90,7 @@ class vocab_manager {
         try {
             return $DB->insert_record('vocabcoach_vocab', $vocab);
         } catch (dml_exception $e) {
-            return -1;
+            throw $e;
         }
     }
 
@@ -120,13 +121,16 @@ class vocab_manager {
     public function add_vocab_to_user(int $vocabid, int $cmid): bool {
         global $DB;
 
-        if (
-            $DB->count_records_select(
+        if ($vocabid === -1) {
+            return false;
+        }
+
+        $userhasvocab = $DB->count_records_select(
                 'vocabcoach_vocabdata',
                 "vocabid = ? AND userid = ? AND cmid = ?",
                 [$vocabid, $this->userid, $cmid]
-            ) > 0
-        ) {
+            ) > 0;
+        if ($userhasvocab) {
             return true;
         } else {
             $newdata = new stdClass();

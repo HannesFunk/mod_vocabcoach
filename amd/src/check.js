@@ -1,3 +1,11 @@
+/**
+ * Check page: presents the vocabulary items one by one and records the answers.
+ *
+ * @module     mod_vocabcoach/check
+ * @copyright  2023 J. Funk <johannesfunk@outlook.com>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 import {
     getBoxArrayAJAX, getListArrayAJAX,
     updateVocabAJAX, editUserVocabAJAX, removeVocabFromUserAJAX
@@ -64,7 +72,14 @@ async function showSummaryBox(msg, data = null) {
     showElement(instructionElement, true);
 }
 
-// Unified function to fetch vocab data based on config.source and set vocabArrayJSON.
+/**
+ * Loads the vocabulary items to check into vocabArrayJSON.
+ *
+ * The source is taken from the configuration: either a list or the user's own box.
+ *
+ * @param {Object} cfg The check configuration, as passed to init().
+ * @returns {Promise<Number>} Resolves with the number of items loaded, or undefined for an unknown source.
+ */
 function getVocabArray(cfg) {
     if (cfg.source === 'list') {
         return getListArrayAJAX(cfg.listid).then(response => {
@@ -81,6 +96,9 @@ function getVocabArray(cfg) {
     return Promise.resolve();
 }
 
+/**
+ * Registers the delegated click, change and keyup handlers of the check page.
+ */
 function addListeners() {
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.checkTypedVocab)) {
@@ -150,6 +168,11 @@ const Selectors = {
     },
 };
 
+/**
+ * Builds the progress bar, one dot per vocabulary item.
+ *
+ * Dots are thinned out when there are more items than fit into the available width.
+ */
 function initDots() {
     const progressBar = document.getElementById('progress-bar');
     const totalVocab = vocabArrayJSON.length;
@@ -178,6 +201,11 @@ function initDots() {
     }
 }
 
+/**
+ * Applies the check mode currently selected in the dropdown.
+ *
+ * Reshuffles the remaining items and shows the fields the mode needs.
+ */
 export function changeMode() {
     mode = document.getElementById('checkmode-select').value;
     vocabArrayJSON = shuffle(vocabArrayJSON);
@@ -200,6 +228,11 @@ export function changeMode() {
         });
 }
 
+/**
+ * Compares the typed answer with the current item and moves on if it matches.
+ *
+ * The input is marked as wrong instead when the answer does not match.
+ */
 function checkTypedVocab() {
     const typed = cleanString(document.getElementById('input-vocab-front').value);
     const correct = cleanString(vocabArrayJSON[0].front);
@@ -219,6 +252,9 @@ function checkTypedVocab() {
     }
 }
 
+/**
+ * Drops the current item and shows the next one, or the summary if none are left.
+ */
 function showNext() {
     vocabArrayJSON.splice(0, 1);
 
@@ -249,6 +285,9 @@ function showNext() {
     );
 }
 
+/**
+ * Writes the current vocabulary item into the front and back boxes.
+ */
 function updateLabels() {
     const frontBox = document.getElementById('check-front');
     const backBox = document.getElementById('check-back');
@@ -262,6 +301,13 @@ function updateLabels() {
     document.getElementById('check-container').setAttribute('data-vocab-data-id', vocabArrayJSON[0].dataid);
 }
 
+/**
+ * Shrinks the font size of an element until its content fits into its parent.
+ *
+ * The font size is never reduced below 18px.
+ *
+ * @param {HTMLElement} elem The element whose font size is adjusted.
+ */
 function adjustFontSizeToBoxHeight(elem) {
     const parentHeight = elem.parentNode.offsetHeight;
     const elemDisplayOld = elem.style.display;
@@ -280,6 +326,9 @@ function adjustFontSizeToBoxHeight(elem) {
     elem.style.display = elemDisplayOld;
 }
 
+/**
+ * Prepares the input fields and buttons for the next item in the current mode.
+ */
 function resetCheckFields() {
     switch (mode) {
         case 'random': {
@@ -304,6 +353,9 @@ function resetCheckFields() {
     }
 }
 
+/**
+ * Leaves the check and returns to the activity view page.
+ */
 function endCheck() {
     location.href = '../../mod/vocabcoach/view.php?id=' + config.cmid;
 }
@@ -331,6 +383,15 @@ function getSummaryMessage(knownCount, unknownCount) {
     return getString(key, 'mod_vocabcoach');
 }
 
+/**
+ * Records the answer for the current item and shows the next one.
+ *
+ * The result is only sent to the server when the user is practising their own box
+ * and the check was not forced.
+ *
+ * @param {Number} vocabId The id of the user's vocabulary record.
+ * @param {Boolean} known Whether the user answered the item correctly.
+ */
 function checkDone(vocabId, known) {
     if (config.source === 'list' || config.force) {
         updateCount(known);
@@ -347,6 +408,11 @@ function checkDone(vocabId, known) {
     resetCheckFields();
 }
 
+/**
+ * Counts an answer and colours the matching dot in the progress bar.
+ *
+ * @param {Boolean} known Whether the user answered the item correctly.
+ */
 function updateCount(known) {
     if (known) {
         knownCount++;
@@ -356,6 +422,11 @@ function updateCount(known) {
     moveDot(known ? 'dot-green' : 'dot-red');
 }
 
+/**
+ * Advances the progress bar by one dot.
+ *
+ * @param {String} newClass The class marking the result, or an empty string to only move on.
+ */
 function moveDot(newClass) {
     let bullets = document.querySelectorAll('.vocab-dot.unchecked');
     let bullet = bullets[bullets.length - 1];
@@ -367,6 +438,12 @@ function moveDot(newClass) {
     }
 }
 
+/**
+ * Shuffles an array in place using a Fisher-Yates shuffle.
+ *
+ * @param {Array} array The array to shuffle.
+ * @returns {Array} The same array, shuffled.
+ */
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -387,6 +464,14 @@ let startAnimation = (el, animation) => {
     });
 };
 
+/**
+ * Normalises a typed answer so that formatting differences do not count as mistakes.
+ *
+ * Brackets and full stops are dropped and the common English abbreviations are unified.
+ *
+ * @param {String} input The string to normalise.
+ * @returns {String} The normalised string.
+ */
 function cleanString(input) {
     const replacements = [
         {'search': /\(/g, 'replace': ''},
@@ -410,6 +495,12 @@ function cleanString(input) {
     return output.trim();
 }
 
+/**
+ * Opens a modal that lets the user edit the current vocabulary item.
+ *
+ * @param {Object} vocab The vocabulary item, with front, back and dataid properties.
+ * @returns {Promise} Resolves once the modal has been created and wired up.
+ */
 async function editVocab(vocab) {
     const esc = s => String(s ?? '')
         .replace(/&/g, '&amp;')
@@ -474,6 +565,11 @@ async function editVocab(vocab) {
     });
 }
 
+/**
+ * Asks for confirmation and then removes the current item from the user's box.
+ *
+ * @param {Number} dataid The id of the user's vocabulary record.
+ */
 function deleteVocab(dataid) {
     notification.deleteCancelPromise(
         getString('confirm', 'core'),

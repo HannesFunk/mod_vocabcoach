@@ -1,4 +1,12 @@
 /**
+ * Small DOM helpers shared by the mod_vocabcoach modules.
+ *
+ * @module     mod_vocabcoach/general
+ * @copyright  2023 J. Funk <johannesfunk@outlook.com>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
  * Shows or hides an array of elements
  * @method showElements
  * @param {array} elements An array of either strings or DOM elements.
@@ -27,7 +35,7 @@ export function showElements (elements, showEl) {
 
 /**
  * Shows or hides an element
- * @method showElements
+ * @method showElement
  * @param {String | HTMLElement} element An element or its ID.
  * @param {boolean} showEl Whether to show the element or not.
  */

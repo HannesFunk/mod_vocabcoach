@@ -24,51 +24,20 @@
     }
 }}
 
+
+
+
 <h2>{{#str}} check, mod_vocabcoach {{/str}}</h2>
 <h4>{{content}}</h4>
-<div id="check-container" data-vocab-data-id="-1">
-    <div id="check-header">
 
-        {{> mod_vocabcoach/checkmode_settings}}
-
-        <p class="instruction-front-back-random mt-2">{{#str}} check_instructions, mod_vocabcoach {{/str}}</p>
-        <p class="check-number-remaining"></p>
-        <div class="clearfix"></div>
-
-    </div>
-
-    <div id="progress-bar" class="mb-2">
-    </div>
-
-    <div id="check-type-area" class="hidden">
-        {{> mod_vocabcoach/check-edit-button}}
-        <label for="input-vocab-front"></label>
-        <input type="text" name="input-vocab-front" id="input-vocab-front" autocapitalize="off" autocomplete="none" spellcheck="false" data-action="typed-vocab-check" />
-        <div>
-            <input type="button" class="btn btn-primary" value="{{#str}} check_button_verify, mod_vocabcoach {{/str}}" id="button-typed-vocab-check" data-action="mod-vocabcoach/typed-vocab-check" />
-            <input type="button" class="btn btn-secondary" value="{{#str}} check_button_reveal, mod_vocabcoach {{/str}}" id="button-typed-vocab-reveal" data-action="mod-vocabcoach/typed-vocab-reveal" />
-            <input type="button" class="btn btn-secondary hidden" id="button-typed-vocab-next" value="{{#str}} check_button_unknown, mod_vocabcoach {{/str}}" data-action="mod-vocabcoach/typed-vocab-unknown" />
-            <input type="button" class="btn btn-secondary hidden" id="button-typed-vocab-override" value="{{#str}} check_button_override, mod_vocabcoach {{/str}}" data-action="mod-vocabcoach/typed-vocab-override" />
-        </div>
-    </div>
-
-    <div id="check-area">
-        {{> mod_vocabcoach/check-edit-button}}
-        <div id="check-box-front" class="check-box d-flex" data-action="mod_vocabcoach/reveal-card">
-            <div id="check-front" class="vc-check-label">{{#str}} loading, mod_vocabcoach {{/str}}</div>
-        </div>
-        <div id="check-box-back" class="check-box d-flex" data-action="mod_vocabcoach/reveal-card">
-            <div id="check-back" class="vc-check-label">{{#str}} loading, mod_vocabcoach {{/str}}</div>
-        </div>
-
-        <div class="check-summary mb-3 hidden" data-action="mod_vocabcoach/end-check">
-        </div>
-    </div>
-</div>
-
-<div id="check-buttons">
-    <input type="button" id="check-button-no" class="btn btn-secondary" data-action="mod_vocabcoach/update-vocab" data-vocabcoach-known="false" value="{{#str}} check_button_no, mod_vocabcoach {{/str}}" />
-    <input type="button" id="check-button-yes" class="btn btn-primary" data-action="mod_vocabcoach/update-vocab" data-vocabcoach-known="true" value="{{#str}} check_button_yes, mod_vocabcoach {{/str}}" />
-</div>
-
-
+{{#react}}
+    {
+        "component": "@moodle/lms/mod_vocabcoach/check",
+        "props": {
+            "cmid": {{cmid}},
+            "items" : {{{itemsjson}}},
+            "currentmode": "{{mode}}",
+            "modelabels": {{{modelabelsjson}}}
+        }
+    }
+{{/react}}

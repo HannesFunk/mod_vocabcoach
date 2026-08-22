@@ -1,3 +1,11 @@
+/**
+ * List overview page: shows the vocabulary lists and their actions.
+ *
+ * @module     mod_vocabcoach/lists
+ * @copyright  2023 J. Funk <johannesfunk@outlook.com>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 import {addListToUserAJAX, deleteListAJAX, distributeListAJAX, getListsAJAX} from "./repository";
 import Template from 'core/templates';
 import notification, {saveCancel} from 'core/notification';
@@ -7,6 +15,11 @@ import {getString, getStrings} from 'core/str';
 let cmid;
 let userId;
 
+/**
+ * Adds a list to the current user's box and notifies them about the result.
+ *
+ * @param {Number} listid The id of the list to add.
+ */
 function addListToUser(listid) {
     addListToUserAJAX(listid, userId, cmid)
         .then(() => getString('lists_added_to_box', 'mod_vocabcoach'))
@@ -14,6 +27,13 @@ function addListToUser(listid) {
         .catch((error) => Log.debug(error));
 }
 
+/**
+ * Sets up the list overview page.
+ *
+ * @param {String} moduleId The course module id.
+ * @param {String} userIdString The id of the current user.
+ * @param {String} capabilitiesInfo JSON encoded object with the canEdit and canDistribute flags.
+ */
 export function init(moduleId, userIdString, capabilitiesInfo) {
     cmid = parseInt(moduleId);
     userId = parseInt(userIdString);
@@ -72,6 +92,12 @@ const Selectors = {
     }
 };
 
+/**
+ * Fetches the lists and re-renders the page content with them.
+ *
+ * @param {Object} capInfo Object with the canEdit and canDistribute flags of the current user.
+ * @param {Boolean} [onlyOwnLists=false] Whether to show only the lists created by the current user.
+ */
 export function printLists(capInfo, onlyOwnLists = false) {
 
     getListsAJAX(cmid, userId, onlyOwnLists).then(
@@ -89,6 +115,11 @@ export function printLists(capInfo, onlyOwnLists = false) {
     });
 }
 
+/**
+ * Asks for confirmation and then deletes a list, removing its row from the table.
+ *
+ * @param {Number} listid The id of the list to delete.
+ */
 function deleteList(listid) {
     getStrings([
         {key: 'confirm', component: 'core'},
@@ -107,6 +138,12 @@ function deleteList(listid) {
     }).catch((error) => Log.debug(error));
 }
 
+/**
+ * Asks for confirmation and then adds a list to the boxes of all participants.
+ *
+ * @param {Number} listid The id of the list to distribute.
+ * @param {Number} vocabcoachId The course module id of the activity.
+ */
 function distributeList(listid, vocabcoachId) {
     getStrings([
         {key: 'confirm', component: 'core'},

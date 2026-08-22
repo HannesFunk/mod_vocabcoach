@@ -148,7 +148,6 @@ class vocab_api extends external_api {
         } catch (\dml_exception $e) {
             return [$e->getMessage()];
         }
-
         return array_values($output);
     }
 
@@ -197,7 +196,7 @@ class vocab_api extends external_api {
 
         global $DB;
 
-        $query = "SELECT vocab.ID AS dataid, front, back FROM {vocabcoach_vocab} vocab
+        $query = "SELECT vocab.ID AS id, front, back FROM {vocabcoach_vocab} vocab
             INNER JOIN {vocabcoach_list_contains} list_contains ON  list_contains.vocabID = vocab.ID
             WHERE list_contains.listID = $listid;";
         try {
@@ -215,7 +214,7 @@ class vocab_api extends external_api {
      */
     public static function remove_vocab_from_user_parameters(): external_function_parameters {
         return new external_function_parameters([
-                'dataid' => new external_value(PARAM_INT),
+                'id' => new external_value(PARAM_INT),
         ]);
     }
 
@@ -240,7 +239,7 @@ class vocab_api extends external_api {
     public static function remove_vocab_from_user(int $dataid): array {
         self::validate_parameters(
             self::remove_vocab_from_user_parameters(),
-            ['dataid' => $dataid]
+            ['id' => $dataid]
         );
 
         global $DB;

@@ -1,0 +1,14 @@
+{
+  "check": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "CheckCard": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "CheckSettings": {
+    "eject": "risky",
+    "wrap": "risky"
+  }
+}

@@ -1,5 +1,13 @@
 // noinspection SpellCheckingInspection
 
+/**
+ * Add/edit vocabulary form: clones vocabulary rows and prefills them from a list.
+ *
+ * @module     mod_vocabcoach/add_vocab
+ * @copyright  2023 J. Funk <johannesfunk@outlook.com>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 import {getListArrayAJAX} from "./repository";
 import {showElement} from "./general";
 

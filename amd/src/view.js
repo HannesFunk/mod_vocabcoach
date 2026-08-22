@@ -1,3 +1,11 @@
+/**
+ * Activity view page: box navigation, exports and user preferences.
+ *
+ * @module     mod_vocabcoach/view
+ * @copyright  2023 J. Funk <johannesfunk@outlook.com>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 import notification from 'core/notification';
 import {getString} from 'core/str';
 import {getClassTotalAJAX, setCheckModeAJAX, setEmailNotificationsAJAX} from "./repository";
@@ -20,6 +28,16 @@ const Selectors = {
     }
 };
 
+/**
+ * Sets up the activity view page.
+ *
+ * Registers the delegated click handler for the boxes and the dropdown actions, the
+ * live update poller for the class total, and the user preference listeners.
+ *
+ * @param {Number} cmid The course module id.
+ * @param {Number} userid The id of the current user.
+ * @param {Number} courseid The id of the course the activity belongs to.
+ */
 export function init(cmid, userid, courseid) {
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.forceCheck)) {
@@ -125,6 +143,13 @@ function notifyInfo(key, param = null) {
     }).catch((err) => notification.exception(err));
 }
 
+/**
+ * Opens a check for the given box, or explains why it cannot be started.
+ *
+ * @param {Number} cmid The course module id.
+ * @param {HTMLElement} box The box element that was clicked, carrying the data-* counts.
+ * @param {Boolean} [force=false] Whether to check the whole box instead of the due items only.
+ */
 function checkBox(cmid, box, force = false) {
     if (parseInt(box.getAttribute('data-total')) === 0) {
         notifyInfo('view_box_empty');

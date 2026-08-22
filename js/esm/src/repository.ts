@@ -20,9 +20,10 @@ export type UpdateVocabResponse = {
 };
 
 export const updateVocab = (
-    dataid: number,
+    id: number,
+    cmid: number,
     known: boolean
 ): Promise<UpdateVocabResponse> => fetchOne<UpdateVocabResponse>({
     methodname: 'mod_vocabcoach_update_vocab',
-    args: {dataid, known}
+    args: {id, cmid, known}
 });

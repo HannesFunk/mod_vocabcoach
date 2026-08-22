@@ -68,7 +68,7 @@ export default function Check({items, cmid, modelabels, currentmode}: CheckProps
 
     async function handleAnswer(known: boolean) {
         try {
-            await updateVocab(current.id, known);
+            await updateVocab(current.id, cmid, known);
             setVocabs(prev => prev.slice(1));
         } catch (err) {
             const Notification = await requireAsync<NotificationModule>('core/notification');

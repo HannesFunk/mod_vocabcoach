@@ -80,7 +80,7 @@ function Check({ items, cmid, modelabels, currentmode }) {
   }, this);
   async function handleAnswer(known) {
     try {
-      await updateVocab(current.id, known);
+      await updateVocab(current.id, cmid, known);
       setVocabs((prev) => prev.slice(1));
     } catch (err) {
       const Notification = await requireAsync("core/notification");

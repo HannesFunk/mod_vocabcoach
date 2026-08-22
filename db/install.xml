@@ -60,6 +60,9 @@
         <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
         <KEY NAME="fk-user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="cmid-userid-vocabid" UNIQUE="true" FIELDS="cmid, userid, vocabid"/>
+      </INDEXES>
     </TABLE>
 
 

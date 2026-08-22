@@ -66,7 +66,7 @@ if ($source === 'user') {
     $vocabapi = new \mod_vocabcoach\external\vocab_api();
     $vocabarray = vocab_api::clean_returnvalue(
         vocab_api::get_user_vocabs_returns(),
-        $vocabapi->get_user_vocabs($USER->id, $cmid, $stage, $force)
+        $vocabapi->get_user_vocabs($cmid, $stage, $force)
     );
     $checkcontext['itemsjson'] = json_encode($vocabarray);
 } else if ($source === 'list') {

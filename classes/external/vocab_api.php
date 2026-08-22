@@ -21,6 +21,8 @@ global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 require_once(__DIR__ . '/../vocabhelper.php');
 
+use core\exception\invalid_parameter_exception;
+use core\exception\required_capability_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -45,7 +47,8 @@ class vocab_api extends external_api {
      */
     public static function update_vocab_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'dataid' => new external_value(PARAM_INT),
+            'id' => new external_value(PARAM_INT),
+            'cmid' => new external_value(PARAM_INT),
             'known' => new external_value(PARAM_BOOL),
         ]);
     }
@@ -53,36 +56,36 @@ class vocab_api extends external_api {
     /**
      * Returns description of update_vocab() result value.
      *
-     * @return external_single_structure
+     * @return external_value
      */
-    public static function update_vocab_returns(): external_single_structure {
-        return new external_single_structure([
-            'success' => new external_value(PARAM_BOOL, 'true.'),
-        ]);
+    public static function update_vocab_returns(): external_value {
+        return new external_value(PARAM_BOOL, 'True.');
     }
 
     /**
      * Updates a given vocab item. Called after a check.
-     * @param int $dataid ID of the vocabdata.
+     * @param int $id ID of the vocab item.
+     * @param int $cmid Course module id
      * @param bool $known
      * @return bool
-     * @throws \invalid_parameter_exception
-     * @throws \moodle_exception
+     * @throws \moodle_exception|invalid_parameter_exception|required_capability_exception
      */
-    public static function update_vocab(int $dataid, bool $known): bool {
+    public static function update_vocab(int $id, int $cmid, bool $known): bool {
         global $DB, $USER;
 
-        ['dataid' => $dataid, 'known' => $known] = self::validate_parameters(
+        ['id' => $id, 'known' => $known] = self::validate_parameters(
                 self::update_vocab_parameters(),
-                ['dataid' => $dataid, 'known' => $known]
+                ['id' => $id, 'known' => $known, 'cmid' => $cmid]
         );
+        $context = \core\context\module::instance($cmid);
+        self::validate_context($context);
+        require_capability('mod/vocabcoach:view', $context);
 
-        $record = $DB->get_record('vocabcoach_vocabdata', ['id' => $dataid], '*', MUST_EXIST);
-        self::validate_context($record->cmid);
-
-        if ((int) $record->userid !== (int) $USER->id) {
-            throw new \moodle_exception('accessdenied', 'admin');
-        }
+        $record = $DB->get_record(
+            'vocabcoach_vocabdata',
+            ['vocabid' => $id, 'userid' => $USER->id, 'cmid' => $cmid],
+            '*',
+            MUST_EXIST);
 
         $record->stage = $known ? min($record->stage + 1, 5) : 1;
         $record->lastchecked = time();
@@ -97,7 +100,6 @@ class vocab_api extends external_api {
      */
     public static function get_user_vocabs_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'userid' => new external_value(PARAM_INT, 'userid', VALUE_REQUIRED),
             'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED),
             'stage' => new external_value(PARAM_INT, 'stage', VALUE_REQUIRED),
             'force' => new external_value(PARAM_BOOL, 'force', VALUE_REQUIRED),
@@ -110,44 +112,54 @@ class vocab_api extends external_api {
      * @return external_multiple_structure
      */
     public static function get_user_vocabs_returns(): external_multiple_structure {
-        return self::vocab_returns();
+        return new external_multiple_structure(
+            new external_single_structure([
+                'id' => new external_value(PARAM_INT),
+                'front' => new external_value(PARAM_TEXT),
+                'back' => new external_value(PARAM_TEXT),
+            ])
+        );
     }
 
     /**
      * Returns all vocab items in a certain stage
      *
-     * @param int $userid
      * @param int $cmid
      * @param int $stage
      * @param bool $force
      * @return array
-     * @throws \invalid_parameter_exception|\dml_exception
+     * @throws \dml_exception|required_capability_exception
      */
-    public static function get_user_vocabs(int $userid, int $cmid, int $stage, bool $force): array {
-        global $DB;
-        self::validate_parameters(
+    public static function get_user_vocabs(int $cmid, int $stage, bool $force): array {
+        global $DB, $USER;
+        ['cmid' => $cmid, 'stage' => $stage, 'force' => $force] = self::validate_parameters(
             self::get_user_vocabs_parameters(),
-            ['userid' => $userid, 'cmid' => $cmid, 'stage' => $stage, 'force' => $force]
+            ['cmid' => $cmid, 'stage' => $stage, 'force' => $force]
         );
+        $context = \core\context\module::instance($cmid);
+        self::validate_context($context);
+        require_capability('mod/vocabcoach:view', $context);
 
-        $vocabhelper = new vocabhelper($cmid);
-        $days = $vocabhelper->boxtimes[$stage];
-        $mintimestamp = $vocabhelper->old_timestamp($days);
 
-        $query = "SELECT vd.ID AS dataid, front, back
-                FROM {vocabcoach_vocab} vocab
-                JOIN {vocabcoach_vocabdata} vd ON vocab.ID = vd.vocabID
-               WHERE vd.userID= ? AND vd.stage = ? AND vd.cmid = ?";
+        $query = "SELECT vocab.id AS id, front, back FROM {vocabcoach_vocab} vocab
+                   JOIN {vocabcoach_vocabdata} vd ON vocab.id = vd.vocabid
+                   WHERE vd.userid= :userid AND vd.stage = :stage AND vd.cmid = :cmid";
+        $params = ['userid' => $USER->id, 'stage' => $stage, 'cmid' => $cmid];
+
         if (!$force) {
-            $query .= " AND vd.lastchecked < ?;";
-        } else {
-            $query .= ';';
+            $query .= " AND vd.lastchecked < :lastchecked";
+
+            $vocabhelper = new vocabhelper($cmid);
+            if (!array_key_exists($stage, $vocabhelper->boxtimes)) {
+                throw new \invalid_parameter_exception('Invalid stage: ' . $stage);
+            }
+            $days = $vocabhelper->boxtimes[$stage];
+            $mintimestamp = $vocabhelper->old_timestamp($days);
+            $params['lastchecked'] = $mintimestamp;
         }
-        try {
-            $output = $DB->get_records_sql($query, [$userid, $stage, $cmid, $mintimestamp]);
-        } catch (\dml_exception $e) {
-            return [$e->getMessage()];
-        }
+
+        $output = $DB->get_records_sql($query, $params);
+
         return array_values($output);
     }
 

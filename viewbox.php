@@ -23,15 +23,11 @@
  */
 
 require(__DIR__ . '/../../config.php');
-global $PAGE, $OUTPUT, $DB, $USER;
-require_once(__DIR__ . '/lib.php');
-require_once(__DIR__ . '/classes/external/vocab_api.php');
-require_once(__DIR__ . '/classes/vocab_manager.php');
 
-$id = required_param('id', PARAM_INT);
+$cmid = required_param('id', PARAM_INT);
 $stage = required_param('stage', PARAM_INT);
 
-$cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+$cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
@@ -39,7 +35,7 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 $PAGE->set_context($modulecontext);
-$PAGE->set_url('/mod/vocabcoach/viewbox.php', ['id' => $id, 'stage' => $stage]);
+$PAGE->set_url('/mod/vocabcoach/viewbox.php', ['id' => $cmid, 'stage' => $stage]);
 $PAGE->set_title(get_string('list_pagetitle', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('list_pagetitle', 'mod_vocabcoach'));
 $PAGE->navbar->add(get_string('view_box_title', 'mod_vocabcoach', $stage));
@@ -47,7 +43,7 @@ $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->js_call_amd('mod_vocabcoach/viewbox', 'init');
 
 $checkapi = new \mod_vocabcoach\external\vocab_api();
-$vocabarray = $checkapi->get_user_vocabs($USER->id, $id, $stage, true);
+$vocabarray = $checkapi->get_user_vocabs($cmid, $stage, true);
 
 $templatecontext = [
     'fronttitle' => $moduleinstance->desc_front,

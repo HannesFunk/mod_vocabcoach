@@ -54,7 +54,9 @@ function vocabcoach_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
     $moduleinstance->timecreated = time();
-    $moduleinstance = normalize_checkboxes($moduleinstance);
+    if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
+        $moduleinstance->instructions = $moduleinstance->instructions['text'];
+    }
     return $DB->insert_record('vocabcoach', $moduleinstance);
 }
 
@@ -96,22 +98,4 @@ function vocabcoach_delete_instance(int $id): bool {
     $DB->delete_records('vocabcoach', ['id' => $id]);
 
     return true;
-}
-
-/**
- * Normalize checkbox ouput - can probably be removed with advcheckboxes
- *d
- * @param object $moduleinstance An object from the form in mod_form.php.
- * @return object The updated instance.
- */
-function normalize_checkboxes($moduleinstance) {
-    $moduleinstance->move_undue    = !empty($moduleinstance->move_undue) ? 1 : 0;
-    $moduleinstance->notifications_enabled = !empty($moduleinstance->notifications_enabled) ? 1 : 0;
-    $moduleinstance->notifications_optout = !empty($moduleinstance->notifications_optout) ? 1 : 0;
-
-    if (isset($moduleinstance->instructions) && is_array($moduleinstance->instructions)) {
-        $moduleinstance->instructions = $moduleinstance->instructions['text'];
-    }
-
-    return $moduleinstance;
 }

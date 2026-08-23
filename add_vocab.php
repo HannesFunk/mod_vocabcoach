@@ -24,22 +24,17 @@
 
 use core\notification;
 use mod_vocabcoach\vocab_manager;
+use mod_vocabcoach\form\add_vocab_form;
 
 require(__DIR__ . '/../../config.php');
-global $PAGE, $OUTPUT, $DB, $USER, $CFG;
 
-require_once(__DIR__ . '/lib.php');
-require_once(__DIR__ . '/classes/forms/add_vocab_form.php');
-require_once(__DIR__ . '/classes/vocab_manager.php');
-
-// Course module id.
-$id = required_param('id', PARAM_INT);
+$cmid = required_param('id', PARAM_INT);
 $mode = required_param('mode', PARAM_TEXT);
 if ($mode === 'edit') {
     $editlistid = required_param('listid', PARAM_INT);
 }
 
-$cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+$cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
@@ -70,7 +65,7 @@ $instanceinfo = $DB->get_record('vocabcoach', ['id' => $cm->instance]);
 
 $formparameters = [
         'mode' => $mode,
-        'id' => $id,
+        'id' => $cmid,
         'year' => $moduleinstance->year,
         'desc_front' => $instanceinfo->desc_front,
         'desc_back' => $instanceinfo->desc_back,
@@ -119,7 +114,7 @@ if ($mform->is_cancelled()) {
     if ($mode === 'user') {
         foreach ($vocabarray as $vocab) {
             $vocabid = $vocabmanager->insert_vocab($vocab);
-            if (!$vocabmanager->add_vocab_to_user($vocabid, $id)) {
+            if (!$vocabmanager->add_vocab_to_user($vocabid, $cmid)) {
                 notification::add(get_string('error_add_vocab_to_user', 'mod_vocabcoach'), notification::ERROR);
             }
         }
@@ -166,7 +161,7 @@ if ($mform->is_cancelled()) {
 
     // Step 3: add list to user (if necessary).
     if (isset($formdata->add_to_user_database) && $formdata->add_to_user_database == 1) {
-        if (!$vocabmanager->add_list_to_user_database($listid, $id)) {
+        if (!$vocabmanager->add_list_to_user_database($listid, $cmid)) {
             notification::add(get_string('error_add_vocab_to_user', 'mod_vocabcoach'), notification::ERROR);
             $redirect = false;
         }
@@ -175,7 +170,7 @@ if ($mform->is_cancelled()) {
     // Step 4: If selected, distribute the list to all users.
     if (isset($formdata->list_distribute_now) && $formdata->list_distribute_now == 1) {
         $listsapi = new \mod_vocabcoach\external\lists_api();
-        $listsapi->distribute_list($listid, $id);
+        $listsapi->distribute_list($listid, $cmid);
     }
 
     if ($redirect) {

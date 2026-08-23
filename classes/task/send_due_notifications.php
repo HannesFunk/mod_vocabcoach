@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_vocabcoach\task;
-use mod_vocabcoach\vocabhelper;
 
 /**
  * Scheduled task: send notifications about due vocab items to students.

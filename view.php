@@ -23,8 +23,6 @@
  */
 
 require(__DIR__ . '/../../config.php');
-global $PAGE, $OUTPUT, $DB, $USER;
-require_once(__DIR__ . '/lib.php');
 
 use mod_vocabcoach\box_manager;
 use mod_vocabcoach\streak_manager;
@@ -62,7 +60,7 @@ $boxdata = $boxmanager->get_box_details();
 
 $sm = new streak_manager($USER->id, $cm->id);
 $sm->update('login');
-$sm->update('checkall', $boxmanager->get_total_due() == 0);
+$sm->update('checkall');
 $streakinfo = $sm->get_streak_info();
 
 $userpreferences = new \mod_vocabcoach\user_preferences($cm->id, $USER->id);

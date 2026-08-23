@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+namespace mod_vocabcoach\form;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
@@ -26,7 +28,7 @@ require_once("$CFG->libdir/formslib.php");
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author    Johannes Funk
  */
-class add_vocab_form extends moodleform {
+class add_vocab_form extends \moodleform {
     /**
      * Defines the form.
      * @return void

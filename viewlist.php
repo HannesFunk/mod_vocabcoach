@@ -26,7 +26,7 @@ require(__DIR__ . '/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__ . '/lib.php');
 require_once(__DIR__ . '/classes/external/vocab_api.php');
-require_once(__DIR__ . '/classes/forms/view_list_form.php');
+require_once(__DIR__ . '/classes/form/view_list_form.php');
 require_once(__DIR__ . '/classes/vocab_manager.php');
 
 if (!function_exists('str_contains')) {

@@ -23,12 +23,10 @@
  */
 
 require(__DIR__ . '/../../config.php');
-global $PAGE, $OUTPUT, $DB, $USER;
-require_once(__DIR__ . '/lib.php');
 
-$id = required_param('id', PARAM_INT);
+$cmid = required_param('id', PARAM_INT);
 
-$cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
+$cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
@@ -43,7 +41,7 @@ $info = [
 ];
 
 $PAGE->set_context($modulecontext);
-$PAGE->set_url('/mod/vocabcoach/lists.php', ['id' => $id]);
+$PAGE->set_url('/mod/vocabcoach/lists.php', ['id' => $cmid]);
 $PAGE->set_title(get_string('lists_pagetitle', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('lists_pagetitle', 'mod_vocabcoach'));
 $PAGE->navbar->add(get_string('lists', 'mod_vocabcoach'));
@@ -51,7 +49,7 @@ $PAGE->navbar->add(get_string('lists', 'mod_vocabcoach'));
 $PAGE->requires->js_call_amd(
     'mod_vocabcoach/lists',
     'init',
-    [$id, $USER->id, json_encode($info)]
+    [$cmid, $USER->id, json_encode($info)]
 );
 $PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');

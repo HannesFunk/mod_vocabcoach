@@ -25,8 +25,6 @@
 use mod_vocabcoach\external\vocab_api;
 
 require(__DIR__ . '/../../config.php');
-global $PAGE, $OUTPUT, $DB, $USER;
-require_once(__DIR__ . '/lib.php');
 
 $cmid = required_param('id', PARAM_INT);
 

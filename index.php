@@ -23,9 +23,6 @@
  */
 
 require(__DIR__ . '/../../config.php');
-global $DB, $PAGE, $OUTPUT;
-
-require_once(__DIR__ . '/lib.php');
 
 $id = required_param('id', PARAM_INT);
 

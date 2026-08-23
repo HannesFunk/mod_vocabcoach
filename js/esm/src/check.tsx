@@ -35,7 +35,9 @@ export type CheckProps = {
     items: Vocab[],
     cmid: number,
     modelabels: Record<Mode, string>,
-    currentmode: Mode
+    currentmode: Mode,
+    buttonLabels: Record<'yes' | 'no', string>,
+    fromList: boolean
 }
 
 type NotificationModule = {
@@ -43,7 +45,7 @@ type NotificationModule = {
     exception: (err: MoodleAjaxError | Error) => Promise<void>;
 }
 
-export default function Check({items, cmid, modelabels, currentmode}: CheckProps) {
+export default function Check({items, cmid, modelabels, currentmode, buttonLabels, fromList}: CheckProps) {
     const [vocabs, setVocabs] = useState(items);
     const [mode, setMode] = useState(currentmode);
     const current = vocabs[0];
@@ -62,14 +64,22 @@ export default function Check({items, cmid, modelabels, currentmode}: CheckProps
             </div>
             <CheckCard
                 key={`${current.id}-${mode}`}
-                vocab={current} mode={mode} onAnswer={handleAnswer} />
+                vocab={current}
+                mode={mode}
+                buttonLabels={buttonLabels}
+                onAnswer={handleAnswer} />
         </div>
     );
 
     async function handleAnswer(known: boolean) {
+        setVocabs(prev => prev.slice(1));
+
+        if (fromList) {
+            return;
+        }
+
         try {
             await updateVocab(current.id, cmid, known);
-            setVocabs(prev => prev.slice(1));
         } catch (err) {
             const Notification = await requireAsync<NotificationModule>('core/notification');
             if (isMoodleAjaxError(err)) {

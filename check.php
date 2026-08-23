@@ -27,7 +27,6 @@ use mod_vocabcoach\external\vocab_api;
 require(__DIR__ . '/../../config.php');
 global $PAGE, $OUTPUT, $DB, $USER;
 require_once(__DIR__ . '/lib.php');
-require_once(__DIR__ . '/classes/vocab_manager.php');
 
 $cmid = required_param('id', PARAM_INT);
 
@@ -46,43 +45,45 @@ $PAGE->navbar->add(get_string('check', 'mod_vocabcoach'));
 
 $PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
-$source = optional_param('source', 'user', PARAM_TEXT);
 $force = optional_param('force', false, PARAM_BOOL);
 
 $userprefs = new \mod_vocabcoach\user_preferences($cmid, $USER->id);
-$checkcontext = $userprefs->get_template_context();
 
 $checkcontext = [
-    'userid' => $USER->id,
     'force' => $force,
     'cmid' => $cmid,
-    'source' => $source,
-    'mode'  => 'front',
+    'mode' => $userprefs->get_mode(),
 ];
-if ($source === 'user') {
+
+$listid = optional_param('listid', null, PARAM_INT);
+
+if ($listid) {
+    $vocablist = new \mod_vocabcoach\vocablist($listid, $cmid);
+    $checkcontext['subheadline']  = $vocablist->get_title();
+    $vocabarray = $vocablist->get_vocabs();
+    $checkcontext['fromlist'] = true;
+} else {
     $stage = required_param('stage', PARAM_INT);
-    $checkcontext['subheadline'] = get_string('box', 'mod_vocabcoach') . " " . $stage;
+    $checkcontext['subheadline']  = get_string('box', 'mod_vocabcoach') . " " . $stage;
 
     $vocabapi = new \mod_vocabcoach\external\vocab_api();
     $vocabarray = vocab_api::clean_returnvalue(
         vocab_api::get_user_vocabs_returns(),
         $vocabapi->get_user_vocabs($cmid, $stage, $force)
     );
-    $checkcontext['itemsjson'] = json_encode($vocabarray);
-} else if ($source === 'list') {
-    $jsdata['listid'] = required_param('listid', PARAM_INT);
-    $listrecord = $DB->get_record('vocabcoach_lists', ['id' => $jsdata['listid']], 'title', MUST_EXIST);
-    $subheadline = $listrecord->title;
-} else {
-    throw new \invalid_parameter_exception();
+    $checkcontext['fromlist'] = false;
 }
 
-
+$checkcontext['itemsjson'] = json_encode($vocabarray);
 $checkcontext['modelabelsjson'] = json_encode([
     'front' => get_string('checkmode_front', 'mod_vocabcoach'),
     'back' => get_string('checkmode_back', 'mod_vocabcoach'),
     'random' => get_string('checkmode_random', 'mod_vocabcoach'),
     'type' => get_string('checkmode_type', 'mod_vocabcoach'),
+]);
+$checkcontext['buttonlabelsjson'] = json_encode([
+    'no' => get_string('check_button_no', 'mod_vocabcoach'),
+    'yes' => get_string('check_button_yes', 'mod_vocabcoach'),
 ]);
 
 echo $OUTPUT->header();

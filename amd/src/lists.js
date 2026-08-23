@@ -44,7 +44,8 @@ export function init(moduleId, userIdString, capabilitiesInfo) {
         if (e.target.closest(Selectors.actions.deleteList)) {
             deleteList(e.target.getAttribute('data-list-id'));
         } else if (e.target.closest(Selectors.actions.checkList)) {
-            location.href = 'check.php?id=' + cmid + '&source=list&listid=' + e.target.getAttribute('data-list-id');
+            const listId = e.target.getAttribute('data-list-id');
+            location.href = 'check.php?id=' + cmid + '&listid=' + listId;
         } else if (e.target.closest(Selectors.actions.showCsv)) {
             const menuItem = e.target.closest(Selectors.actions.showCsv);
             window.open('exports/csv.php?mode=list&listid=' + menuItem.getAttribute('data-list-id'), '_blank').focus();

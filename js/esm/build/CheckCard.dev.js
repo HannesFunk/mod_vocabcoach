@@ -9,8 +9,7 @@ import { Fragment, jsxDEV } from "react/jsx-dev-runtime";
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import { useState } from "react";
-import String from "@moodle/lms/core/String";
-function CheckCard({ vocab, mode, onAnswer }) {
+function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
   const [revealed, setRevealed] = useState(false);
   const [concealed] = useState(
     () => {
@@ -42,7 +41,7 @@ function CheckCard({ vocab, mode, onAnswer }) {
             false,
             {
               fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-              lineNumber: 56,
+              lineNumber: 57,
               columnNumber: 21
             },
             this
@@ -52,7 +51,7 @@ function CheckCard({ vocab, mode, onAnswer }) {
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 53,
+          lineNumber: 54,
           columnNumber: 17
         },
         this
@@ -74,7 +73,7 @@ function CheckCard({ vocab, mode, onAnswer }) {
             false,
             {
               fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-              lineNumber: 65,
+              lineNumber: 66,
               columnNumber: 21
             },
             this
@@ -84,14 +83,14 @@ function CheckCard({ vocab, mode, onAnswer }) {
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 61,
+          lineNumber: 62,
           columnNumber: 17
         },
         this
       )
     ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-      lineNumber: 52,
+      lineNumber: 53,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { id: "check-buttons", children: [
@@ -101,17 +100,13 @@ function CheckCard({ vocab, mode, onAnswer }) {
           id: "check-button-no",
           className: "btn btn-secondary",
           onClick: () => onAnswer(false),
-          children: /* @__PURE__ */ jsxDEV(String, { identifier: "check_button_no", component: "mod_vocabcoach" }, void 0, false, {
-            fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-            lineNumber: 76,
-            columnNumber: 17
-          }, this)
+          children: buttonLabels.no
         },
         void 0,
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 73,
+          lineNumber: 74,
           columnNumber: 13
         },
         this
@@ -122,29 +117,25 @@ function CheckCard({ vocab, mode, onAnswer }) {
           id: "check-button-no",
           className: "btn btn-secondary",
           onClick: () => onAnswer(true),
-          children: /* @__PURE__ */ jsxDEV(String, { identifier: "check_button_yes", component: "mod_vocabcoach" }, void 0, false, {
-            fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-            lineNumber: 81,
-            columnNumber: 17
-          }, this)
+          children: buttonLabels.yes
         },
         void 0,
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 78,
+          lineNumber: 79,
           columnNumber: 13
         },
         this
       )
     ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-      lineNumber: 72,
+      lineNumber: 73,
       columnNumber: 9
     }, this)
   ] }, void 0, true, {
     fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-    lineNumber: 51,
+    lineNumber: 52,
     columnNumber: 9
   }, this);
 }

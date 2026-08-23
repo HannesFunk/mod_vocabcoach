@@ -29,10 +29,11 @@ import String from '@moodle/lms/core/String';
 type CheckCardProps = {
     vocab: Vocab,
     mode: Mode,
-    onAnswer: (known: boolean) => void
+    onAnswer: (known: boolean) => void,
+    buttonLabels: Record<'yes' | 'no', string>
 };
 
-export default function CheckCard({vocab, mode, onAnswer}: CheckCardProps) {
+export default function CheckCard({vocab, mode, onAnswer, buttonLabels}: CheckCardProps) {
     const [revealed, setRevealed] = useState(false);
 
     const [concealed] = useState<'front' | 'back'>(
@@ -73,12 +74,12 @@ export default function CheckCard({vocab, mode, onAnswer}: CheckCardProps) {
             <button id="check-button-no"
                 className="btn btn-secondary"
                 onClick={() => onAnswer(false)}>
-                <String identifier="check_button_no" component="mod_vocabcoach" />
+                {buttonLabels.no}
             </button>
             <button id="check-button-no"
                 className="btn btn-secondary"
                 onClick={() => onAnswer(true)}>
-                <String identifier="check_button_yes" component="mod_vocabcoach" />
+                {buttonLabels.yes}
             </button>
         </div>
     </>

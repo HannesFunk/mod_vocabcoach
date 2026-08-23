@@ -14,7 +14,7 @@ import CheckSettings from "./CheckSettings";
 import { updateVocab } from "./repository";
 import { requireAsync } from "@moodle/lms/core/amd";
 import { isMoodleAjaxError } from "@moodle/lms/core/ajax";
-function Check({ items, cmid, modelabels, currentmode }) {
+function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList }) {
   const [vocabs, setVocabs] = useState(items);
   const [mode, setMode] = useState(currentmode);
   const current = vocabs[0];
@@ -22,7 +22,7 @@ function Check({ items, cmid, modelabels, currentmode }) {
   if (total === 0) {
     return /* @__PURE__ */ jsxDEV("span", { children: "Done!" }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-      lineNumber: 53,
+      lineNumber: 55,
       columnNumber: 17
     }, this);
   }
@@ -39,7 +39,7 @@ function Check({ items, cmid, modelabels, currentmode }) {
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-          lineNumber: 59,
+          lineNumber: 61,
           columnNumber: 17
         },
         this
@@ -49,12 +49,12 @@ function Check({ items, cmid, modelabels, currentmode }) {
         " left"
       ] }, void 0, true, {
         fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-        lineNumber: 61,
+        lineNumber: 63,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-      lineNumber: 58,
+      lineNumber: 60,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV(
@@ -62,26 +62,30 @@ function Check({ items, cmid, modelabels, currentmode }) {
       {
         vocab: current,
         mode,
+        buttonLabels,
         onAnswer: handleAnswer
       },
       `${current.id}-${mode}`,
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-        lineNumber: 63,
+        lineNumber: 65,
         columnNumber: 13
       },
       this
     )
   ] }, void 0, true, {
     fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-    lineNumber: 57,
+    lineNumber: 59,
     columnNumber: 9
   }, this);
   async function handleAnswer(known) {
+    setVocabs((prev) => prev.slice(1));
+    if (fromList) {
+      return;
+    }
     try {
       await updateVocab(current.id, cmid, known);
-      setVocabs((prev) => prev.slice(1));
     } catch (err) {
       const Notification = await requireAsync("core/notification");
       if (isMoodleAjaxError(err)) {

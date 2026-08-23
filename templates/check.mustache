@@ -28,7 +28,7 @@
 
 
 <h2>{{#str}} check, mod_vocabcoach {{/str}}</h2>
-<h4>{{content}}</h4>
+<h4>{{subheadline}}</h4>
 
 {{#react}}
     {
@@ -37,7 +37,9 @@
             "cmid": {{cmid}},
             "items" : {{{itemsjson}}},
             "currentmode": "{{mode}}",
-            "modelabels": {{{modelabelsjson}}}
+            "modelabels": {{{modelabelsjson}}},
+            "buttonLabels": {{{buttonlabelsjson}}},
+            "fromlist": {{fromlist}}
         }
     }
 {{/react}}

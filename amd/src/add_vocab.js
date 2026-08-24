@@ -9,7 +9,7 @@
  */
 
 import {getListArrayAJAX} from "./repository";
-import {showElement} from "./general";
+import Templates from 'core/templates';
 
 let template = null;
 
@@ -19,7 +19,7 @@ let template = null;
  * @param {string} [listidString="-1"] - The ID of the vocabulary list as a string. Defaults to "-1".
  * If a valid list ID is provided, it fetches the vocabulary list and populates the rows.
  */
-export const init = (listidString = "-1") => {
+export const init = async (listidString = "-1") => {
 
     const vocabRow = document.querySelector('input[name="front[]"]').closest('[data-groupname="vocabrow"]');
     const rowDiv = vocabRow.querySelector('#id_vocabid_').parentNode;
@@ -42,17 +42,16 @@ export const init = (listidString = "-1") => {
 
     if (listid !== -1) {
         const row = document.getElementsByName('front[]')[0].closest('[data-groupname="vocabrow"]');
-        showElement(row, false);
+        row.classList.add('visually-hidden');
         const spinnerContainer = document.createElement('div');
-        spinnerContainer.classList.add('spinner-container');
-        const spinner = document.createElement('div');
-        spinner.classList.add('spinner');
-        spinnerContainer.appendChild(spinner);
+        spinnerContainer.classList.add('d-flex', 'justify-content-center', 'align-items-center', 'p-5');
+        const {html, js} = await Templates.renderForPromise('core/loading', {overlay: false});
+        Templates.replaceNodeContents(spinnerContainer, html, js);
         row.parentNode.insertBefore(spinnerContainer, row.nextSibling);
 
         getListArrayAJAX(listid).then(
             (array) => {
-                spinner.remove();
+                spinnerContainer.remove();
                 for (let i=0; i<array.length; i++) {
                     let vocab = array[i];
                     addRow(vocab.dataid, vocab.front, vocab.back);

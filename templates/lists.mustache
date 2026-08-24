@@ -59,7 +59,8 @@
 
 </table>
 {{#loading}}
-<div class="spinner-container">
-    <div class="spinner"></div>
-</div>
+    <div class="d-flex justify-content-center align-items-center p-5">
+        {{> core/loading }}
+        <span class="ms-2">{{#str}} loading, core {{/str}}</span>
+    </div>
 {{/loading}}

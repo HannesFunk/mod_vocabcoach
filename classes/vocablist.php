@@ -17,42 +17,31 @@
 namespace mod_vocabcoach;
 
 use core\exception\moodle_exception;
+use core\persistent;
 
-class vocablist {
-    private int $listid;
+class vocablist extends persistent {
+    const string TABLE = "vocabcoach_lists";
 
-    public function __construct(int $listid, int $cmid) {
-        global $DB;
-        $this->listid = $listid;
-
-        $list = $DB->get_record('vocabcoach_lists', ['id' => $this->listid], 'cmid', MUST_EXIST);
-        if ((int) $list->cmid !== $cmid) {
-            throw new moodle_exception("Querried list does not belong to this activity.");
-        }
-
-    }
-
-    public function get_vocabs(): array {
-        global $DB;
-        $query = "SELECT vocab.id AS id, front, back FROM {vocabcoach_vocab} vocab
-            JOIN {vocabcoach_list_contains} lc ON lc.vocabid = vocab.id 
-            WHERE lc.listid = :listid";
-        $params = ['listid' => $this->listid];
-
-        $result = $DB->get_records_sql($query, $params);
-        return array_map(
-            fn($item) => [
-                'id' => (int) $item->id,
-                'front' => $item->front,
-                'back' => $item->back,
+    protected static function define_properties() {
+        return [
+            'title' => [
+                'type' => PARAM_TEXT
             ],
-            array_values($result)
-        );
-    }
-
-    public function get_title(): string {
-        global $DB;
-        $list = $DB->get_record('vocabcoach_lists', ['id' => $this->listid], 'title', MUST_EXIST);
-        return $list->title;
+            'year' => [
+                'type' => PARAM_INT,
+            ],
+            'book' => [
+                'type' => PARAM_TEXT,
+            ],
+            'unit' => [
+                'type' => PARAM_TEXT,
+            ],
+            'createdby' => [
+                'type' => PARAM_INT,
+            ],
+            'cmid' => [
+                'type' => PARAM_INT,
+            ],
+        ];
     }
 }

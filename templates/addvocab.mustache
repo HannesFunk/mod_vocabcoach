@@ -25,23 +25,21 @@
 }}
 
 
+<h2>{{#str}} add_vocab, mod_vocabcoach {{/str}}</h2>
+<h4>{{#str}} instructions, mod_vocabcoach {{/str}}</h4>
+<p>{{{instructions}}}</p>
 
-
-<h2>{{#str}} check, mod_vocabcoach {{/str}}</h2>
-<h4>{{subheadline}}</h4>
 
 {{#react}}
-    {
-        "component": "@moodle/lms/mod_vocabcoach/check/Check",
-        "props": {
-            "cmid": {{cmid}},
-            "items" : {{{itemsjson}}},
-            "currentmode": "{{mode}}",
-            "modelabels": {{{modelabelsjson}}},
-            "buttonLabels": {{{buttonlabelsjson}}},
-            "fromlist": {{fromlist}}
-        }
+{
+    "component": "@moodle/lms/mod_vocabcoach/addvocab/AddVocab",
+    "props": {
+        "cmid": {{cmid}},
+        "vocabs" : {{{vocabsjson}}},
+        "listid": "{{listid}}",
+        "placeholders": {{{placeholdersjson}}},
     }
+}
     <div class="d-flex justify-content-center align-items-center p-5">
         {{> core/loading }}
         <span class="ms-2">{{#str}} loading, core {{/str}}</span>

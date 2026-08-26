@@ -14,10 +14,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import {MoodleAjaxError} from "@moodle/lms/core/ajax";
+
 export type Vocab = {
     id: number,
     front: string,
     back: string
+}
+
+export type VocabDraft = {
+    key: string,
+    front: string,
+    back: string
+}
+
+export type NotificationModule = {
+    addNotification: (n: {message: string, type?: string}) => Promise<void>;
+    exception: (err: MoodleAjaxError | Error) => Promise<void>;
 }
 
 

@@ -1,17 +1,10 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 import { jsxDEV } from "react/jsx-dev-runtime";
-/**
- * React component that administers the check page.
- *
- * @module     mod_vocabcoach/check
- * @copyright  2026 J. Funk, johannesfunk@outlook.com
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 import { useState } from "react";
 import CheckCard from "./CheckCard";
 import CheckSettings from "./CheckSettings";
-import { updateVocab } from "./repository";
+import { updateVocab } from "../repository";
 import { requireAsync } from "@moodle/lms/core/amd";
 import { isMoodleAjaxError } from "@moodle/lms/core/ajax";
 function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList }) {
@@ -21,8 +14,8 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
   let total = vocabs.length;
   if (total === 0) {
     return /* @__PURE__ */ jsxDEV("span", { children: "Done!" }, void 0, false, {
-      fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-      lineNumber: 55,
+      fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+      lineNumber: 56,
       columnNumber: 17
     }, this);
   }
@@ -38,8 +31,8 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
         void 0,
         false,
         {
-          fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-          lineNumber: 61,
+          fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+          lineNumber: 62,
           columnNumber: 17
         },
         this
@@ -48,13 +41,13 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
         total,
         " left"
       ] }, void 0, true, {
-        fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-        lineNumber: 63,
+        fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+        lineNumber: 64,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
-      fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-      lineNumber: 60,
+      fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+      lineNumber: 61,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV(
@@ -68,15 +61,15 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
       `${current.id}-${mode}`,
       false,
       {
-        fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-        lineNumber: 65,
+        fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+        lineNumber: 66,
         columnNumber: 13
       },
       this
     )
   ] }, void 0, true, {
-    fileName: "public/mod/vocabcoach/js/esm/src/check.tsx",
-    lineNumber: 59,
+    fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+    lineNumber: 60,
     columnNumber: 9
   }, this);
   async function handleAnswer(known) {
@@ -108,4 +101,4 @@ __name(Check, "Check");
 export {
   Check as default
 };
-//# sourceMappingURL=check.dev.js.map
+//# sourceMappingURL=Check.dev.js.map

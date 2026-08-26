@@ -1,3 +1,4 @@
+<?php
 // This file is part of Moodle - http://moodle.org
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -13,30 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {fetchOne} from '@moodle/lms/core/ajax';
+namespace mod_vocabcoach\local;
 
-export type UpdateVocabResponse = {
-    success: boolean
-};
+use core\persistent;
 
-export const updateVocab = (
-    id: number,
-    cmid: number,
-    known: boolean
-): Promise<UpdateVocabResponse> => fetchOne<UpdateVocabResponse>({
-    methodname: 'mod_vocabcoach_update_vocab',
-    args: {id, cmid, known}
-});
+class vocab extends persistent {
+    const string TABLE = 'vocabcoach_vocab';
 
-export const addVocab = (
-    listid: number,
-    cmid: number,
-    vocabsToAdd: {front: string, back: string}[]
-) => fetchOne<void>({
-    methodname: 'mod_vocabcoach_add_vocabs_to_list',
-    args: {
-        cmid: cmid,
-        listid: listid,
-        vocabs: vocabsToAdd
+    protected static function define_properties() {
+        return [
+            'front' => [
+                'type' => PARAM_TEXT
+            ],
+            'back' => [
+                'type' => PARAM_TEXT,
+            ],
+            'createdby' => [
+                'type' => PARAM_INT,
+            ],
+        ];
     }
-});
+}

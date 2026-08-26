@@ -1,1 +1,1 @@
-import{fetchOne as c}from"@moodle/lms/core/ajax";const s=(e,o,a)=>c({methodname:"mod_vocabcoach_update_vocab",args:{id:e,cmid:o,known:a}});export{s as updateVocab};
+import{fetchOne as c}from"@moodle/lms/core/ajax";const s=(o,e,a)=>c({methodname:"mod_vocabcoach_update_vocab",args:{id:o,cmid:e,known:a}}),b=(o,e,a)=>c({methodname:"mod_vocabcoach_add_vocabs_to_list",args:{cmid:e,listid:o,vocabs:a}});export{b as addVocab,s as updateVocab};

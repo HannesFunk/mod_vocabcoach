@@ -1,13 +1,6 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 import { Fragment, jsxDEV } from "react/jsx-dev-runtime";
-/**
- * React component that render one vocab card with front / back
- *
- * @module     mod_vocabcoach/check
- * @copyright  2026 J. Funk, johannesfunk@outlook.com
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 import { useState } from "react";
 function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
   const [revealed, setRevealed] = useState(false);
@@ -40,8 +33,8 @@ function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
             void 0,
             false,
             {
-              fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-              lineNumber: 57,
+              fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+              lineNumber: 63,
               columnNumber: 21
             },
             this
@@ -50,8 +43,8 @@ function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
         void 0,
         false,
         {
-          fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 54,
+          fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+          lineNumber: 60,
           columnNumber: 17
         },
         this
@@ -72,8 +65,8 @@ function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
             void 0,
             false,
             {
-              fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-              lineNumber: 66,
+              fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+              lineNumber: 72,
               columnNumber: 21
             },
             this
@@ -82,15 +75,15 @@ function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
         void 0,
         false,
         {
-          fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 62,
+          fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+          lineNumber: 68,
           columnNumber: 17
         },
         this
       )
     ] }, void 0, true, {
-      fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-      lineNumber: 53,
+      fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+      lineNumber: 59,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { id: "check-buttons", children: [
@@ -105,8 +98,8 @@ function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
         void 0,
         false,
         {
-          fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 74,
+          fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+          lineNumber: 80,
           columnNumber: 13
         },
         this
@@ -122,20 +115,20 @@ function CheckCard({ vocab, mode, onAnswer, buttonLabels }) {
         void 0,
         false,
         {
-          fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-          lineNumber: 79,
+          fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+          lineNumber: 85,
           columnNumber: 13
         },
         this
       )
     ] }, void 0, true, {
-      fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-      lineNumber: 73,
+      fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+      lineNumber: 79,
       columnNumber: 9
     }, this)
   ] }, void 0, true, {
-    fileName: "public/mod/vocabcoach/js/esm/src/CheckCard.tsx",
-    lineNumber: 52,
+    fileName: "public/mod/vocabcoach/js/esm/src/check/CheckCard.tsx",
+    lineNumber: 58,
     columnNumber: 9
   }, this);
 }

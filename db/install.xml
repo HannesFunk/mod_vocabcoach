@@ -36,8 +36,8 @@
     <TABLE NAME="vocabcoach_vocab" COMMENT="Contains the vocabulary items.">
       <FIELDS>
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
-        <FIELD NAME="front" SEQUENCE="false" TYPE="text" NOTNULL="true" />
-        <FIELD NAME="back" SEQUENCE="false" TYPE="text" NOTNULL="true" />
+        <FIELD NAME="front" SEQUENCE="false" TYPE="char" LENGTH="255" NOTNULL="true" />
+        <FIELD NAME="back" SEQUENCE="false" TYPE="char" LENGTH="255" NOTNULL="true" />
         <FIELD NAME="createdby" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
       </FIELDS>
       <KEYS>

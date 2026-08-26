@@ -106,4 +106,11 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
+    'mod_vocabcoach_add_vocabs_to_list' => [
+        'classname' => 'mod_vocabcoach\external\add_vocabs_to_list',
+        'methodname' => 'execute',
+        'description' => 'Add or update the vocab belonging to a list',
+        'type' => 'write',
+        'ajax' => true,
+    ],
 ];

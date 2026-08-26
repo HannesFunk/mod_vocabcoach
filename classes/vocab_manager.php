@@ -17,6 +17,7 @@
 namespace mod_vocabcoach;
 
 use dml_exception;
+use mod_vocabcoach\local\vocab;
 use stdClass;
 
 /**
@@ -29,16 +30,10 @@ use stdClass;
  */
 class vocab_manager {
     /**
-     * @var int $userid
-     */
-    private int $userid;
-
-    /**
      * Construct the class.
      * @param int $userid
      */
-    public function __construct(int $userid) {
-        $this->userid = $userid;
+    public function __construct() {
     }
 
     /**
@@ -49,10 +44,11 @@ class vocab_manager {
      * @throws dml_exception
      */
     public function insert_vocab(object $vocab): int {
+        global $USER;
         if ($this->does_vocab_exist($vocab)) {
             return $this->determine_id($vocab);
         } else {
-            $vocab->createdby = $this->userid;
+            $vocab->createdby = $USER->id;
             return $this->create_record($vocab);
         }
     }
@@ -76,6 +72,23 @@ class vocab_manager {
         } catch (dml_exception $e) {
             return false;
         }
+    }
+
+    public function get_or_create_vocab(string $front, string $back): vocab {
+        global $USER;
+        $existing = vocab::get_record(['front' => $front, 'back' => $back]);
+        if ($existing) {
+            return $existing;
+        }
+
+        $newvocab = [
+            'front' => $front,
+            'back' => $back,
+            'createdby' => $USER->id,
+        ];
+        $vocab = new vocab(0, (object) $newvocab);
+        $vocab->create();
+        return $vocab;
     }
 
     /**
@@ -120,6 +133,8 @@ class vocab_manager {
      */
     public function add_vocab_to_user(int $vocabid, int $cmid): bool {
         global $DB;
+        global $USER;
+        $userid = $USER->id;
 
         if ($vocabid === -1) {
             return false;
@@ -128,13 +143,13 @@ class vocab_manager {
         $userhasvocab = $DB->count_records_select(
             'vocabcoach_vocabdata',
             "vocabid = ? AND userid = ? AND cmid = ?",
-            [$vocabid, $this->userid, $cmid]
+            [$vocabid, $userid, $cmid]
         ) > 0;
         if ($userhasvocab) {
             return true;
         } else {
             $newdata = new stdClass();
-            $newdata->userid = $this->userid;
+            $newdata->userid = $userid;
             $newdata->vocabid = $vocabid;
             $newdata->cmid = $cmid;
             $newdata->stage = 1;
@@ -212,14 +227,15 @@ class vocab_manager {
      * @return bool
      */
     public function add_list_to_user_database(int $listid, int $cmid): bool {
-        global $DB;
+        global $DB, $USER;
+        $userid = $USER->id;
 
         $time = strtotime('2000-01-01 00:00:00');
 
         $query = "SELECT id, vocabid FROM {vocabcoach_list_contains} list_contains
                                 WHERE list_contains.listid = $listid
                                 AND list_contains.vocabid NOT IN
-       (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $this->userid AND cmid = $cmid)";
+       (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
 
         try {
             $records = $DB->get_records_sql($query);
@@ -227,7 +243,7 @@ class vocab_manager {
             foreach (array_values($records) as $record) {
                 $insert = new stdClass();
                 $insert->vocabid = $record->vocabid;
-                $insert->userid = $this->userid;
+                $insert->userid = $userid;
                 $insert->cmid = $cmid;
                 $insert->stage = 1;
                 $insert->lastchecked = $time;

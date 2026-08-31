@@ -5,16 +5,24 @@ const updateVocab = /* @__PURE__ */ __name((id, cmid, known) => fetchOne({
   methodname: "mod_vocabcoach_update_vocab",
   args: { id, cmid, known }
 }), "updateVocab");
-const addVocab = /* @__PURE__ */ __name((listid, cmid, vocabsToAdd) => fetchOne({
+const addVocabsToList = /* @__PURE__ */ __name((listid, cmid, vocabsToAdd) => fetchOne({
   methodname: "mod_vocabcoach_add_vocabs_to_list",
   args: {
     cmid,
     listid,
     vocabs: vocabsToAdd
   }
-}), "addVocab");
+}), "addVocabsToList");
+const addVocabsToUser = /* @__PURE__ */ __name((cmid, vocabsToAdd) => fetchOne({
+  methodname: "mod_vocabcoach_add_vocabs_to_user",
+  args: {
+    cmid,
+    vocabs: vocabsToAdd
+  }
+}), "addVocabsToUser");
 export {
-  addVocab,
+  addVocabsToList,
+  addVocabsToUser,
   updateVocab
 };
 //# sourceMappingURL=repository.dev.js.map

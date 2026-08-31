@@ -15,20 +15,16 @@
 
 import {fetchOne} from '@moodle/lms/core/ajax';
 
-export type UpdateVocabResponse = {
-    success: boolean
-};
-
 export const updateVocab = (
     id: number,
     cmid: number,
     known: boolean
-): Promise<UpdateVocabResponse> => fetchOne<UpdateVocabResponse>({
+): Promise<boolean> => fetchOne<boolean>({
     methodname: 'mod_vocabcoach_update_vocab',
     args: {id, cmid, known}
 });
 
-export const addVocab = (
+export const addVocabsToList = (
     listid: number,
     cmid: number,
     vocabsToAdd: {front: string, back: string}[]
@@ -37,6 +33,17 @@ export const addVocab = (
     args: {
         cmid: cmid,
         listid: listid,
+        vocabs: vocabsToAdd
+    }
+});
+
+export const addVocabsToUser = (
+    cmid: number,
+    vocabsToAdd: {front: string, back: string}[]
+) => fetchOne<void>({
+    methodname: 'mod_vocabcoach_add_vocabs_to_user',
+    args: {
+        cmid: cmid,
         vocabs: vocabsToAdd
     }
 });

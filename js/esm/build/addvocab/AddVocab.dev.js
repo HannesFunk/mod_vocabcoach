@@ -4,7 +4,7 @@ import { jsxDEV } from "react/jsx-dev-runtime";
 import { useState } from "react";
 import MoodleString from "@moodle/lms/core/String";
 import { VocabRow } from "./VocabRow";
-import { addVocab } from "@moodle/lms/mod_vocabcoach/repository";
+import { addVocabsToList, addVocabsToUser } from "@moodle/lms/mod_vocabcoach/repository";
 import { requireAsync } from "@moodle/lms/core/amd";
 import { isMoodleAjaxError } from "@moodle/lms/core/ajax";
 function AddVocab({ vocabs, cmid, listid, placeholders }) {
@@ -78,7 +78,11 @@ function AddVocab({ vocabs, cmid, listid, placeholders }) {
       ({ key, ...rest }) => rest
     );
     try {
-      await addVocab(listid, cmid, vocabsToAdd);
+      if (listid) {
+        await addVocabsToList(listid, cmid, vocabsToAdd);
+      } else {
+        await addVocabsToUser(cmid, vocabsToAdd);
+      }
     } catch (err) {
       const Notification = await requireAsync("core/notification");
       if (isMoodleAjaxError(err)) {

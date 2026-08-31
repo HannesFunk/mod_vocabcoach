@@ -131,37 +131,48 @@ class vocab_manager {
      * @throws dml_exception
      * @return bool
      */
-    public function add_vocab_to_user(int $vocabid, int $cmid): bool {
+    public function add_vocabs_to_user(array $vocabs, int $cmid, ?int $userid = null): void {
         global $DB;
         global $USER;
-        $userid = $USER->id;
 
-        if ($vocabid === -1) {
-            return false;
+        if (!$userid) {
+            $userid = $USER->id;
         }
 
-        $userhasvocab = $DB->count_records_select(
+        $ids = array_map(
+            fn($vocab) => (int) $this->get_or_create_vocab($vocab['front'], $vocab['back'])->get('id'),
+            $vocabs
+        );
+        $ids = array_unique($ids);
+
+        [$insql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
+        $params['userid']  = $userid;
+        $params['cmid'] = $cmid;
+        $existing = $DB->get_fieldset_select(
             'vocabcoach_vocabdata',
-            "vocabid = ? AND userid = ? AND cmid = ?",
-            [$vocabid, $userid, $cmid]
-        ) > 0;
-        if ($userhasvocab) {
-            return true;
-        } else {
-            $newdata = new stdClass();
-            $newdata->userid = $userid;
-            $newdata->vocabid = $vocabid;
-            $newdata->cmid = $cmid;
-            $newdata->stage = 1;
-            $newdata->lastchecked = strtotime('2000-01-01 00:00:00');
+            'vocabid',
+            "userid = :userid AND cmid = :cmid AND vocabid $insql",
+            $params
+        );
 
-            try {
-                $DB->insert_record('vocabcoach_vocabdata', $newdata, false);
-                return true;
-            } catch (dml_exception $e) {
-                throw $e;
-            }
+        $toadd = array_diff($ids, array_map('intval', $existing));
+
+        if (!$toadd) {
+            return;
         }
+
+        $rows = array_map(
+            fn($vocabid) => [
+                'userid' => $userid,
+                'cmid' => $cmid,
+                'vocabid' => $vocabid,
+                'stage' => 1,
+                'lastchecked' => strtotime('2000-01-01 00:00:00'),
+            ],
+            $toadd
+        );
+
+        $DB->insert_records('vocabcoach_vocabdata', $rows);
     }
 
     /**

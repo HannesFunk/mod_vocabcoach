@@ -209,7 +209,7 @@ class vocab_api extends external_api {
         global $DB;
 
         $query = "SELECT vocab.ID AS id, front, back FROM {vocabcoach_vocab} vocab
-            INNER JOIN {vocabcoach_list_contains} list_contains ON  list_contains.vocabID = vocab.ID
+            INNER JOIN {vocabcoach_list_vocabs} list_contains ON  list_contains.vocabID = vocab.ID
             WHERE list_contains.listID = $listid;";
         try {
             $output = $DB->get_records_sql($query);

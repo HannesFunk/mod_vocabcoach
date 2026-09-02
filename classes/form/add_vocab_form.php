@@ -16,6 +16,8 @@
 
 namespace mod_vocabcoach\form;
 
+use context_module;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
@@ -36,32 +38,19 @@ class add_vocab_form extends \moodleform {
     public function definition(): void {
         $mform = $this->_form;
 
-        global $DB;
+        global $OUTPUT;
 
-        $mode = $this->_customdata['mode'];
-        $id = $this->_customdata['id'];
+        $cmid = $this->_customdata['cmid'];
+        $listid = $this->_customdata['listid'];
 
-        $cm = get_coursemodule_from_id('vocabcoach', $id, 0, false, MUST_EXIST);
-        $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
-
-        $descfront = $moduleinstance->desc_front;
-        $descback = $moduleinstance->desc_back;
-        $instructions = $moduleinstance->instructions;
-
-        $mform->addElement('hidden', 'id', $id);
+        $mform->addElement('hidden', 'id', $cmid);
         $mform->setType('id', PARAM_INT);
-        $mform->addElement('hidden', 'mode', $mode);
-        $mform->setType('mode', PARAM_TEXT);
-        $mform->addElement('hidden', 'listid', $this->_customdata['listid'] ?? 0);
-        $mform->setType('listid', PARAM_TEXT);
+        $mform->addElement('hidden', 'listid', $this->_customdata['listid']);
+        $mform->setType('listid', PARAM_INT);
+        $mform->addElement('hidden', 'addtouser', $this->_customdata['addtouser']);
+        $mform->setType('addtouser', PARAM_BOOL);
 
-        if (!empty($instructions)) {
-            $mform->addElement('header', 'instructionsheader', get_string('instructions', 'mod_vocabcoach'));
-            $instructionsformatted = '<div class="pl-5 pr-3 pt-3 pb-3">' . $instructions . '</div>';
-            $mform->addElement('html', $instructionsformatted);
-        }
-
-        if ($mode === 'list' || $mode === 'edit') {
+        if (!$this->_customdata['addtouser']) {
             $mform->addElement('header', 'listsectionheader', get_string('listprops', 'mod_vocabcoach'));
 
             $mform->addElement('text', 'list_title', get_string('list_title', 'mod_vocabcoach'));
@@ -112,32 +101,37 @@ class add_vocab_form extends \moodleform {
             $mform->setDefault('list_distribute_now', 1);
         }
 
+        if (!empty($this->_customdata['instructions'])) {
+            $mform->addElement('header', 'instructionsheader', get_string('instructions', 'mod_vocabcoach'));
+            $instructionsformatted = '<div class="pl-5 pr-3 pt-3 pb-3">' . $this->_customdata['instructions'] . '</div>';
+            $mform->addElement('html', $instructionsformatted);
+        }
+
         $mform->addElement('header', 'vocabsectionheader', get_string('vocabplural', 'mod_vocabcoach'));
         $mform->setExpanded('vocabsectionheader');
 
-        if ($mode === 'edit') {
-            $text = get_string('add_vocab_info_lines', 'mod_vocabcoach') .
-                    ' ' . get_string('edit_vocab_instructions', 'mod_vocabcoach');
-            $mform->addElement('static', 'info_lines', '', $text);
-        } else {
-            $mform->addElement('static', 'info_lines', '', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
+        $mform->addElement('static', 'info_lines', '', get_string('add_vocab_info_lines', 'mod_vocabcoach'));
+
+        $vocabsfield = $mform->addElement('hidden', 'vocabs');
+        $mform->setType('vocabs', PARAM_RAW);
+        if (!$vocabsfieldid = $vocabsfield->getAttribute('id')) {
+            $vocabsfield->_generateId();
+            $vocabsfieldid = $vocabsfield->getAttribute('id');
         }
 
-        $vocabrow = [];
-        $vocabrow[] =& $mform->createElement('hidden', 'vocabid[]');
-        $vocabrow[] =& $mform->createElement('text', 'front[]', '', 'autocapitalize=off placeholder="' . $descfront . '"');
-        $vocabrow[] =& $mform->createElement('text', 'back[]', '', 'placeholder="' . $descback . '"');
+        $context = [
+            'vocabs' => $this->_customdata['vocabarray'],
+            'cmid' => $cmid,
+            'listid' => $listid,
+            'placeholders' => [
+                'front' => $this->_customdata['desc_front'],
+                'back' => $this->_customdata['desc_back'],
+            ],
+            'vocabsfieldid' => $vocabsfieldid,
+        ];
 
-        $mform->addGroup(
-            $vocabrow,
-            'vocabrow',
-            get_string('vocab', 'mod_vocabcoach'),
-            null,
-            false
-        );
-        $mform->setType('vocabid[]', PARAM_INT);
-        $mform->setType('front[]', PARAM_TEXT);
-        $mform->setType('back[]', PARAM_TEXT);
+        $mform->addElement('html',
+            $OUTPUT->render_from_template('mod_vocabcoach/addvocab', ['propsjson' => json_encode($context)]));
 
         $this->add_action_buttons();
     }

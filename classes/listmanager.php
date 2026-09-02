@@ -16,9 +16,9 @@
 
 namespace mod_vocabcoach;
 
+use core\context\module;
 use core\exception\moodle_exception;
-use mod_vocabcoach\vocablist;
-use \core\context\module;
+use mod_vocabcoach\local\vocablist;
 
 class listmanager {
     private vocablist $list;
@@ -39,7 +39,7 @@ class listmanager {
     public function get_vocabs(): array {
         global $DB;
         $query = "SELECT vocab.id AS id, front, back FROM {vocabcoach_vocab} vocab
-            JOIN {vocabcoach_list_contains} lc ON lc.vocabid = vocab.id 
+            JOIN {vocabcoach_list_vocabs} lc ON lc.vocabid = vocab.id 
             WHERE lc.listid = :listid";
         $params = ['listid' => $this->list->get('id')];
 
@@ -69,7 +69,7 @@ class listmanager {
             $idsfromform[] = (int) $voc->get('id');
         }
 
-        $result = $DB->get_records('vocabcoach_list_contains', ['listid' => $listid]);
+        $result = $DB->get_records('vocabcoach_list_vocabs', ['listid' => $listid]);
         $current = array_map(fn($record) => intval($record->vocabid), $result);
 
         $toadd = array_diff($idsfromform, $current);
@@ -80,13 +80,13 @@ class listmanager {
                 fn($vocabid) => ['listid' => $listid, 'vocabid' => $vocabid],
                 $toadd
             );
-            $DB->insert_records('vocabcoach_list_contains', $rows);
+            $DB->insert_records('vocabcoach_list_vocabs', $rows);
         }
         if ($toremove) {
             [$insql, $params] = $DB->get_in_or_equal($toremove, SQL_PARAMS_NAMED);
             $params['listid'] = $listid;
             $DB->delete_records_select(
-                'vocabcoach_list_contains',
+                'vocabcoach_list_vocabs',
                 "listid = :listid AND vocabid $insql",
                 $params
             );

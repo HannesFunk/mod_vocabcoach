@@ -56,7 +56,7 @@ $checkcontext = [
 $listid = optional_param('listid', null, PARAM_INT);
 
 if ($listid) {
-    $vocablist = new \mod_vocabcoach\vocablist($listid, $cmid);
+    $vocablist = new \mod_vocabcoach\local\vocablist($listid, $cmid);
     $checkcontext['subheadline']  = $vocablist->get_title();
     $vocabarray = $vocablist->get_vocabs();
     $checkcontext['fromlist'] = true;

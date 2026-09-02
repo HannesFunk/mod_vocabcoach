@@ -106,18 +106,4 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
-    'mod_vocabcoach_add_vocabs_to_list' => [
-        'classname' => 'mod_vocabcoach\external\add_vocabs_to_list',
-        'methodname' => 'execute',
-        'description' => 'Add or update the vocab belonging to a list',
-        'type' => 'write',
-        'ajax' => true,
-    ],
-    'mod_vocabcoach_add_vocabs_to_user' => [
-        'classname' => 'mod_vocabcoach\external\add_vocabs_to_user',
-        'methodname' => 'execute',
-        'description' => 'Add vocab to a users stage 1',
-        'type' => 'write',
-        'ajax' => true,
-    ],
 ];

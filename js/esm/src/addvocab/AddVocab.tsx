@@ -14,20 +14,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 import {NotificationModule, Vocab, VocabDraft} from '../types';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import MoodleString from "@moodle/lms/core/String";
 import {VocabRow} from "./VocabRow";
 import {addVocabsToList, addVocabsToUser} from "@moodle/lms/mod_vocabcoach/repository";
 import {requireAsync} from "@moodle/lms/core/amd";
 import {isMoodleAjaxError} from "@moodle/lms/core/ajax";
+import Log from "@moodle/lms/core/log";
 
 type AddVocabProps = {
     vocabs: Vocab[],
     cmid: number,
     listid: number | null,
-    placeholders: Record<'front' | 'back', string>
+    placeholders: Record<'front' | 'back', string>,
+    vocabsfieldid: string
 };
-export default function AddVocab({vocabs, cmid, listid, placeholders}: AddVocabProps) {
+export default function AddVocab({vocabs, cmid, listid, placeholders, vocabsfieldid}: AddVocabProps) {
     const newRow = (): VocabDraft => ({key: crypto.randomUUID(), front: '', back: ''});
 
     const [items, setItems] = useState<VocabDraft[]>(() => {
@@ -37,19 +39,27 @@ export default function AddVocab({vocabs, cmid, listid, placeholders}: AddVocabP
         return [...vocabNew, newRow()];
     });
 
+    useEffect(() => {
+        const field = document.getElementById(vocabsfieldid);
+        if (field instanceof HTMLInputElement) {
+            field.value = JSON.stringify(items.filter(
+                item => (item.front !== "" || item.back !== ""))
+                .map(({key, ...rest}) => rest)
+            );
+        } else {
+            Log.error(`Hidden vocab field #${vocabsfieldid} not found`, 'mod_vocabcoach/AddVocab');
+        }
+    }, [items, vocabsfieldid]);
+
     return (
-        <div>
-            <fieldset className="clearfix fitem collapsible">
-                <legend><MoodleString identifier="vocabplural" component="mod_vocabcoach" /></legend>
-                <div id="rowsContainer">
-                { items.map(
-                    (item, i) =>
-                        <VocabRow vocab={item} placeholders={placeholders}
-                                  onChange={(field, value) => handleVocabChange(item.key, field, value)} />
-                ) }
-                </div>
-            </fieldset>
-            <button className="btn btn-primary" onClick={() => submitVocab()}>Submit</button>
+        <div id="rowsContainer">
+        { items.map(
+            (item, i) =>
+                <VocabRow vocab={item}
+                    placeholders={placeholders}
+                    key={item.key}
+                    onChange={(field, value) => handleVocabChange(item.key, field, value)} />
+        ) }
         </div>
     );
 
@@ -60,32 +70,5 @@ export default function AddVocab({vocabs, cmid, listid, placeholders}: AddVocabP
             const lastRow = newItems[newItems.length - 1];
             return (lastRow.front === '' && lastRow.back === '') ? newItems : [...newItems, newRow()];
         });
-    }
-
-    async function submitVocab() {
-        let vocabsToAdd = items.filter(
-            item => (item.front !== "" || item.back !== "")).
-            map(({key, ...rest}) => rest
-        );
-
-        try {
-            if (listid) {
-                await addVocabsToList(listid, cmid, vocabsToAdd);
-            } else {
-                await addVocabsToUser(cmid, vocabsToAdd);
-            }
-        } catch (err) {
-            const Notification = await requireAsync<NotificationModule>('core/notification');
-            if (isMoodleAjaxError(err)) {
-                await Notification.exception(err);
-            } else {
-                await Notification.addNotification({
-                    message: err instanceof Error ? err.message
-                        : (typeof err === 'object' && err !== null && 'message' in err) ? String(err.message)
-                            : JSON.stringify(err),
-                    type: 'error'
-                });
-            }
-        }
     }
 }

@@ -126,10 +126,9 @@ class vocab_manager {
 
     /**
      * Adds a vocab item to user database.
-     * @param int $vocabid
+     * @param array $vocabs array of vocab with front and back set
      * @param int $cmid
-     * @throws dml_exception
-     * @return bool
+     * @param int|null $userid
      */
     public function add_vocabs_to_user(array $vocabs, int $cmid, ?int $userid = null): void {
         global $DB;
@@ -204,10 +203,10 @@ class vocab_manager {
         ];
 
         try {
-            if ($DB->count_records('vocabcoach_list_contains', $conditions) > 0) {
+            if ($DB->count_records('vocabcoach_list_vocabs', $conditions) > 0) {
                 return false;
             }
-            $DB->insert_record('vocabcoach_list_contains', $conditions);
+            $DB->insert_record('vocabcoach_list_vocabs', $conditions);
         } catch (dml_exception $e) {
             return false;
         }
@@ -224,7 +223,7 @@ class vocab_manager {
         global $DB;
 
         try {
-            $DB->delete_records('vocabcoach_list_contains', ['vocabid' => $vocabid, 'listid' => $listid]);
+            $DB->delete_records('vocabcoach_list_vocabs', ['vocabid' => $vocabid, 'listid' => $listid]);
         } catch (dml_exception $e) {
             return false;
         }
@@ -243,7 +242,7 @@ class vocab_manager {
 
         $time = strtotime('2000-01-01 00:00:00');
 
-        $query = "SELECT id, vocabid FROM {vocabcoach_list_contains} list_contains
+        $query = "SELECT id, vocabid FROM {vocabcoach_list_vocabs} list_contains
                                 WHERE list_contains.listid = $listid
                                 AND list_contains.vocabid NOT IN
        (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
@@ -266,40 +265,6 @@ class vocab_manager {
         }
 
         return true;
-    }
-
-    /**
-     * Updates information for a list.
-     * @param int $listid
-     * @param array $vocabarray
-     * @return void
-     * @throws dml_exception
-     */
-    public function edit_list(int $listid, array $vocabarray): void {
-        global $DB;
-
-        foreach ($vocabarray as $vocab) {
-            if ($vocab->correct_everywhere) {
-                $DB->update_record('vocabcoach_vocab', $vocab);
-            } else {
-                $this->remove_vocab_from_list($vocab->id, $listid);
-                $newid = $this->insert_vocab($vocab);
-                $this->add_vocab_to_list($newid, $listid);
-            }
-        }
-    }
-
-    /**
-     * Checks whether the current user is owner of a list.
-     * @param int $userid
-     * @param int $listid
-     * @return bool
-     * @throws dml_exception
-     */
-    public function user_owns_list(int $userid, int $listid): bool {
-        global $DB;
-        $record = $DB->get_record('vocabcoach_lists', ['id' => $listid], 'createdby');
-        return $record->createdby == $userid;
     }
 
     /**
@@ -330,7 +295,7 @@ class vocab_manager {
     public static function is_contained_in_list(int $vocabid): bool {
         global $DB;
 
-        $count = $DB->count_records('vocabcoach_list_contains', ['vocabid' => $vocabid]);
+        $count = $DB->count_records('vocabcoach_list_vocabs', ['vocabid' => $vocabid]);
         return $count > 0;
     }
 

@@ -39,6 +39,9 @@
         <FIELD NAME="front" SEQUENCE="false" TYPE="char" LENGTH="255" NOTNULL="true" />
         <FIELD NAME="back" SEQUENCE="false" TYPE="char" LENGTH="255" NOTNULL="true" />
         <FIELD NAME="createdby" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
+        <FIELD NAME="timecreated" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
+        <FIELD NAME="timemodified" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
+        <FIELD NAME="usermodified" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -65,8 +68,7 @@
       </INDEXES>
     </TABLE>
 
-
-    <TABLE NAME="vocabcoach_list_contains" COMMENT="Matches the lists with the vocab items.">
+    <TABLE NAME="vocabcoach_list_vocabs" COMMENT="Matches the lists with the vocab items.">
       <FIELDS>
         <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
         <FIELD NAME="listid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
@@ -76,22 +78,6 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk-list" TYPE="foreign" FIELDS="listid" REFTABLE="vocabcoach_lists" REFFIELDS="id" />
         <KEY NAME="fk-vocab" TYPE="foreign" FIELDS="vocabid" REFTABLE="vocabcoach_vocab" REFFIELDS="id" />
-      </KEYS>
-    </TABLE>
-
-    <TABLE NAME="vocabcoach_activitylog" COMMENT="Logs user activity.">
-      <FIELDS>
-        <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
-        <FIELD NAME="userid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
-        <FIELD NAME="cmid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
-        <FIELD NAME="date" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
-        <FIELD NAME="type" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
-        <FIELD NAME="details" SEQUENCE="false" TYPE="text" NOTNULL="true" />
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
-        <KEY NAME="fk-user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
       </KEYS>
     </TABLE>
 
@@ -105,25 +91,14 @@
         <FIELD NAME="createdby" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="cmid" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="private" TYPE="int" LENGTH="11" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="11" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="11" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="11" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id"/>
         <KEY NAME="fk-user" TYPE="foreign" FIELDS="createdby" REFTABLE="user" REFFIELDS="id"/>
-      </KEYS>
-    </TABLE>
-
-    <TABLE NAME="vocabcoach_feedback" COMMENT="Contains feedback to be given to students.">
-      <FIELDS>
-        <FIELD NAME="id" SEQUENCE="true" TYPE="int" NOTNULL="true" LENGTH="11"/>
-        <FIELD NAME="message" SEQUENCE="false" TYPE="text" NOTNULL="true"  />
-        <FIELD NAME="type" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
-        <FIELD NAME="createdby" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
-        <FIELD NAME="cmid" SEQUENCE="false" TYPE="int" NOTNULL="true" LENGTH="11" />
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk-cm" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
       </KEYS>
     </TABLE>
 
@@ -144,7 +119,6 @@
       </KEYS>
     </TABLE>
 
-
     <TABLE NAME="vocabcoach_streaks" COMMENT="Stores streaks users have for a certain instance.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
@@ -159,24 +133,6 @@
         <KEY NAME="uniq_cmid_user_type" TYPE="unique" FIELDS="cmid, userid, type" />
         <KEY NAME="fk_cmid" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
         <KEY NAME="fk_user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
-      </KEYS>
-    </TABLE>
-
-    <TABLE NAME="vocabcoach_streak_restores" COMMENT="Tracks streak restore usage per user per month.">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="User ID" />
-        <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course module ID" />
-        <FIELD NAME="streak_type" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Type of streak (login, checkall)" />
-        <FIELD NAME="restore_count" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of restores used this month" />
-        <FIELD NAME="month_year" TYPE="char" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="Month and year (YYYY-MM)" />
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified timestamp" />
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" />
-        <KEY NAME="uniq_restore_tracker" TYPE="unique" FIELDS="userid, cmid, streak_type, month_year" />
-        <KEY NAME="fk_user" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" />
-        <KEY NAME="fk_cmid" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" />
       </KEYS>
     </TABLE>
   </TABLES>

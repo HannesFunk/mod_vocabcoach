@@ -50,14 +50,14 @@ export function init(cmid, userid, courseid) {
             const stage = e.target.closest(Selectors.actions.viewBox).getAttribute('data-stage');
             location.href = 'viewbox.php?id=' + cmid + '&stage=' + stage;
         } else if (e.target.closest(Selectors.actions.addUserVocab)) {
-            location.href = 'add_vocab.php?id=' + cmid;
+            location.href = 'add_vocab.php?id=' + cmid + '&addtouser=true';
         } else if (e.target.closest(Selectors.actions.addList)) {
-            location.href = 'add_vocab.php?id=' + cmid + '&listid=0';
+            location.href = 'add_vocab.php?id=' + cmid;
         } else if (e.target.closest(Selectors.actions.showLists)) {
             location.href = 'lists.php?id=' + cmid;
         } else if (e.target.closest(Selectors.elements.dropdown)) { // keep this after dropdown-items, but before opening boxes
             return false;
-        }  else if (e.target.closest(Selectors.actions.checkBox)) {
+        } else if (e.target.closest(Selectors.actions.checkBox)) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox));
         }
     });

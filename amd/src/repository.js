@@ -69,21 +69,6 @@ export const getBoxArrayAJAX = (
 }])[0];
 
 /**
- * Fetches the vocabulary items of a list.
- *
- * @param {Number} listid The id of the list.
- * @returns {Promise<Array>} Resolves with the vocabulary items.
- */
-export const getListArrayAJAX = (
-    listid
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_get_list_vocabs',
-    args: {
-        listid
-    },
-}])[0];
-
-/**
  * Fetches the vocabulary lists available in this activity.
  *
  * @param {Number} cmid The course module id.

@@ -25,13 +25,15 @@ type VocabRowProps = {
 
 export function VocabRow({vocab, placeholders, onChange}: VocabRowProps) {
     return (
-      <div className="d-flex align-items-center gap-3 m-2">
-          <input type="text" className="form-control" name="front[]"
-                 value={vocab.front} placeholder={placeholders.front}
-                 onChange={(e) => onChange('front', e.target.value)} />
-          <input type="text" className="form-control" name="back[]"
-                 value={vocab.back} placeholder={placeholders.back}
-                 onChange={e => onChange('back', e.target.value)} />
+      <div className="mb-3 row fitem">
+          <div className="col-md-9 offset-md-3 d-flex align-items-center gap-3 felement">
+              <input type="text" className="form-control"
+                     value={vocab.front} placeholder={placeholders.front}
+                     onChange={(e) => onChange('front', e.target.value)} />
+              <input type="text" className="form-control"
+                     value={vocab.back} placeholder={placeholders.back}
+                     onChange={e => onChange('back', e.target.value)} />
+          </div>
       </div>
     );
 

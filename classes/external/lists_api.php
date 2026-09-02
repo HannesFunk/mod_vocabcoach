@@ -99,7 +99,7 @@ class lists_api extends external_api {
                 FROM {vocabcoach_lists} WHERE " . $conditions);
             $output = [];
             foreach ($records as $record) {
-                $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_contains} WHERE listid = " . $record->id . ";";
+                $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_vocabs} WHERE listid = " . $record->id . ";";
                 $vocabnumber = $DB->count_records_sql($query);
                 $record->number = $vocabnumber;
                 $creator = \core_user::get_user($record->createdby);
@@ -146,7 +146,7 @@ class lists_api extends external_api {
         global $DB;
         try {
             $DB->delete_records('vocabcoach_lists', ['id' => $listid]);
-            $DB->delete_records('vocabcoach_list_contains', ['listid' => $listid]);
+            $DB->delete_records('vocabcoach_list_vocabs', ['listid' => $listid]);
         } catch (\dml_exception $e) {
             return ['success' => false];
         }
@@ -182,7 +182,7 @@ class lists_api extends external_api {
 
         $time = strtotime('2000-01-01 00:00:00');
 
-        $query = "SELECT id, vocabid FROM {vocabcoach_list_contains} list_contains
+        $query = "SELECT id, vocabid FROM {vocabcoach_list_vocabs} list_contains
                                 WHERE list_contains.listid = $listid
                                 AND list_contains.vocabid NOT IN
        (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";

@@ -84,12 +84,20 @@ class streak_manager
         foreach ($types as $type) {
             $streak = $this->get_streak($type);
             $info[$type]['streak'] = $streak->streak;
+            $info[$type]['isactive'] = self::is_active($streak);
         }
         if ($selectedtype) {
             return (object)$info[$selectedtype];
         } else {
             return (object)$info;
         }
+    }
+
+    public static function is_active(object $streak): bool {
+        if ($streak->timemodified > strtotime('today midnight')) {
+            return true;
+        }
+        return false;
     }
 
     /**

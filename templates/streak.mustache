@@ -26,10 +26,10 @@
 <div class="streak-container">
     {{#streakinfo}}
         {{#login}}
-            <span class="streak streak-weak">{{streak}}</span>
+            <span class="streak streak-weak{{#isactive}} active{{/isactive}}">{{streak}}</span>
         {{/login}}
         {{#checkall}}
-            <span class="streak streak-strong">{{streak}}</span>
+            <span class="streak streak-strong{{#isactive}} active{{/isactive}}">{{streak}}</span>
         {{/checkall}}
     {{/streakinfo}}
 </div>

@@ -13,7 +13,12 @@
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
     font-size: 1.2rem;
+    color: var(--bs-gray);
     margin-right: .35em;
+}
+
+.streak-weak.active::before,
+.streak-strong.active::before {
     color: var(--bs-primary);
 }
 

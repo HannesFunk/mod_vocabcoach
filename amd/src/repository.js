@@ -69,27 +69,6 @@ export const getBoxArrayAJAX = (
 }])[0];
 
 /**
- * Fetches the vocabulary lists available in this activity.
- *
- * @param {Number} cmid The course module id.
- * @param {Number} userid The id of the user the lists are fetched for.
- * @param {Boolean} onlyOwnLists Whether to limit the result to lists created by that user.
- * @returns {Promise<Array>} Resolves with the lists.
- */
-export const getListsAJAX = (
-    cmid,
-    userid,
-    onlyOwnLists
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_get_lists',
-    args: {
-        'cmid': cmid,
-        'userid': userid,
-        'onlyownlists': onlyOwnLists
-    },
-}])[0];
-
-/**
  * Deletes a vocabulary list.
  *
  * @param {Number} listid The id of the list to delete.
@@ -114,13 +93,11 @@ export const deleteListAJAX = (
  */
 export const addListToUserAJAX = (
     listid,
-    userid,
     cmid
 ) => fetchMany([{
     methodname: 'mod_vocabcoach_add_list_to_user',
     args: {
         'listid': listid,
-        'userid': userid,
         'cmid': cmid
     },
 }])[0];

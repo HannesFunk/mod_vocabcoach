@@ -22,6 +22,9 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_table\local\filter\filter;
+use core_table\local\filter\integer_filter;
+
 require(__DIR__ . '/../../config.php');
 
 $cmid = required_param('id', PARAM_INT);
@@ -30,15 +33,9 @@ $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 $moduleinstance = $DB->get_record('vocabcoach', ['id' => $cm->instance], '*', MUST_EXIST);
 
-$PAGE->requires->css('/mod/vocabcoach/styles/lists.css');
-
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
-$info = [
-    'canEdit' => has_capability('mod/vocabcoach:delete_lists', $modulecontext),
-    'canDistribute' => has_capability('mod/vocabcoach:distribute_lists', $modulecontext),
-];
 
 $PAGE->set_context($modulecontext);
 $PAGE->set_url('/mod/vocabcoach/lists.php', ['id' => $cmid]);
@@ -46,14 +43,15 @@ $PAGE->set_title(get_string('lists_pagetitle', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('lists_pagetitle', 'mod_vocabcoach'));
 $PAGE->navbar->add(get_string('lists', 'mod_vocabcoach'));
 
-$PAGE->requires->js_call_amd(
-    'mod_vocabcoach/lists',
-    'init',
-    [$cmid, $USER->id, json_encode($info)]
-);
-$PAGE->requires->css('/mod/vocabcoach/styles/spinner.css');
+$PAGE->requires->js_call_amd('mod_vocabcoach/lists', 'init', [$cmid]);
 $PAGE->requires->css('/mod/vocabcoach/styles/style.css');
 
+$table = new \mod_vocabcoach\table\lists_table('vocabcoach-lists');
+$filterset = new \mod_vocabcoach\table\lists_table_filterset();
+$filterset->add_filter(new integer_filter('cmid', filter::JOINTYPE_DEFAULT, [(int)$cmid]));
+$table->set_filterset($filterset);
+
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('mod_vocabcoach/lists', ['loading' => true]);
+echo $OUTPUT->render_from_template('mod_vocabcoach/lists', []);
+$table->out(20, false);
 echo $OUTPUT->footer();

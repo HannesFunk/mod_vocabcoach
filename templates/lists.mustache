@@ -1,66 +1,38 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_vocabcoach/lists
+
+
+    Example context (json):
+    {
+
+    }
+}}
+
 <h2>{{#str}}lists, mod_vocabcoach{{/str}}</h2>
 
 <p>{{#str}}intro_lists, mod_vocabcoach{{/str}}</p>
 
-<div class="user-switch-container mb-3" data-action="mod_vocabcoach/toggle-user-switch">
-    <label class="mr-2 mb-0{{#onlyOwnLists}} text-primary{{/onlyOwnLists}}" for="userswitch">
-        {{#str}}lists_onlyown, mod_vocabcoach{{/str}}
-    </label>
-    <div class="custom-control custom-switch" style="display: inline;">
-        <input type="checkbox"{{!
-                }} class="custom-control-input"{{!
-                }} id="userswitch"{{!
-                }} {{#onlyOwnLists}} {{!
-                    }} checked {{!
-                }}
-                {{/onlyOwnLists}} {{!
-        }}>
-        <span class="custom-control-label">&nbsp;</span>
+<div class="d-flex justify-content-end align-items-center gap-2 mb-3">
+    <div class="form-check form-switch mb-0">
+        <input type="checkbox" class="form-check-input" id="userswitch" />
+        <label class="form-check-label" for="userswitch">
+            {{#str}}lists_onlyown, mod_vocabcoach{{/str}}
+        </label>
     </div>
 </div>
-
-<table id="table-list" class="table generaltable">
-
-
-
-<tbody>
-<tr data-list-id="{{id}}">
-    <th>{{#str}}name, mod_vocabcoach{{/str}}</th>
-    <th class="secondary">{{#str}}year_short, mod_vocabcoach{{/str}}</th>
-    <th class="secondary">{{#str}}book, mod_vocabcoach{{/str}}</th>
-    <th class="secondary">{{#str}}unit, mod_vocabcoach{{/str}}</th>
-    <th>{{#str}}count, mod_vocabcoach{{/str}}</th>
-    <th>{{#str}}creator, mod_vocabcoach{{/str}}</th>
-    <th>{{#str}}actions, mod_vocabcoach{{/str}}</th>
-</tr>
-{{^loading}}
-    {{^lists}}
-        <td colspan="7" class="text-center">
-            <span>{{#str}}lists_empty, mod_vocabcoach{{/str}}</span>
-        </td>
-    {{/lists}}
-{{/loading}}
-{{#lists}}
-<tr data-list-id="{{id}}">
-    <td>
-        {{#private}}<i class="fa fa-user-secret pr-2" aria-hidden="true"></i>{{/private}}
-        <a href="viewlist.php?id={{cmid}}&listid={{id}}">{{title}}</a></td>
-    <td class="secondary">{{year}}</td>
-    <td class="secondary">{{book}}</td>
-    <td class="secondary">{{unit}}</td>
-    <td>{{number}}</td>
-    <td>{{creator}}</td>
-    <td>
-        {{> mod_vocabcoach/lists_action_menu}}
-    </td>
-</tr>
-{{/lists}}
-</tbody>
-
-</table>
-{{#loading}}
-    <div class="d-flex justify-content-center align-items-center p-5">
-        {{> core/loading }}
-        <span class="ms-2">{{#str}} loading, core {{/str}}</span>
-    </div>
-{{/loading}}

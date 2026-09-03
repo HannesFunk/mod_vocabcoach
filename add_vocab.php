@@ -68,7 +68,7 @@ if ($listid) {
         );
     }
 
-    $lm = new \mod_vocabcoach\listmanager($listid, $cmid);
+    $lm = new \mod_vocabcoach\list_manager($listid, $cmid);
     $formparameters['vocabarray'] = $lm->get_vocabs();
 
     $mform = new add_vocab_form(null, $formparameters);
@@ -122,7 +122,7 @@ if ($mform->is_cancelled()) {
         $listid = $list->get('id');
     }
 
-    $lm = new \mod_vocabcoach\listmanager($listid, $cmid);
+    $lm = new \mod_vocabcoach\list_manager($listid, $cmid);
     $lm->set_vocabs($vocabarray);
 
     if ($formdata->add_to_user_database) {

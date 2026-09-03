@@ -28,6 +28,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use dml_exception;
 use invalid_parameter_exception;
+use mod_vocabcoach\local\vocablist;
 use stdClass;
 
 /**
@@ -76,40 +77,34 @@ class lists_api extends external_api {
     /**
      * Returns all lists in a course module.
      * @param int $cmid
-     * @param int $userid
      * @param bool $onlyownlists
      * @return array
      * @throws invalid_parameter_exception
      */
-    public static function get_lists(int $cmid, int $userid, bool $onlyownlists = false): array {
+    public static function get_lists(int $cmid, bool $onlyownlists = false): array {
+        global $DB, $USER;
 
-        self::validate_parameters(
+        ['cmid' => $cmid, 'onlyownlists' => $onlyownlists] = self::validate_parameters(
             self::get_lists_parameters(),
-            ['cmid' => $cmid, 'userid' => $userid, 'onlyownlists' => $onlyownlists]
+            ['cmid' => $cmid, 'onlyownlists' => $onlyownlists]
         );
 
-        global $DB;
-
-        try {
-            $conditions = 'cmid = ' . $cmid . ' AND (private = 0 OR createdby = ' . $userid . ')';
-            if ($onlyownlists) {
-                $conditions .= ' AND createdby = ' . $userid;
-            }
-            $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby, private
-                FROM {vocabcoach_lists} WHERE " . $conditions);
-            $output = [];
-            foreach ($records as $record) {
-                $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_vocabs} WHERE listid = " . $record->id . ";";
-                $vocabnumber = $DB->count_records_sql($query);
-                $record->number = $vocabnumber;
-                $creator = \core_user::get_user($record->createdby);
-                $record->creator = fullname($creator);
-                $output[] = $record;
-            }
-            return array_values($output);
-        } catch (\dml_exception $e) {
-            return [];
+        $conditions = 'cmid = ' . $cmid . ' AND (private = 0 OR createdby = ' . $USER->id . ')';
+        if ($onlyownlists) {
+            $conditions .= ' AND createdby = ' . $USER->id;
         }
+        $records = $DB->get_records_sql("SELECT id, title, year, book, unit, createdby, private
+            FROM {vocabcoach_lists} WHERE " . $conditions);
+        $output = [];
+        foreach ($records as $record) {
+            $query = "SELECT COUNT(DISTINCT(vocabid)) FROM {vocabcoach_list_vocabs} WHERE listid = " . $record->id . ";";
+            $vocabnumber = $DB->count_records_sql($query);
+            $record->number = $vocabnumber;
+            $creator = \core_user::get_user($record->createdby);
+            $record->creator = fullname($creator);
+            $output[] = $record;
+        }
+        return array_values($output);
     }
 
     /**
@@ -137,21 +132,25 @@ class lists_api extends external_api {
     /**
      * Deletes a list
      * @param int $listid
-     * @return false[]|true[]
+     * @param int $cmid
      * @throws invalid_parameter_exception
      */
-    public static function delete_list(int $listid): array {
-        self::validate_parameters(self::delete_list_parameters(), ['listid' => $listid]);
+    public static function delete_list(int $listid, int $cmid): void {
+        global $DB, $USER;
 
-        global $DB;
-        try {
-            $DB->delete_records('vocabcoach_lists', ['id' => $listid]);
-            $DB->delete_records('vocabcoach_list_vocabs', ['listid' => $listid]);
-        } catch (\dml_exception $e) {
-            return ['success' => false];
+        ['listid' => $listid] = self::validate_parameters(self::delete_list_parameters(), ['listid' => $listid]);
+        $context = \core\context\module::instance($cmid);
+
+        $candelete = has_capability('mod/vocabcoach:delete_lists', $context);
+        $list = new vocablist($listid);
+        $isowner = $list->get('id') === (int) $USER->id;
+
+        if (!$candelete && !$isowner) {
+            return;
         }
 
-        return ['success' => true];
+        $DB->delete_records('vocabcoach_lists', ['id' => $listid]);
+        $DB->delete_records('vocabcoach_list_vocabs', ['listid' => $listid]);
     }
 
     /**

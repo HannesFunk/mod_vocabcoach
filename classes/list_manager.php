@@ -20,7 +20,7 @@ use core\context\module;
 use core\exception\moodle_exception;
 use mod_vocabcoach\local\vocablist;
 
-class listmanager {
+class list_manager {
     private vocablist $list;
     private module $context;
 

@@ -36,9 +36,9 @@ class list_manager {
         $this->context = $context;
     }
 
-    public function get_vocabs(): array {
+    public function get_vocabs(bool $onlyids = false): array {
         global $DB;
-        $query = "SELECT vocab.id AS id, front, back FROM {vocabcoach_vocab} vocab
+        $query = "SELECT vocab.id AS id". ($onlyids ? "" : ", front, back")." FROM {vocabcoach_vocab} vocab
             JOIN {vocabcoach_list_vocabs} lc ON lc.vocabid = vocab.id 
             WHERE lc.listid = :listid";
         $params = ['listid' => $this->list->get('id')];

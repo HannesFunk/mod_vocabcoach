@@ -87,7 +87,6 @@ export const deleteListAJAX = (
  * Adds all vocabulary items of a list to a user's box.
  *
  * @param {Number} listid The id of the list to add.
- * @param {Number} userid The id of the user receiving the items.
  * @param {Number} cmid The course module id.
  * @returns {Promise} Resolves once the items have been added.
  */
@@ -95,7 +94,7 @@ export const addListToUserAJAX = (
     listid,
     cmid
 ) => fetchMany([{
-    methodname: 'mod_vocabcoach_add_list_to_user',
+    methodname: 'mod_vocabcoach_add_list_vocabs_to_user',
     args: {
         'listid': listid,
         'cmid': cmid

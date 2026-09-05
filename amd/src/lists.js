@@ -13,7 +13,6 @@ import {getString, getStrings} from 'core/str';
 import {getTableFromId, refreshTableContent, setFilters} from "core_table/dynamic";
 
 let cmid;
-let userId;
 
 /**
  * Adds a list to the current user's box and notifies them about the result.
@@ -58,9 +57,9 @@ export function init(moduleId) {
                 addListToUser(listId);
                 break;
 
-        case Selectors.actions.distributeList:
-            distributeList(listId, cmid);
-            break;
+            case Selectors.actions.distributeList:
+                distributeList(listId, cmid);
+                break;
 
             // Those two omitted for now.
             // case Selectors.actions.showCsv:

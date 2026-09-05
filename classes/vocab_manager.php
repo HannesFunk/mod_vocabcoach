@@ -131,7 +131,6 @@ class vocab_manager {
      * @param int|null $userid
      */
     public function add_vocabs_to_user(array $vocabs, int $cmid, ?int $userid = null): void {
-        global $DB;
         global $USER;
 
         if (!$userid) {
@@ -143,8 +142,13 @@ class vocab_manager {
             $vocabs
         );
         $ids = array_unique($ids);
+        self::add_vocab_ids_to_user($ids, $cmid, $userid);
+    }
 
-        [$insql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
+    public function add_vocab_ids_to_user(array $vocabids, int $cmid, $userid): void {
+        global $DB;
+
+        [$insql, $params] = $DB->get_in_or_equal($vocabids, SQL_PARAMS_NAMED);
         $params['userid']  = $userid;
         $params['cmid'] = $cmid;
         $existing = $DB->get_fieldset_select(
@@ -154,7 +158,7 @@ class vocab_manager {
             $params
         );
 
-        $toadd = array_diff($ids, array_map('intval', $existing));
+        $toadd = array_diff($vocabids, array_map('intval', $existing));
 
         if (!$toadd) {
             return;
@@ -172,45 +176,6 @@ class vocab_manager {
         );
 
         $DB->insert_records('vocabcoach_vocabdata', $rows);
-    }
-
-    /**
-     * Creates a new list.
-     * @param array $listinfo
-     * @return int
-     */
-    public function add_list(array $listinfo): int {
-        global $DB;
-
-        try {
-            return $DB->insert_record('vocabcoach_lists', $listinfo);
-        } catch (dml_exception $e) {
-            return -1;
-        }
-    }
-
-    /**
-     * Adds a vocab item to a lsit.
-     * @param int $vocabid
-     * @param int $listid
-     * @return bool
-     */
-    public function add_vocab_to_list(int $vocabid, int $listid): bool {
-        global $DB;
-        $conditions = [
-            'vocabid' => $vocabid,
-            'listid' => $listid,
-        ];
-
-        try {
-            if ($DB->count_records('vocabcoach_list_vocabs', $conditions) > 0) {
-                return false;
-            }
-            $DB->insert_record('vocabcoach_list_vocabs', $conditions);
-        } catch (dml_exception $e) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -234,37 +199,19 @@ class vocab_manager {
      * Adds an entire list to a user box.
      * @param int $listid
      * @param int $cmid
-     * @return bool
+     * @param int|null $userid
      */
-    public function add_list_to_user_database(int $listid, int $cmid): bool {
-        global $DB, $USER;
-        $userid = $USER->id;
+    public function add_list_to_user_database(int $listid, int $cmid, int $userid = null): void {
+        global $USER;
+        if (!$userid) {
+            $userid = $USER->id;
+        }
 
         $time = strtotime('2000-01-01 00:00:00');
 
-        $query = "SELECT id, vocabid FROM {vocabcoach_list_vocabs} list_contains
-                                WHERE list_contains.listid = $listid
-                                AND list_contains.vocabid NOT IN
-       (SELECT vocabID FROM {vocabcoach_vocabdata} vocabdata WHERE userid = $userid AND cmid = $cmid)";
-
-        try {
-            $records = $DB->get_records_sql($query);
-            $insertarray = [];
-            foreach (array_values($records) as $record) {
-                $insert = new stdClass();
-                $insert->vocabid = $record->vocabid;
-                $insert->userid = $userid;
-                $insert->cmid = $cmid;
-                $insert->stage = 1;
-                $insert->lastchecked = $time;
-                $insertarray[] = $insert;
-            }
-            $DB->insert_records('vocabcoach_vocabdata', $insertarray);
-        } catch (dml_exception $e) {
-            return false;
-        }
-
-        return true;
+        $lm = new list_manager($listid, $cmid);
+        $vocabids = $lm->get_vocabs(true);
+        self::add_vocab_ids_to_user($vocabids, $cmid, $userid);
     }
 
     /**

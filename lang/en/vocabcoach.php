@@ -134,6 +134,7 @@ $string['move_undue'] = 'Move words that are reviewed before the interval has el
 $string['move_undue_help'] = 'Words can be reviewed at any time. If this box is ticked, words reviewed before the interval has elapsed will also be moved to the next box. Otherwise, they will remain in the current box.';
 $string['name'] = 'Name';
 $string['no_vocabs_to_check'] = 'No vocab here.';
+$string['nopermissiontodeletelist'] = "You cannot delete lists that are not your own.";
 $string['notification_userprefs_updated'] = 'Userpreferences updated successfully.';
 $string['notifications_enabled'] = 'Enable e-mail notifications.';
 $string['notifications_enabled_help'] = 'If enabled, the scheduled task will send email notifications to students when they have due vocabulary items for this activity instance.';

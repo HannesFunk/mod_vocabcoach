@@ -45,9 +45,9 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ], 'mod_vocabcoach_delete_list' => [
-        'classname' => 'mod_vocabcoach\external\lists_api',
-        'methodname' => 'delete_list',
-        'description' => 'Remove a list with certain id.',
+        'classname' => 'mod_vocabcoach\external\delete_list',
+        'methodname' => 'execute',
+        'description' => 'Remove a list.',
         'type' => 'write',
         'ajax' => true,
     ],

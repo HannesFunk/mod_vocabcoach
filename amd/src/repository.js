@@ -72,14 +72,16 @@ export const getBoxArrayAJAX = (
  * Deletes a vocabulary list.
  *
  * @param {Number} listid The id of the list to delete.
+ * @param {Number} cmid The id of the course module.
  * @returns {Promise} Resolves once the list has been deleted.
  */
 export const deleteListAJAX = (
-    listid
+    listid, cmid
 ) => fetchMany([{
     methodname: 'mod_vocabcoach_delete_list',
     args: {
-        'listid': listid
+        'listid': listid,
+        'cmid': cmid
     },
 }])[0];
 

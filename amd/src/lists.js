@@ -7,7 +7,7 @@
  */
 
 import {addListToUserAJAX, deleteListAJAX, distributeListAJAX} from "./repository";
-import notification, {saveCancel} from 'core/notification';
+import notification, {saveCancel, saveCancelPromise} from 'core/notification';
 import Log from 'core/log';
 import {getString, getStrings} from 'core/str';
 import {getTableFromId, refreshTableContent, setFilters} from "core_table/dynamic";
@@ -105,23 +105,27 @@ const Selectors = {
  *
  * @param {Number} listid The id of the list to delete.
  */
-function deleteList(listid) {
-    getStrings([
+async function deleteList(listid) {
+    const [title, question, buttonLabel, successMessage] = await getStrings([
         {key: 'confirm', component: 'core'},
         {key: 'lists_confirm_delete', component: 'mod_vocabcoach'},
         {key: 'delete', component: 'core'},
         {key: 'lists_deleted', component: 'mod_vocabcoach'},
-    ]).then(([title, question, buttonLabel, successMessage]) => {
-        return saveCancel(title, question, buttonLabel, () => {
-            deleteListAJAX(listid).then(
-                () => {
-                    return refreshTableContent(getTableFromId('vocabcoach-lists')).then(
-                        () => notification.addNotification({type: 'success', message: successMessage})
-                    );
-                }
-            ).catch((error) => Log.debug(error));
-        }, null);
-    }).catch((error) => Log.debug(error));
+    ]);
+
+    try {
+        await saveCancelPromise(title, question, buttonLabel);
+    } catch {
+        return;
+    }
+
+    try {
+        await deleteListAJAX(listid, cmid);
+        await refreshTableContent(getTableFromId('vocabcoach-lists'));
+        await notification.addNotification({type: 'success', message: successMessage});
+    } catch (err) {
+        await notification.exception(err);
+    }
 }
 
 /**

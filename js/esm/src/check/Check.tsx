@@ -31,29 +31,39 @@
 
 import {useState} from 'react';
 import CheckCard from './CheckCard';
-import {Mode, NotificationModule, Vocab} from "../types";
+import {ButtonLabels, Mode, NotificationModule, Outcome, Vocab} from "../types";
 import CheckSettings from "./CheckSettings";
 import {updateVocab} from "../repository";
 import {requireAsync} from "@moodle/lms/core/amd";
 import {isMoodleAjaxError} from "@moodle/lms/core/ajax";
+import TypeArea from "@moodle/lms/mod_vocabcoach/check/TypeArea";
+import ProgressDots from "@moodle/lms/mod_vocabcoach/check/ProgressDots";
+import MoodleString from '@moodle/lms/core/String';
 
 export type CheckProps = {
     items: Vocab[],
     cmid: number,
     modelabels: Record<Mode, string>,
     currentmode: Mode,
-    buttonLabels: Record<'yes' | 'no', string>,
+    buttonLabels: ButtonLabels
     fromList: boolean
 }
 
 export default function Check({items, cmid, modelabels, currentmode, buttonLabels, fromList}: CheckProps) {
     const [vocabs, setVocabs] = useState(items);
     const [mode, setMode] = useState(currentmode);
+    const [outcomes, setOutcomes] = useState<Outcome[]>([]);
     const current = vocabs[0];
-    let total = vocabs.length;
+    let remaining = vocabs.length;
 
-    if (total === 0) {
-        return (<span>Done!</span>);
+    if (remaining === 0) {
+        const knownCount = outcomes.filter(o => o === 'known').length;
+        return (
+            <div className="check-summary">
+                <MoodleString identifier="check_summary_result" component="mod_vocabcoach"
+                    params={{known: knownCount, total: outcomes.length}}/>
+            </div>
+        );
     }
 
     return (
@@ -61,19 +71,26 @@ export default function Check({items, cmid, modelabels, currentmode, buttonLabel
             <div id="check-header">
                 <CheckSettings
                     currentmode={mode} modelabels={modelabels} onModeChange={handleModeChange} />
-                <div className="text-end">{total} left</div>
+                <div className="text-end">{remaining} left</div>
             </div>
-            <CheckCard
-                key={`${current.id}-${mode}`}
-                vocab={current}
-                mode={mode}
-                buttonLabels={buttonLabels}
-                onAnswer={handleAnswer} />
+            <ProgressDots total={items.length} outcomes={outcomes} />
+            {mode === 'type' ?
+                <TypeArea vocab={current} onAnswer={handleAnswer} buttonLabels={buttonLabels}
+                          key={`${current.id}-${mode}`} />
+                : <CheckCard
+                    key={`${current.id}-${mode}`}
+                    vocab={current}
+                    mode={mode}
+                    buttonLabels={buttonLabels}
+                    onAnswer={handleAnswer} />
+            }
         </div>
     );
 
     async function handleAnswer(known: boolean) {
         setVocabs(prev => prev.slice(1));
+        const outcome = known ? 'known' : 'unknown';
+        setOutcomes((prev) => [...prev, outcome]);
 
         if (fromList) {
             return;

@@ -7,16 +7,36 @@ import CheckSettings from "./CheckSettings";
 import { updateVocab } from "../repository";
 import { requireAsync } from "@moodle/lms/core/amd";
 import { isMoodleAjaxError } from "@moodle/lms/core/ajax";
+import TypeArea from "@moodle/lms/mod_vocabcoach/check/TypeArea";
+import ProgressDots from "@moodle/lms/mod_vocabcoach/check/ProgressDots";
+import String from "@moodle/lms/core/String";
 function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList }) {
   const [vocabs, setVocabs] = useState(items);
   const [mode, setMode] = useState(currentmode);
+  const [outcomes, setOutcomes] = useState([]);
   const current = vocabs[0];
-  let total = vocabs.length;
-  if (total === 0) {
-    return /* @__PURE__ */ jsxDEV("span", { children: "Done!" }, void 0, false, {
+  let remaining = vocabs.length;
+  if (remaining === 0) {
+    const knownCount = outcomes.filter((o) => o === "known").length;
+    return /* @__PURE__ */ jsxDEV("div", { className: "check-summary-mesasge", children: /* @__PURE__ */ jsxDEV(
+      String,
+      {
+        identifier: "check_summary_result",
+        component: "mod_vocabcoach",
+        params: { known: knownCount, total: outcomes.length }
+      },
+      void 0,
+      false,
+      {
+        fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+        lineNumber: 63,
+        columnNumber: 17
+      },
+      this
+    ) }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-      lineNumber: 56,
-      columnNumber: 17
+      lineNumber: 62,
+      columnNumber: 13
     }, this);
   }
   return /* @__PURE__ */ jsxDEV("div", { id: "check-container", children: [
@@ -32,25 +52,45 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-          lineNumber: 62,
+          lineNumber: 72,
           columnNumber: 17
         },
         this
       ),
       /* @__PURE__ */ jsxDEV("div", { className: "text-end", children: [
-        total,
+        remaining,
         " left"
       ] }, void 0, true, {
         fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-        lineNumber: 64,
+        lineNumber: 74,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-      lineNumber: 61,
+      lineNumber: 71,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV(
+    /* @__PURE__ */ jsxDEV(ProgressDots, { total: items.length, outcomes }, void 0, false, {
+      fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+      lineNumber: 76,
+      columnNumber: 13
+    }, this),
+    mode === "type" ? /* @__PURE__ */ jsxDEV(
+      TypeArea,
+      {
+        vocab: current,
+        onAnswer: handleAnswer,
+        buttonLabels
+      },
+      `${current.id}-${mode}`,
+      false,
+      {
+        fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+        lineNumber: 78,
+        columnNumber: 17
+      },
+      this
+    ) : /* @__PURE__ */ jsxDEV(
       CheckCard,
       {
         vocab: current,
@@ -62,18 +102,20 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-        lineNumber: 66,
-        columnNumber: 13
+        lineNumber: 80,
+        columnNumber: 19
       },
       this
     )
   ] }, void 0, true, {
     fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-    lineNumber: 60,
+    lineNumber: 70,
     columnNumber: 9
   }, this);
   async function handleAnswer(known) {
     setVocabs((prev) => prev.slice(1));
+    const outcome = known ? "known" : "unknown";
+    setOutcomes((prev) => [...prev, outcome]);
     if (fromList) {
       return;
     }

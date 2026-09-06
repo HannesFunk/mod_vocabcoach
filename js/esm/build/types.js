@@ -1,1 +1,1 @@
-const o=["front","back","random","type"];export{o as MODES};
+const e=["front","back","random","type"];export{e as MODES};

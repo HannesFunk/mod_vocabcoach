@@ -27,6 +27,7 @@ use mod_vocabcoach\external\vocab_api;
 require(__DIR__ . '/../../config.php');
 
 $cmid = required_param('id', PARAM_INT);
+$listid = optional_param('listid', null, PARAM_INT);
 
 $cm = get_coursemodule_from_id('vocabcoach', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
@@ -50,40 +51,40 @@ $userprefs = new \mod_vocabcoach\user_preferences($cmid, $USER->id);
 $checkcontext = [
     'force' => $force,
     'cmid' => $cmid,
-    'mode' => $userprefs->get_mode(),
+    'currentmode' => $userprefs->get_mode(),
+    'fromList' => $listid !== null,
 ];
-
-$listid = optional_param('listid', null, PARAM_INT);
 
 if ($listid) {
     $lm = new \mod_vocabcoach\list_manager($listid, $cmid);
     $checkcontext['subheadline']  = $lm->get_list()->get('title');
-    $vocabarray = $lm->get_vocabs();
-    $checkcontext['fromlist'] = true;
+    $checkcontext['items'] = $lm->get_vocabs();
 } else {
     $stage = required_param('stage', PARAM_INT);
     $checkcontext['subheadline']  = get_string('box', 'mod_vocabcoach') . " " . $stage;
 
     $vocabapi = new \mod_vocabcoach\external\vocab_api();
-    $vocabarray = vocab_api::clean_returnvalue(
+    $checkcontext['items'] = vocab_api::clean_returnvalue(
         vocab_api::get_user_vocabs_returns(),
         $vocabapi->get_user_vocabs($cmid, $stage, $force)
     );
-    $checkcontext['fromlist'] = false;
 }
 
-$checkcontext['itemsjson'] = json_encode($vocabarray);
-$checkcontext['modelabelsjson'] = json_encode([
+$checkcontext['modelabels'] = [
     'front' => get_string('checkmode_front', 'mod_vocabcoach'),
     'back' => get_string('checkmode_back', 'mod_vocabcoach'),
     'random' => get_string('checkmode_random', 'mod_vocabcoach'),
     'type' => get_string('checkmode_type', 'mod_vocabcoach'),
-]);
-$checkcontext['buttonlabelsjson'] = json_encode([
+];
+$checkcontext['buttonLabels'] = [
     'no' => get_string('check_button_no', 'mod_vocabcoach'),
     'yes' => get_string('check_button_yes', 'mod_vocabcoach'),
-]);
+    'typeCheck' => get_string('check_button_verify', 'mod_vocabcoach'),
+    'typeReveal' => get_string('check_button_reveal', 'mod_vocabcoach'),
+    'typeNo' => get_string('check_button_no', 'mod_vocabcoach'),
+    'typeOverride' => get_string('check_button_override', 'mod_vocabcoach'),
+];
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('mod_vocabcoach/check', $checkcontext);
+echo $OUTPUT->render_from_template('mod_vocabcoach/check', ['propsjson' => json_encode($checkcontext)]);
 echo $OUTPUT->footer();

@@ -33,14 +33,7 @@
 {{#react}}
     {
         "component": "@moodle/lms/mod_vocabcoach/check/Check",
-        "props": {
-            "cmid": {{cmid}},
-            "items" : {{{itemsjson}}},
-            "currentmode": "{{mode}}",
-            "modelabels": {{{modelabelsjson}}},
-            "buttonLabels": {{{buttonlabelsjson}}},
-            "fromlist": {{fromlist}}
-        }
+        "props": {{{propsjson}}}
     }
     <div class="d-flex justify-content-center align-items-center p-5">
         {{> core/loading }}

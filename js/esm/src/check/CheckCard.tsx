@@ -29,14 +29,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import type {Vocab, Mode} from '../types';
+import type {Vocab, Mode, ButtonLabels, CheckButtonLabels} from '../types';
 import {useState} from "react";
 
 type CheckCardProps = {
     vocab: Vocab,
     mode: Mode,
     onAnswer: (known: boolean) => void,
-    buttonLabels: Record<'yes' | 'no', string>
+    buttonLabels: CheckButtonLabels
 };
 
 export default function CheckCard({vocab, mode, onAnswer, buttonLabels}: CheckCardProps) {

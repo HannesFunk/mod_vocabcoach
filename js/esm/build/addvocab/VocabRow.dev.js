@@ -16,7 +16,7 @@ function VocabRow({ vocab, placeholders, onChange }) {
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/addvocab/VocabRow.tsx",
-        lineNumber: 30,
+        lineNumber: 28,
         columnNumber: 15
       },
       this
@@ -34,18 +34,18 @@ function VocabRow({ vocab, placeholders, onChange }) {
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/addvocab/VocabRow.tsx",
-        lineNumber: 33,
+        lineNumber: 31,
         columnNumber: 15
       },
       this
     )
   ] }, void 0, true, {
     fileName: "public/mod/vocabcoach/js/esm/src/addvocab/VocabRow.tsx",
-    lineNumber: 29,
+    lineNumber: 27,
     columnNumber: 11
   }, this) }, void 0, false, {
     fileName: "public/mod/vocabcoach/js/esm/src/addvocab/VocabRow.tsx",
-    lineNumber: 28,
+    lineNumber: 26,
     columnNumber: 7
   }, this);
 }

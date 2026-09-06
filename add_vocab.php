@@ -130,8 +130,12 @@ if ($mform->is_cancelled()) {
     }
 
     if ($formdata->list_distribute_now) {
-        $listsapi = new \mod_vocabcoach\external\lists_api();
-        $listsapi->distribute_list($listid, $cmid);
+        if (has_capability('mod/vocabcoach:distribute_lists', $context)) {
+            $lm = new \mod_vocabcoach\list_manager($listid, $cmid);
+            $lm->distribute_to_students();
+        } else {
+            notification::error(get_string('nopermissiontodistribute', 'mod_vocabcoach'));
+        }
     }
 
     redirect(

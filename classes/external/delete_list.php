@@ -22,6 +22,14 @@ use core_external\external_function_parameters;
 use core_external\external_value;
 use mod_vocabcoach\local\vocablist;
 
+/**
+ * delete_list: Webservice to delete a vocablist.
+ *
+ * @package   mod_vocabcoach
+ * @copyright 2023 onwards, Johannes Funk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Johannes Funk
+ */
 class delete_list extends external_api {
     /**
      * Returns description of execute() parameters.

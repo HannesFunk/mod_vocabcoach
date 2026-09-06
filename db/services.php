@@ -59,9 +59,9 @@ $functions = [
         'ajax' => true,
     ],
     'mod_vocabcoach_distribute_list' => [
-        'classname' => 'mod_vocabcoach\external\lists_api',
-        'methodname' => 'distribute_list',
-        'description' => 'Add all the new vocab from one list to dbs owned by any student of the course.',
+        'classname' => 'mod_vocabcoach\external\distribute_list',
+        'methodname' => 'execute',
+        'description' => 'Add all the new vocab from one list to dbs owned by all students of the course.',
         'type' => 'write',
         'ajax' => true,
     ],

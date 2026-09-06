@@ -16,6 +16,7 @@
 
 namespace mod_vocabcoach;
 
+use context_course;
 use core\context\module;
 use core\exception\moodle_exception;
 use mod_vocabcoach\local\vocablist;
@@ -36,9 +37,9 @@ class list_manager {
         $this->context = $context;
     }
 
-    public function get_vocabs(bool $onlyids = false): array {
+    public function get_vocabs(): array {
         global $DB;
-        $query = "SELECT vocab.id AS id". ($onlyids ? "" : ", front, back")." FROM {vocabcoach_vocab} vocab
+        $query = "SELECT vocab.id AS id, front, back FROM {vocabcoach_vocab} vocab
             JOIN {vocabcoach_list_vocabs} lc ON lc.vocabid = vocab.id 
             WHERE lc.listid = :listid";
         $params = ['listid' => $this->list->get('id')];
@@ -90,6 +91,29 @@ class list_manager {
                 "listid = :listid AND vocabid $insql",
                 $params
             );
+        }
+    }
+
+    public function distribute_to_students(): void {
+        global $DB;
+        $cmid = $this->context->instanceid;
+
+        $vocabids = array_column($this->get_vocabs(), 'id');
+        if (!$vocabids) {
+            return;
+        }
+
+        $vm = new vocab_manager();
+
+        $students = get_enrolled_users($this->context->get_course_context());
+        $transaction = $DB->start_delegated_transaction();
+        try {
+            foreach ($students as $student) {
+                $vm->add_vocab_ids_to_user($vocabids, $cmid, $student->id);
+            }
+            $transaction->allow_commit();
+        } catch (\Throwable $e) {
+            $transaction->rollback($e);
         }
     }
 }

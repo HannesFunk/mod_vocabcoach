@@ -164,13 +164,15 @@ class vocab_manager {
             return;
         }
 
+        $time = strtotime('2000-01-01 00:00:00');
+
         $rows = array_map(
             fn($vocabid) => [
                 'userid' => $userid,
                 'cmid' => $cmid,
                 'vocabid' => $vocabid,
                 'stage' => 1,
-                'lastchecked' => strtotime('2000-01-01 00:00:00'),
+                'lastchecked' => $time,
             ],
             $toadd
         );
@@ -199,18 +201,13 @@ class vocab_manager {
      * Adds an entire list to a user box.
      * @param int $listid
      * @param int $cmid
-     * @param int|null $userid
      */
-    public function add_list_to_user_database(int $listid, int $cmid, int $userid = null): void {
+    public function add_list_to_user_database(int $listid, int $cmid): void {
         global $USER;
-        if (!$userid) {
-            $userid = $USER->id;
-        }
-
-        $time = strtotime('2000-01-01 00:00:00');
+        $userid = $USER->id;
 
         $lm = new list_manager($listid, $cmid);
-        $vocabids = $lm->get_vocabs(true);
+        $vocabids = array_column($lm->get_vocabs(), 'id');
         self::add_vocab_ids_to_user($vocabids, $cmid, $userid);
     }
 

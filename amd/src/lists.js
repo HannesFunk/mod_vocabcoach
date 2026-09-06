@@ -7,7 +7,7 @@
  */
 
 import {addListToUserAJAX, deleteListAJAX, distributeListAJAX} from "./repository";
-import notification, {saveCancel, saveCancelPromise} from 'core/notification';
+import notification, {saveCancelPromise} from 'core/notification';
 import Log from 'core/log';
 import {getString, getStrings} from 'core/str';
 import {getTableFromId, refreshTableContent, setFilters} from "core_table/dynamic";
@@ -134,17 +134,24 @@ async function deleteList(listid) {
  * @param {Number} listid The id of the list to distribute.
  * @param {Number} vocabcoachId The course module id of the activity.
  */
-function distributeList(listid, vocabcoachId) {
-    getStrings([
+async function distributeList(listid, vocabcoachId) {
+    const [title, question, buttonLabel, successMessage] = await getStrings([
         {key: 'confirm', component: 'core'},
         {key: 'lists_confirm_distribute', component: 'mod_vocabcoach'},
         {key: 'confirm', component: 'core'},
         {key: 'lists_distributed', component: 'mod_vocabcoach'},
-    ]).then(([title, question, buttonLabel, successMessage]) => {
-        return saveCancel(title, question, buttonLabel, () => {
-            distributeListAJAX(listid, vocabcoachId).then(
-                () => notification.addNotification({type: 'success', message: successMessage})
-            ).catch((error) => Log.debug(error));
-        }, null);
-    }).catch((error) => Log.debug(error));
+    ]);
+
+    try {
+        await saveCancelPromise(title, question, buttonLabel);
+    } catch {
+        return;
+    }
+
+    try {
+        await distributeListAJAX(listid, vocabcoachId);
+        await notification.addNotification({type: 'success', message: successMessage});
+    } catch (err) {
+        await notification.exception(err);
+    }
 }

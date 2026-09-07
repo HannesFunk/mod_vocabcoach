@@ -4,11 +4,6 @@ import { jsxDEV } from "react/jsx-dev-runtime";
 import { useEffect, useRef, useState } from "react";
 const DOT_SPACING = 12;
 const RESERVED_WIDTH = 50;
-const OUTCOME_CLASSES = {
-  known: "dot-green",
-  unknown: "dot-red",
-  deleted: ""
-};
 function ProgressDots({ total, outcomes }) {
   const barRef = useRef(null);
   const [barWidth, setBarWidth] = useState(0);
@@ -23,7 +18,7 @@ function ProgressDots({ total, outcomes }) {
   }, []);
   const everyNth = getEveryNth(total, barWidth);
   const step = DOT_SPACING / everyNth;
-  return /* @__PURE__ */ jsxDEV("div", { id: "progress-bar", className: "mb-2", ref: barRef, children: Array.from({ length: total }, (unused, index) => {
+  return /* @__PURE__ */ jsxDEV("div", { id: "progress-bar", className: "my-3", ref: barRef, children: Array.from({ length: total }, (unused, index) => {
     const outcome = outcomes[index];
     const done = outcome !== void 0;
     return /* @__PURE__ */ jsxDEV(
@@ -31,9 +26,9 @@ function ProgressDots({ total, outcomes }) {
       {
         className: index % everyNth === 0 ? "" : "hidden",
         style: { transform: done ? `translateX(${index * step}px)` : `translateX(calc(100% - ${(total - index) * step}px))` },
-        children: /* @__PURE__ */ jsxDEV("div", { className: `vocab-dot ${done ? OUTCOME_CLASSES[outcome] : "unchecked"}` }, void 0, false, {
+        children: /* @__PURE__ */ jsxDEV("div", { className: `vocab-dot ${outcome ? "dot-green" : "dot-red"}` }, void 0, false, {
           fileName: "public/mod/vocabcoach/js/esm/src/check/ProgressDots.tsx",
-          lineNumber: 65,
+          lineNumber: 59,
           columnNumber: 25
         }, this)
       },
@@ -41,14 +36,14 @@ function ProgressDots({ total, outcomes }) {
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/check/ProgressDots.tsx",
-        lineNumber: 60,
+        lineNumber: 54,
         columnNumber: 21
       },
       this
     );
   }) }, void 0, false, {
     fileName: "public/mod/vocabcoach/js/esm/src/check/ProgressDots.tsx",
-    lineNumber: 55,
+    lineNumber: 49,
     columnNumber: 9
   }, this);
 }

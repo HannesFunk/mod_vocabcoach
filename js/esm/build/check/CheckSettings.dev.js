@@ -4,8 +4,8 @@ import { jsxDEV } from "react/jsx-dev-runtime";
 import { MODES } from "../types";
 import String from "@moodle/lms/core/String";
 function CheckSettings({ currentmode, modelabels, onModeChange }) {
-  return /* @__PURE__ */ jsxDEV("div", { className: "d-flex align-items-center ml-auto", children: [
-    /* @__PURE__ */ jsxDEV("label", { htmlFor: "checkmode-select", className: "mr-2 ml-auto", children: /* @__PURE__ */ jsxDEV(String, { identifier: "checkmode", component: "mod_vocabcoach" }, void 0, false, {
+  return /* @__PURE__ */ jsxDEV("div", { children: [
+    /* @__PURE__ */ jsxDEV("label", { htmlFor: "checkmode-select", className: "mr-2", children: /* @__PURE__ */ jsxDEV(String, { identifier: "checkmode", component: "mod_vocabcoach" }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/CheckSettings.tsx",
       lineNumber: 44,
       columnNumber: 17

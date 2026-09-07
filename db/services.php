@@ -65,9 +65,9 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
-    'mod_vocabcoach_remove_vocab_from_user' => [
+    'mod_vocabcoach_delete_vocab_from_user' => [
         'classname' => 'mod_vocabcoach\external\vocab_api',
-        'methodname' => 'remove_vocab_from_user',
+        'methodname' => 'delete_vocab_from_user',
         'description' => 'Removes the vocabitem with given id from the box of a user.',
         'type' => 'write',
         'ajax' => true,

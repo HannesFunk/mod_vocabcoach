@@ -20,9 +20,22 @@ const addVocabsToUser = /* @__PURE__ */ __name((cmid, vocabsToAdd) => fetchOne({
     vocabs: vocabsToAdd
   }
 }), "addVocabsToUser");
+const deleteVocabFromUser = /* @__PURE__ */ __name((cmid, vocabid) => fetchOne({
+  methodname: "mod_vocabcoach_delete_vocab_from_user",
+  args: {
+    cmid,
+    vocabid
+  }
+}), "deleteVocabFromUser");
+const editUserVocab = /* @__PURE__ */ __name((id, cmid, front, back) => fetchOne({
+  methodname: "mod_vocabcoach_edit_user_vocab",
+  args: { vocabid: id, cmid, front, back }
+}), "editUserVocab");
 export {
   addVocabsToList,
   addVocabsToUser,
+  deleteVocabFromUser,
+  editUserVocab,
   updateVocab
 };
 //# sourceMappingURL=repository.dev.js.map

@@ -39,8 +39,8 @@ type CheckSettingsProps = {
 
 export default function CheckSettings({currentmode, modelabels, onModeChange}: CheckSettingsProps) {
     return (
-        <div className="d-flex align-items-center ml-auto">
-            <label htmlFor="checkmode-select" className="mr-2 ml-auto">
+        <div>
+            <label htmlFor="checkmode-select" className="mr-2">
                 <String identifier="checkmode" component="mod_vocabcoach" />
             </label>
             <select id="checkmode-select" className="custom-select w-auto" value={currentmode}

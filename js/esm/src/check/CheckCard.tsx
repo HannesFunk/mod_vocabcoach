@@ -31,6 +31,7 @@
 
 import type {Vocab, Mode, ButtonLabels, CheckButtonLabels} from '../types';
 import {useState} from "react";
+import CheckLabel from "@moodle/lms/mod_vocabcoach/check/CheckLabel";
 
 type CheckCardProps = {
     vocab: Vocab,
@@ -60,19 +61,13 @@ export default function CheckCard({vocab, mode, onAnswer, buttonLabels}: CheckCa
                 <div id="check-box-front"
                      className="check-box d-flex"
                      onClick={() => setRevealed(true)}>
-                    <div id="check-front"
-                         className={`check-label ${(concealed === 'front' && !revealed) ? 'visually-hidden' : ''}`}>
-                        {vocab.front}
-                    </div>
+                    <CheckLabel id="check-front" text={vocab.front} concealed={concealed === 'front' && !revealed} />
                 </div>
                 <div
                     id="check-box-back"
                     className="check-box d-flex"
                     onClick={() => setRevealed(true)}>
-                    <div id="check-back"
-                        className={`check-label ${(concealed === 'back' && !revealed) ? 'visually-hidden' : ''}`}>
-                        {vocab.back}
-                    </div>
+                    <CheckLabel id="check-back" text={vocab.back} concealed={concealed === 'back' && !revealed} />
                 </div>
             </div>
 

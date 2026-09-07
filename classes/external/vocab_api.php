@@ -16,18 +16,14 @@
 
 namespace mod_vocabcoach\external;
 
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once("{$CFG->libdir}/externallib.php");
-require_once(__DIR__ . '/../vocabhelper.php');
-
-use core\exception\invalid_parameter_exception;
 use core\exception\required_capability_exception;
 use core_external\external_api;
+use core_external\external_description;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
+use mod_vocabcoach\vocab_manager;
 use mod_vocabcoach\vocabhelper;
 
 /**
@@ -56,10 +52,10 @@ class vocab_api extends external_api {
     /**
      * Returns description of update_vocab() result value.
      *
-     * @return external_value
+     * @return external_description|null
      */
-    public static function update_vocab_returns(): external_value {
-        return new external_value(PARAM_BOOL, 'True.');
+    public static function update_vocab_returns(): ?external_description {
+        return null;
     }
 
     /**
@@ -67,10 +63,8 @@ class vocab_api extends external_api {
      * @param int $id ID of the vocab item.
      * @param int $cmid Course module id
      * @param bool $known
-     * @return bool
-     * @throws \moodle_exception|invalid_parameter_exception|required_capability_exception
      */
-    public static function update_vocab(int $id, int $cmid, bool $known): bool {
+    public static function update_vocab(int $id, int $cmid, bool $known): void {
         global $DB, $USER;
 
         ['id' => $id, 'known' => $known] = self::validate_parameters(
@@ -91,7 +85,7 @@ class vocab_api extends external_api {
         $record->stage = $known ? min($record->stage + 1, 5) : 1;
         $record->lastchecked = time();
 
-        return $DB->update_record('vocabcoach_vocabdata', $record);
+        $DB->update_record('vocabcoach_vocabdata', $record);
     }
 
     /**
@@ -220,43 +214,45 @@ class vocab_api extends external_api {
     }
 
     /**
-     * Returns description of remove_vocab_from_user() parameters.
+     * Returns description of delete_vocab_from_user() parameters.
      *
      * @return external_function_parameters
      */
-    public static function remove_vocab_from_user_parameters(): external_function_parameters {
+    public static function delete_vocab_from_user_parameters(): external_function_parameters {
         return new external_function_parameters([
-                'id' => new external_value(PARAM_INT),
+            'vocabid' => new external_value(PARAM_INT),
+            'cmid' => new external_value(PARAM_INT),
         ]);
     }
 
     /**
-     * Returns description of remove_vocab_from_user() result value.
+     * Returns description of delete_vocab_from_user() result value.
      *
-     * @return external_single_structure
+     * @return external_description|null
      */
-    public static function remove_vocab_from_user_returns(): external_single_structure {
-        return new external_single_structure([
-                'success' => new external_value(PARAM_BOOL, 'whether the removal was successful.'),
-        ]);
+    public static function delete_vocab_from_user_returns(): ?external_description {
+        return null;
     }
 
     /**
      * Removes one vocab item from a user box.
-     * @param int $dataid
-     * @return array
+     * @param int $vocabid ID of the vocab to be delelted
+     * @param int $cmid course module ID
      * @throws \dml_exception
      * @throws \invalid_parameter_exception
      */
-    public static function remove_vocab_from_user(int $dataid): array {
-        self::validate_parameters(
-            self::remove_vocab_from_user_parameters(),
-            ['id' => $dataid]
+    public static function delete_vocab_from_user(int $vocabid, int $cmid): void {
+        global $USER;
+        ['vocabid' => $vocabid, 'cmid' => $cmid] = self::validate_parameters(
+            self::delete_vocab_from_user_parameters(),
+            ['vocabid' => $vocabid, 'cmid' => $cmid]
         );
 
-        global $DB;
-        $DB->delete_records('vocabcoach_vocabdata', ['id' => $dataid]);
-        return ['success' => true];
+        $context = \core\context\module::instance($cmid);
+        self::validate_context($context);
+
+        $vm = new vocab_manager();
+        $vm->delete_vocab_from_user($vocabid, $cmid, $USER->id);
     }
 
     /**
@@ -307,7 +303,8 @@ class vocab_api extends external_api {
         return new external_function_parameters([
                 'front' => new external_value(PARAM_TEXT),
                 'back' => new external_value(PARAM_TEXT),
-                'dataid' => new external_value(PARAM_INT),
+                'vocabid' => new external_value(PARAM_INT),
+                'cmid' => new external_value(PARAM_INT),
         ]);
     }
 
@@ -318,7 +315,9 @@ class vocab_api extends external_api {
      */
     public static function edit_user_vocab_returns(): external_single_structure {
         return new external_single_structure([
-                'dataid' => new external_value(PARAM_INT, 'the dataid of the new vocab'),
+            'id' => new external_value(PARAM_INT, 'the vocabid of the new vocab'),
+            'front' => new external_value(PARAM_TEXT, 'Front of the new vocab'),
+            'back' => new external_value(PARAM_TEXT, 'Back of the new vocab'),
         ]);
     }
 
@@ -327,34 +326,27 @@ class vocab_api extends external_api {
      *
      * @param string $front
      * @param string $back
-     * @param int $dataid
+     * @param int $vocabid
      * @return array
      */
-    public static function edit_user_vocab(string $front, string $back, int $dataid): array {
+    public static function edit_user_vocab(string $front, string $back, int $vocabid, int $cmid): array {
+        global $USER;
 
-        global $DB, $USER;
+        ['front' => $front, 'back' => $back, 'vocabid' => $vocabid, 'cmid' => $cmid] = self::validate_parameters(
+            self::edit_user_vocab_parameters(),
+            ['front' => $front, 'back' => $back, 'vocabid' => $vocabid, 'cmid' => $cmid]
+        );
+        $context = \core\context\module::instance($cmid);
+        self::validate_context($context);
+        require_capability('mod/vocabcoach:view', $context);
 
-        $vm = new \mod_vocabcoach\vocab_manager($USER->id);
+        $vm = new \mod_vocabcoach\vocab_manager();
+        $newvocab = $vm->edit_user_vocab($vocabid, $front, $back, $cmid, $USER->id);
 
-        $vocab = (object)[
-            'front' => $front,
-            'back' => $back,
+        return [
+            'id' => $newvocab->get('id'),
+            'front' => $newvocab->get('front'),
+            'back' => $newvocab->get('back'),
         ];
-
-        $newvocabid = $vm->insert_vocab($vocab);
-        $datarecord = $DB->get_record('vocabcoach_vocabdata', ['id' => $dataid]);
-        $newvocabdata = (object)[
-            'stage' => $datarecord->stage,
-            'userid' => $datarecord->userid,
-            'lastchecked' => $datarecord->lastchecked,
-            'cmid' => $datarecord->cmid,
-            'vocabid' => $newvocabid,
-        ];
-
-        $newdataid = $DB->insert_record('vocabcoach_vocabdata', $newvocabdata);
-        $DB->delete_records('vocabcoach_vocabdata', ['id' => $dataid]);
-        $vm->remove_if_unused($datarecord->vocabid);
-
-        return ['dataid' => $newdataid];
     }
 }

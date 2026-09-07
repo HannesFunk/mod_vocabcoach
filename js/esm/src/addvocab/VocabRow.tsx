@@ -27,9 +27,11 @@ export function VocabRow({vocab, placeholders, onChange}: VocabRowProps) {
           <div className="col-md-9 offset-md-3 d-flex align-items-center gap-3 felement">
               <input type="text" className="form-control"
                      value={vocab.front} placeholder={placeholders.front}
+                     maxLength={255}
                      onChange={(e) => onChange('front', e.target.value)} />
               <input type="text" className="form-control"
                      value={vocab.back} placeholder={placeholders.back}
+                     maxLength={255}
                      onChange={e => onChange('back', e.target.value)} />
           </div>
       </div>

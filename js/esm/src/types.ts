@@ -28,11 +28,14 @@ export type VocabDraft = {
     back: string
 }
 
-export type Outcome = 'known' | 'unknown' | 'deleted';
-
 export type NotificationModule = {
     addNotification: (n: {message: string, type?: string}) => Promise<void>;
     exception: (err: MoodleAjaxError | Error) => Promise<void>;
+    deleteCancelPromise: (
+        title: string | Promise<string>,
+        question: string | Promise<string>,
+        deleteLabel?: string | Promise<string>,
+    ) => Promise<void>;
 }
 
 export type CheckButtonLabels = Record<'yes' | 'no', string>;

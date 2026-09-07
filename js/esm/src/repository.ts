@@ -14,6 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 import {fetchOne} from '@moodle/lms/core/ajax';
+import {Vocab} from "@moodle/lms/mod_vocabcoach/types";
 
 export const updateVocab = (
     id: number,
@@ -46,4 +47,25 @@ export const addVocabsToUser = (
         cmid: cmid,
         vocabs: vocabsToAdd
     }
+});
+
+export const deleteVocabFromUser = (
+    cmid: number,
+    vocabid: number,
+) => fetchOne<void>({
+    methodname: 'mod_vocabcoach_delete_vocab_from_user',
+    args: {
+        cmid: cmid,
+        vocabid: vocabid,
+    }
+});
+
+export const editUserVocab = (
+    id: number,
+    cmid: number,
+    front: string,
+    back: string,
+) => fetchOne<Vocab>({
+    methodname: 'mod_vocabcoach_edit_user_vocab',
+    args: {vocabid: id, cmid, front, back},
 });

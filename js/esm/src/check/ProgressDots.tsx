@@ -14,7 +14,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 import {useEffect, useRef, useState} from 'react';
-import type {Outcome} from '../types';
 
 /** Horizontal distance between two dots, in pixels. Matches the dot size in check.css. */
 const DOT_SPACING = 12;
@@ -23,15 +22,10 @@ const DOT_SPACING = 12;
 const RESERVED_WIDTH = 50;
 
 /** Modifier class used to colour a dot, per outcome. Deleted items advance the bar uncoloured. */
-const OUTCOME_CLASSES: Record<Outcome, string> = {
-    known: 'dot-green',
-    unknown: 'dot-red',
-    deleted: '',
-};
 
 type ProgressDotsProps = {
     total: number,
-    outcomes: Outcome[]
+    outcomes: boolean[]
 };
 
 export default function ProgressDots({total, outcomes}: ProgressDotsProps) {
@@ -52,7 +46,7 @@ export default function ProgressDots({total, outcomes}: ProgressDotsProps) {
     const step = DOT_SPACING / everyNth;
 
     return (
-        <div id="progress-bar" className="mb-2" ref={barRef}>
+        <div id="progress-bar" className="my-3" ref={barRef}>
             {Array.from({length: total}, (unused, index) => {
                 const outcome = outcomes[index];
                 const done = outcome !== undefined;
@@ -62,7 +56,7 @@ export default function ProgressDots({total, outcomes}: ProgressDotsProps) {
                          style={{transform: done
                              ? `translateX(${index * step}px)`
                              : `translateX(calc(100% - ${(total - index) * step}px))`}}>
-                        <div className={`vocab-dot ${done ? OUTCOME_CLASSES[outcome] : 'unchecked'}`} />
+                        <div className={`vocab-dot ${outcome ? 'dot-green' : 'dot-red'}`} />
                     </div>
                 );
             })}

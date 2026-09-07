@@ -76,10 +76,16 @@ class vocab_manager {
 
     public function get_or_create_vocab(string $front, string $back): vocab {
         global $USER;
+
+        if (\core_text::strlen($front) > 255 || \core_text::strlen($back) > 255) {
+            throw new \core\exception\moodle_exception('vocabtoolong', 'mod_vocabcoach');
+        }
+
         $existing = vocab::get_record(['front' => $front, 'back' => $back]);
         if ($existing) {
             return $existing;
         }
+
 
         $newvocab = [
             'front' => $front,
@@ -254,5 +260,41 @@ class vocab_manager {
 
         $count = $DB->count_records('vocabcoach_vocabdata', ['vocabid' => $vocabid]);
         return $count > 0;
+    }
+
+    public function delete_vocab_from_user(int $vocabid, int $cmid, int $userid): void {
+        global $DB;
+
+        $item = $DB->get_record(
+            'vocabcoach_vocabdata',
+            ['vocabid' => $vocabid, 'userid' => $userid, 'cmid' => $cmid],
+            'id',
+            MUST_EXIST
+        );
+
+        $DB->delete_records('vocabcoach_vocabdata', ['id' => $item->id]);
+    }
+
+    public function edit_user_vocab(int $vocabid, string $front, string $back, int $cmid, int $userid): local\vocab {
+        global $DB;
+        $newvocab = self::get_or_create_vocab($front, $back);
+
+        $DB->delete_records(
+            'vocabcoach_vocabdata',
+            ['cmid' => $cmid, 'userid'  => $userid, 'vocabid' => $newvocab->get('id')]
+        );
+
+        $datarecord = $DB->get_record(
+            'vocabcoach_vocabdata',
+            ['cmid' => $cmid, 'userid'  => $userid, 'vocabid' => $vocabid],
+            '*',
+            MUST_EXIST
+        );
+
+        $datarecord->vocabid = $newvocab->get('id');
+        $DB->update_record('vocabcoach_vocabdata', $datarecord);
+        self::remove_if_unused($vocabid);
+
+        return $newvocab;
     }
 }

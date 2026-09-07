@@ -10,6 +10,7 @@ function VocabRow({ vocab, placeholders, onChange }) {
         className: "form-control",
         value: vocab.front,
         placeholder: placeholders.front,
+        maxLength: 255,
         onChange: (e) => onChange("front", e.target.value)
       },
       void 0,
@@ -28,13 +29,14 @@ function VocabRow({ vocab, placeholders, onChange }) {
         className: "form-control",
         value: vocab.back,
         placeholder: placeholders.back,
+        maxLength: 255,
         onChange: (e) => onChange("back", e.target.value)
       },
       void 0,
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/addvocab/VocabRow.tsx",
-        lineNumber: 31,
+        lineNumber: 32,
         columnNumber: 15
       },
       this

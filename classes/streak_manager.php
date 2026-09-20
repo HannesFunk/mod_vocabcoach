@@ -48,25 +48,15 @@ class streak_manager
     /**
      * Get the current streak info of the user.
      * @param string $type Type of the streak
-     * @return object Current streak
+     * @return object|null Current streak
      */
-    public function get_streak(string $type): object {
+    public function get_streak(string $type): object|null {
         global $DB;
         $record = $DB->get_record(
             'vocabcoach_streaks',
             ['userid' => $this->userid, 'cmid' => $this->cmid, 'type' => $type]
         );
-
-        if (!$record) {
-            return (object)[
-                'userid' => $this->userid,
-                'cmid' => $this->cmid,
-                'type' => $type,
-                'streak' => 1,
-                'timemodified' => 0,
-            ];
-        }
-        return $record;
+        return $record ?: null;
     }
 
     /**
@@ -105,15 +95,21 @@ class streak_manager
      * @param string $type Streak type
      * @throws \core\exception\invalid_parameter_exception|dml_exception
      */
-    public function update(string $type): void {
+    public function update(string $type, bool $extend = true): void {
         if (!in_array($type, $this->types)) {
             throw new invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
         }
         global $DB;
         $streak = $this->get_streak($type);
 
-        if (empty($streak->id)) {
-            $streak->timemodified = time();
+        if (!$streak) {
+            $streak = (object)[
+                'userid' => $this->userid,
+                'cmid' => $this->cmid,
+                'type' => $type,
+                'streak' => $extend ? 1 : 0,
+                'timemodified' => time(),
+            ];
             $DB->insert_record('vocabcoach_streaks', $streak);
             return;
         }
@@ -121,9 +117,9 @@ class streak_manager
         if ($streak->timemodified < strtotime("-2 days midnight")) {
             // Streak can no longer be restored.
             $streak->timemodified = time();
-            $streak->streak = 1;
+            $streak->streak = $extend ? 1 : 0;
             $DB->update_record('vocabcoach_streaks', $streak);
-        } else if ($streak->timemodified < strtotime("today midnight")) {
+        } else if ($streak->timemodified < strtotime("today midnight") && $extend) {
             // Streak has not yet been updated and doesn't need to be restored.
             $streak->timemodified = time();
             $streak->streak++;

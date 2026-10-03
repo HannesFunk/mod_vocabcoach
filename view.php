@@ -59,7 +59,7 @@ $boxmanager = new box_manager($cmid, $USER->id);
 $boxdata = $boxmanager->get_box_details();
 
 $sm = new streak_manager($USER->id, $cm->id);
-$sm->update('login');
+$sm->update('login', true);
 $sm->update('checkall', $boxmanager->get_total_due() === 0);
 $streakinfo = $sm->get_streak_info();
 

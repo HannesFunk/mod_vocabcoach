@@ -75,53 +75,97 @@ final class streak_manager_test extends \advanced_testcase {
         ]);
     }
 
-    /**
-     * Test streak remains unchanged when already updated today.
+   /**
+     * Data provider for test_update_streak_rules.
+     *
+     * Times are relative strings for strtotime(), evaluated when the test runs.
+     *
+     * @return array
      */
-    public function test_update_type_keeps_today_streak(): void {
-        $this->resetAfterTest(true);
-
-        [, $user, , $cm] = $this->create_test_context();
-        $this->create_streak_record($user->id, $cm->id, 17, strtotime('-2 hours'));
-
-        $sm = new streak_manager($user->id, $cm->id);
-        $sm->update('login');
-        $streakinfo = $sm->get_streak_info('login');
-
-        $this->assertEquals(17, $streakinfo->streak);
+    public static function update_streak_rules_provider(): array {
+        return [
+            'today, extend' => ['today 00:00:01', true, 4],
+            'today, no extend' => ['today 00:00:01', false, 4],
+            'yesterday start, extend' => ['yesterday 00:00:01', true, 5],
+            'yesterday start, no extend' => ['yesterday 00:00:01', false, 4],
+            'yesterday noon, extend' => ['yesterday 12:01', true, 5],
+            'yesterday noon, no extend' => ['yesterday 12:011', false, 4],
+            'yesterday end, extend' => ['yesterday 23:59:59', true, 5],
+            'yesterday end, no extend' => ['yesterday 23:59:59', false, 4],
+            'day before yesterday end, extend' => ['today -1 day -1 second', true, 1],
+            'day before yesterday end, no extend' => ['today -1 day -1 second', false, 0],
+            'three days ago, extend' => ['-3 days 12:00', true, 1],
+            'three days ago, no extend' => ['-3 days 12:00', false, 0],
+        ];
     }
 
     /**
-     * Test streak increments when the last update was yesterday.
+     * Test the streak rules depending on the last update and the extend flag.
+     *
+     * @param string $lastupdate Relative time of the last streak update.
+     * @param bool $extend Whether the streak should be extended.
+     * @param int $expected Expected streak after the update.
      */
-    public function test_update_type_increments_yesterday_streak(): void {
+    #[\PHPUnit\Framework\Attributes\DataProvider('update_streak_rules_provider')]
+    public function test_update_streak_rules(string $lastupdate, bool $extend, int $expected): void {
+        $this->resetAfterTest(true);
+
+        [, $user, , $cm] = $this->create_test_context();
+        $this->create_streak_record($user->id, $cm->id, 4, strtotime($lastupdate));
+
+        $before = time();
+        $sm = new streak_manager($user->id, $cm->id);
+        $sm->update('login', $extend);
+        $streak = $sm->get_streak('login');
+
+        $this->assertEquals($expected, $streak->streak);
+        $this->assertGreaterThanOrEqual($before, $streak->timemodified);
+    }
+
+    /**
+     * Test a new streak record is created when none exists.
+     */
+    public function test_update_creates_record(): void {
+        $this->resetAfterTest(true);
+
+        [, $user, , $cm] = $this->create_test_context();
+
+        $sm = new streak_manager($user->id, $cm->id);
+        $sm->update('login');
+        $sm->update('checkall', false);
+
+        $this->assertEquals(1, $sm->get_streak('login')->streak);
+        $this->assertEquals(0, $sm->get_streak('checkall')->streak);
+    }
+
+    /**
+     * Test streak types are tracked independently.
+     */
+    public function test_update_only_affects_given_type(): void {
         $this->resetAfterTest(true);
 
         [, $user, , $cm] = $this->create_test_context();
         $yesterday = strtotime('yesterday 12:00');
-        $this->create_streak_record($user->id, $cm->id, 4, $yesterday);
+        $this->create_streak_record($user->id, $cm->id, 4, $yesterday, 'login');
+        $this->create_streak_record($user->id, $cm->id, 7, $yesterday, 'checkall');
 
         $sm = new streak_manager($user->id, $cm->id);
         $sm->update('login');
-        $streakinfo = $sm->get_streak_info('login');
 
-        $this->assertEquals(5, $streakinfo->streak);
+        $this->assertEquals(5, $sm->get_streak('login')->streak);
+        $this->assertEquals(7, $sm->get_streak('checkall')->streak);
     }
 
     /**
-     * Test streak resets when the last update is older than yesterday.
+     * Test an invalid streak type is rejected.
      */
-    public function test_update_type_resets_after_gap(): void {
+    public function test_update_invalid_type(): void {
         $this->resetAfterTest(true);
 
         [, $user, , $cm] = $this->create_test_context();
-        $olderthanrestorewindow = strtotime('-3 days 12:00');
-        $this->create_streak_record($user->id, $cm->id, 9, $olderthanrestorewindow);
 
         $sm = new streak_manager($user->id, $cm->id);
-        $sm->update('login');
-        $streakinfo = $sm->get_streak_info('login');
-
-        $this->assertEquals(1, $streakinfo->streak);
+        $this->expectException(\invalid_parameter_exception::class);
+        $sm->update('invalid');
     }
 }

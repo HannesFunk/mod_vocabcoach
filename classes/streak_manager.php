@@ -83,11 +83,11 @@ class streak_manager
         }
     }
 
-    public static function is_active(object $streak): bool {
-        if ($streak->timemodified > strtotime('today midnight')) {
-            return true;
+    public static function is_active(object|null $streak): bool {
+        if (!$streak) {
+            return false;
         }
-        return false;
+        return $streak->timemodified > strtotime('today midnight');
     }
 
     /**
@@ -95,7 +95,7 @@ class streak_manager
      * @param string $type Streak type
      * @throws \core\exception\invalid_parameter_exception|dml_exception
      */
-    public function update(string $type, bool $extend = true): void {
+    public function update(string $type, bool $extend): void {
         if (!in_array($type, $this->types)) {
             throw new invalid_parameter_exception("Invalid type for streak. Allowed types: " . implode(", ", $this->types));
         }
@@ -114,16 +114,25 @@ class streak_manager
             return;
         }
 
-        if ($streak->timemodified < strtotime("-2 days midnight")) {
-            // Streak can no longer be restored.
+        if ($streak->timemodified > strtotime("today midnight")) {
+            // Streak has already been updated today.
             $streak->timemodified = time();
-            $streak->streak = $extend ? 1 : 0;
-            $DB->update_record('vocabcoach_streaks', $streak);
-        } else if ($streak->timemodified < strtotime("today midnight") && $extend) {
-            // Streak has not yet been updated and doesn't need to be restored.
+        } else if ($streak->timemodified > strtotime("yesterday midnight")) {
+            // Streak has not yet been updated.
             $streak->timemodified = time();
-            $streak->streak++;
-            $DB->update_record('vocabcoach_streaks', $streak);
+            if ($extend) {
+                $streak->streak++;
+            }
+        } else {
+            // Streak is reset.
+            $streak->timemodified = time();
+            if ($extend) {
+                $streak->streak = 1;
+            } else {
+                $DB->delete_records('vocabcoach_streaks', ['id' => $streak->id]);
+                return;
+            }
         }
+        $DB->update_record('vocabcoach_streaks', $streak);
     }
 }

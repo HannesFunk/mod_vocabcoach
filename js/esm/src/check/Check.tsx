@@ -42,6 +42,7 @@ import {requireAsync} from "@moodle/lms/core/amd";
 import {isMoodleAjaxError} from "@moodle/lms/core/ajax";
 import {getString} from "@moodle/lms/core/stringUtils";
 import EditVocabForm from "@moodle/lms/mod_vocabcoach/check/EditVocabForm";
+import {relativeUrl} from "@moodle/lms/core/url";
 
 export type CheckProps = {
     items: Vocab[],
@@ -67,6 +68,9 @@ export default function Check({items, cmid, modelabels, currentmode, buttonLabel
             <div className="check-summary">
                 <MoodleString identifier="check_summary_result" component="mod_vocabcoach"
                     params={{known: knownCount, total: outcomes.length}}/>
+                <a className="btn btn-primary mt-3" href={relativeUrl('/mod/vocabcoach/view.php', {id: cmid})}>
+                    <MoodleString identifier="back" component="mod_vocabcoach" />
+                </a>
             </div>
         );
     }

@@ -13,6 +13,7 @@ import { requireAsync } from "@moodle/lms/core/amd";
 import { isMoodleAjaxError } from "@moodle/lms/core/ajax";
 import { getString } from "@moodle/lms/core/stringUtils";
 import EditVocabForm from "@moodle/lms/mod_vocabcoach/check/EditVocabForm";
+import { relativeUrl } from "@moodle/lms/core/url";
 function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList }) {
   const [vocabs, setVocabs] = useState(items);
   const [mode, setMode] = useState(currentmode);
@@ -22,24 +23,35 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
   let remaining = vocabs.length;
   if (remaining === 0) {
     const knownCount = outcomes.filter((o) => o).length;
-    return /* @__PURE__ */ jsxDEV("div", { className: "check-summary", children: /* @__PURE__ */ jsxDEV(
-      MoodleString,
-      {
-        identifier: "check_summary_result",
-        component: "mod_vocabcoach",
-        params: { known: knownCount, total: outcomes.length }
-      },
-      void 0,
-      false,
-      {
+    return /* @__PURE__ */ jsxDEV("div", { className: "check-summary", children: [
+      /* @__PURE__ */ jsxDEV(
+        MoodleString,
+        {
+          identifier: "check_summary_result",
+          component: "mod_vocabcoach",
+          params: { known: knownCount, total: outcomes.length }
+        },
+        void 0,
+        false,
+        {
+          fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+          lineNumber: 69,
+          columnNumber: 17
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV("a", { className: "btn btn-primary mt-3", href: relativeUrl("/mod/vocabcoach/view.php", { id: cmid }), children: /* @__PURE__ */ jsxDEV(MoodleString, { identifier: "back", component: "mod_vocabcoach" }, void 0, false, {
         fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-        lineNumber: 68,
+        lineNumber: 72,
+        columnNumber: 21
+      }, this) }, void 0, false, {
+        fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
+        lineNumber: 71,
         columnNumber: 17
-      },
-      this
-    ) }, void 0, false, {
+      }, this)
+    ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-      lineNumber: 67,
+      lineNumber: 68,
       columnNumber: 13
     }, this);
   }
@@ -56,7 +68,7 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-          lineNumber: 77,
+          lineNumber: 81,
           columnNumber: 17
         },
         this
@@ -66,27 +78,27 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
         " left"
       ] }, void 0, true, {
         fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-        lineNumber: 79,
+        lineNumber: 83,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-      lineNumber: 76,
+      lineNumber: 80,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV(ProgressDots, { total: items.length, outcomes }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-      lineNumber: 81,
+      lineNumber: 85,
       columnNumber: 13
     }, this),
     fromList ? "" : /* @__PURE__ */ jsxDEV(VocabAction, { onDelete: () => deleteVocab(current), onEdit: () => setEditing(true) }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-      lineNumber: 84,
+      lineNumber: 88,
       columnNumber: 19
     }, this),
     editing ? /* @__PURE__ */ jsxDEV(EditVocabForm, { vocab: current, onSave: handleSaveEdit, onCancel: () => setEditing(false) }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-      lineNumber: 86,
+      lineNumber: 90,
       columnNumber: 19
     }, this) : mode === "type" ? /* @__PURE__ */ jsxDEV(
       TypeArea,
@@ -99,7 +111,7 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-        lineNumber: 88,
+        lineNumber: 92,
         columnNumber: 21
       },
       this
@@ -115,14 +127,14 @@ function Check({ items, cmid, modelabels, currentmode, buttonLabels, fromList })
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-        lineNumber: 90,
+        lineNumber: 94,
         columnNumber: 23
       },
       this
     )
   ] }, void 0, true, {
     fileName: "public/mod/vocabcoach/js/esm/src/check/Check.tsx",
-    lineNumber: 75,
+    lineNumber: 79,
     columnNumber: 9
   }, this);
   async function handleAnswer(known) {

@@ -1,5 +1,45 @@
 {
+  "addvocab/AddVocab": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "addvocab/VocabRow": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
   "check": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/Check": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/CheckCard": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/CheckLabel": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/CheckSettings": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/EditVocabForm": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/ProgressDots": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/TypeArea": {
+    "eject": "risky",
+    "wrap": "risky"
+  },
+  "check/VocabActions": {
     "eject": "risky",
     "wrap": "risky"
   },

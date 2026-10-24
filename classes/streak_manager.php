@@ -73,8 +73,8 @@ class streak_manager
         $types = $selectedtype ? [$selectedtype] : $this->types;
         foreach ($types as $type) {
             $streak = $this->get_streak($type);
-            $info[$type]['streak'] = $streak->streak;
-            $info[$type]['isactive'] = self::is_active($streak);
+            $info[$type]['streak'] = $streak ? $streak->streak : 0;
+            $info[$type]['isactive'] = $streak && self::is_active($streak);
         }
         if ($selectedtype) {
             return (object)$info[$selectedtype];
@@ -84,7 +84,7 @@ class streak_manager
     }
 
     public static function is_active(object|null $streak): bool {
-        if (!$streak) {
+        if (!$streak || $streak->streak == 0) {
             return false;
         }
         return $streak->timemodified > strtotime('today midnight');
@@ -103,11 +103,15 @@ class streak_manager
         $streak = $this->get_streak($type);
 
         if (!$streak) {
+            if (!$extend) {
+                return;
+            }
+
             $streak = (object)[
                 'userid' => $this->userid,
                 'cmid' => $this->cmid,
                 'type' => $type,
-                'streak' => $extend ? 1 : 0,
+                'streak' => 1,
                 'timemodified' => time(),
             ];
             $DB->insert_record('vocabcoach_streaks', $streak);
@@ -125,8 +129,8 @@ class streak_manager
             }
         } else {
             // Streak is reset.
-            $streak->timemodified = time();
             if ($extend) {
+                $streak->timemodified = time();
                 $streak->streak = 1;
             } else {
                 $DB->delete_records('vocabcoach_streaks', ['id' => $streak->id]);

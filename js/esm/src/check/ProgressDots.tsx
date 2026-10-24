@@ -48,15 +48,19 @@ export default function ProgressDots({total, outcomes}: ProgressDotsProps) {
     return (
         <div id="progress-bar" className="my-3" ref={barRef}>
             {Array.from({length: total}, (unused, index) => {
-                const outcome = outcomes[index];
-                const done = outcome !== undefined;
+                const done = outcomes[index] !== undefined;
+                let addClass = '';
+                if (done) {
+                    addClass = outcomes[index] ? 'dot-green' : 'dot-red';
+                }
+
                 return (
                     <div key={index}
                          className={index % everyNth === 0 ? '' : 'hidden'}
                          style={{transform: done
                              ? `translateX(${index * step}px)`
                              : `translateX(calc(100% - ${(total - index) * step}px))`}}>
-                        <div className={`vocab-dot ${outcome ? 'dot-green' : 'dot-red'}`} />
+                        <div className={`vocab-dot ${addClass}`} />
                     </div>
                 );
             })}

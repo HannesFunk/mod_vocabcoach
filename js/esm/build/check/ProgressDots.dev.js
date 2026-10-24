@@ -19,16 +19,19 @@ function ProgressDots({ total, outcomes }) {
   const everyNth = getEveryNth(total, barWidth);
   const step = DOT_SPACING / everyNth;
   return /* @__PURE__ */ jsxDEV("div", { id: "progress-bar", className: "my-3", ref: barRef, children: Array.from({ length: total }, (unused, index) => {
-    const outcome = outcomes[index];
-    const done = outcome !== void 0;
+    const done = outcomes[index] !== void 0;
+    let addClass = "";
+    if (done) {
+      addClass = outcomes[index] ? "dot-green" : "dot-red";
+    }
     return /* @__PURE__ */ jsxDEV(
       "div",
       {
         className: index % everyNth === 0 ? "" : "hidden",
         style: { transform: done ? `translateX(${index * step}px)` : `translateX(calc(100% - ${(total - index) * step}px))` },
-        children: /* @__PURE__ */ jsxDEV("div", { className: `vocab-dot ${outcome ? "dot-green" : "dot-red"}` }, void 0, false, {
+        children: /* @__PURE__ */ jsxDEV("div", { className: `vocab-dot ${addClass}` }, void 0, false, {
           fileName: "public/mod/vocabcoach/js/esm/src/check/ProgressDots.tsx",
-          lineNumber: 59,
+          lineNumber: 63,
           columnNumber: 25
         }, this)
       },
@@ -36,7 +39,7 @@ function ProgressDots({ total, outcomes }) {
       false,
       {
         fileName: "public/mod/vocabcoach/js/esm/src/check/ProgressDots.tsx",
-        lineNumber: 54,
+        lineNumber: 58,
         columnNumber: 21
       },
       this

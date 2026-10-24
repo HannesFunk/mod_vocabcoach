@@ -80,4 +80,27 @@ class mod_vocabcoach_generator extends testing_module_generator {
 
         return $record;
     }
+
+    /**
+     * Create a vocab item and put it into a user's first box, due for checking.
+     *
+     * @param array $record Requires userid and cmid; front and back are optional.
+     * @return stdClass
+     */
+    public function create_vocab($record = []) {
+        $defaults = [
+            'front' => 'front',
+            'back' => 'back',
+        ];
+
+        $record = (object)array_merge($defaults, $record);
+
+        $manager = new \mod_vocabcoach\vocab_manager();
+        $vocab = $manager->get_or_create_vocab($record->front, $record->back);
+        $manager->add_vocab_ids_to_user([$vocab->get('id')], $record->cmid, $record->userid);
+
+        $record->id = $vocab->get('id');
+
+        return $record;
+    }
 }

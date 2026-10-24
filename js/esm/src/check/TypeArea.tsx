@@ -14,8 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 import {TypeButtonLabels, Vocab} from '../types';
-import {useState} from "react";
-
+import {useState, type SubmitEvent} from "react";
 
 type TypeAreaProps = {
     vocab: Vocab,
@@ -29,7 +28,7 @@ export default function TypeArea({vocab, onAnswer, buttonLabels}: TypeAreaProps)
 
     return (
         <>
-            <div id="check-type-area">
+            <form id="check-type-area" onSubmit={(e) => onSubmit(e)}>
                 <label htmlFor="input-vocab-front"></label>
                 <input type="text" name="input-vocab-front" id="input-vocab-front"
                        autoCapitalize="off" autoComplete="none" spellCheck="false"
@@ -39,27 +38,26 @@ export default function TypeArea({vocab, onAnswer, buttonLabels}: TypeAreaProps)
                 />
                 {revealed ?
                     <div className="d-flex gap-2 justify-content-center">
-                        <button className="btn btn-secondary"
+                        <button type="button" className="btn btn-secondary"
                                 onClick={() => onAnswer(false)}>
                             {buttonLabels.typeNo}
                         </button>
-                        <button className="btn btn-secondary"
+                        <button type="button" className="btn btn-secondary"
                                 onClick={() => onAnswer(true)}>
                             {buttonLabels.typeOverride}
                         </button>
                     </div>
                     : <div className="d-flex gap-2 justify-content-center">
-                        <button className="btn btn-secondary"
-                                onClick={() => reveal(true)}>
+                        <button type="submit" className="btn btn-secondary">
                             {buttonLabels.typeCheck}
                         </button>
-                        <button className="btn btn-secondary"
+                        <button type="button" className="btn btn-secondary"
                                 onClick={() => reveal(false)}>
                             {buttonLabels.typeReveal}
                         </button>
                     </div>
                 }
-            </div>
+            </form>
             <div id="check-box-back" className="check-box d-flex">
                 <div id="check-back" className="check-label">
                     {vocab.back}
@@ -67,6 +65,11 @@ export default function TypeArea({vocab, onAnswer, buttonLabels}: TypeAreaProps)
             </div>
         </>
     );
+
+    function onSubmit(e: SubmitEvent<HTMLFormElement>) {
+        e.preventDefault();
+        reveal(true);
+    }
 
     function reveal(checkInput: boolean) {
         if (checkInput && typedInput === vocab.front) {

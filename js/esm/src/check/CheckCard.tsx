@@ -77,7 +77,7 @@ export default function CheckCard({vocab, mode, onAnswer, buttonLabels}: CheckCa
                 onClick={() => onAnswer(false)}>
                 {buttonLabels.no}
             </button>
-            <button id="check-button-no"
+            <button id="check-button-yes"
                 className="btn btn-secondary"
                 onClick={() => onAnswer(true)}>
                 {buttonLabels.yes}

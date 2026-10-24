@@ -6,10 +6,10 @@ function TypeArea({ vocab, onAnswer, buttonLabels }) {
   const [revealed, setRevealed] = useState(false);
   const [typedInput, setTypedInput] = useState("");
   return /* @__PURE__ */ jsxDEV(Fragment, { children: [
-    /* @__PURE__ */ jsxDEV("div", { id: "check-type-area", children: [
+    /* @__PURE__ */ jsxDEV("form", { id: "check-type-area", onSubmit: (e) => onSubmit(e), children: [
       /* @__PURE__ */ jsxDEV("label", { htmlFor: "input-vocab-front" }, void 0, false, {
         fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-        lineNumber: 33,
+        lineNumber: 32,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV(
@@ -29,7 +29,7 @@ function TypeArea({ vocab, onAnswer, buttonLabels }) {
         false,
         {
           fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-          lineNumber: 34,
+          lineNumber: 33,
           columnNumber: 17
         },
         this
@@ -38,6 +38,7 @@ function TypeArea({ vocab, onAnswer, buttonLabels }) {
         /* @__PURE__ */ jsxDEV(
           "button",
           {
+            type: "button",
             className: "btn btn-secondary",
             onClick: () => onAnswer(false),
             children: buttonLabels.typeNo
@@ -46,7 +47,7 @@ function TypeArea({ vocab, onAnswer, buttonLabels }) {
           false,
           {
             fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-            lineNumber: 42,
+            lineNumber: 41,
             columnNumber: 25
           },
           this
@@ -54,6 +55,7 @@ function TypeArea({ vocab, onAnswer, buttonLabels }) {
         /* @__PURE__ */ jsxDEV(
           "button",
           {
+            type: "button",
             className: "btn btn-secondary",
             onClick: () => onAnswer(true),
             children: buttonLabels.typeOverride
@@ -62,35 +64,25 @@ function TypeArea({ vocab, onAnswer, buttonLabels }) {
           false,
           {
             fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-            lineNumber: 46,
+            lineNumber: 45,
             columnNumber: 25
           },
           this
         )
       ] }, void 0, true, {
         fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-        lineNumber: 41,
+        lineNumber: 40,
         columnNumber: 21
       }, this) : /* @__PURE__ */ jsxDEV("div", { className: "d-flex gap-2 justify-content-center", children: [
+        /* @__PURE__ */ jsxDEV("button", { type: "submit", className: "btn btn-secondary", children: buttonLabels.typeCheck }, void 0, false, {
+          fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
+          lineNumber: 51,
+          columnNumber: 25
+        }, this),
         /* @__PURE__ */ jsxDEV(
           "button",
           {
-            className: "btn btn-secondary",
-            onClick: () => reveal(true),
-            children: buttonLabels.typeCheck
-          },
-          void 0,
-          false,
-          {
-            fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-            lineNumber: 52,
-            columnNumber: 25
-          },
-          this
-        ),
-        /* @__PURE__ */ jsxDEV(
-          "button",
-          {
+            type: "button",
             className: "btn btn-secondary",
             onClick: () => reveal(false),
             children: buttonLabels.typeReveal
@@ -99,35 +91,40 @@ function TypeArea({ vocab, onAnswer, buttonLabels }) {
           false,
           {
             fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-            lineNumber: 56,
+            lineNumber: 54,
             columnNumber: 25
           },
           this
         )
       ] }, void 0, true, {
         fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-        lineNumber: 51,
+        lineNumber: 50,
         columnNumber: 23
       }, this)
     ] }, void 0, true, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-      lineNumber: 32,
+      lineNumber: 31,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { id: "check-box-back", className: "check-box d-flex", children: /* @__PURE__ */ jsxDEV("div", { id: "check-back", className: "check-label", children: vocab.back }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-      lineNumber: 64,
+      lineNumber: 62,
       columnNumber: 17
     }, this) }, void 0, false, {
       fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-      lineNumber: 63,
+      lineNumber: 61,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "public/mod/vocabcoach/js/esm/src/check/TypeArea.tsx",
-    lineNumber: 31,
+    lineNumber: 30,
     columnNumber: 9
   }, this);
+  function onSubmit(e) {
+    e.preventDefault();
+    reveal(true);
+  }
+  __name(onSubmit, "onSubmit");
   function reveal(checkInput) {
     if (checkInput && typedInput === vocab.front) {
       onAnswer(true);

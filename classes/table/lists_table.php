@@ -83,7 +83,7 @@ class lists_table extends sql_table implements dynamic {
             . $namesql->selects;
 
         $from = '{vocabcoach_lists} l
-                 JOIN {user} u ON u.id = l.createdby' . $namesql->joins;
+                 LEFT JOIN {user} u ON u.id = l.createdby' . $namesql->joins;
 
         $where = 'l.cmid = :cmid AND (l.private = 0 OR l.createdby = :userid)';
         $params = ['cmid' => $this->cmid, 'userid' => $USER->id] + $namesql->params;

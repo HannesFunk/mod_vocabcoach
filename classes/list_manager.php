@@ -30,7 +30,7 @@ class list_manager {
         $context = module::instance($cmid);
 
         if ($list->get('cmid') !== $cmid) {
-            throw new moodle_exception('listnotinactivity', 'modvocabcoach');
+            throw new moodle_exception('listnotinactivity', 'mod_vocabcoach');
         }
 
         $this->list = $list;

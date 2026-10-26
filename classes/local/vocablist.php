@@ -61,4 +61,8 @@ class vocablist extends persistent {
             ],
         ];
     }
+
+    public function can_view(int $userid): bool {
+        return $this->get('private') == false || $this->get('createdby') == $userid;
+    }
 }

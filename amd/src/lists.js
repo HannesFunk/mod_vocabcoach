@@ -45,14 +45,6 @@ export function init(moduleId) {
                 deleteList(listId);
                 break;
 
-            case Selectors.actions.checkList:
-                location.href = 'check.php?id=' + cmid + '&listid=' + listId;
-                break;
-
-            case Selectors.actions.editList:
-                location.href = 'add_vocab.php?id=' + cmid + '&listid=' + listId;
-                break;
-
             case Selectors.actions.addListToUser:
                 addListToUser(listId);
                 break;
@@ -60,13 +52,9 @@ export function init(moduleId) {
             case Selectors.actions.distributeList:
                 distributeList(listId, cmid);
                 break;
-
-            // Those two omitted for now.
-            // case Selectors.actions.showCsv:
-            // case Selectors.actions.showPdf:
         }
 
-        if (menuItem.href === '#') {
+        if (menuItem.getAttribute('href') === '#') {
             e.preventDefault();
         }
 
@@ -90,10 +78,6 @@ export function init(moduleId) {
 const Selectors = {
     actions: {
         deleteList: 'mod_vocabcoach/delete_list',
-        checkList: 'mod_vocabcoach/check_list',
-        showPdf: 'mod_vocabcoach/show_pdf',
-        showCsv: 'mod_vocabcoach/show_csv',
-        editList: 'mod_vocabcoach/edit_list',
         addListToUser: 'mod_vocabcoach/add_list_to_user',
         distributeList: 'mod_vocabcoach/distribute_list',
     }

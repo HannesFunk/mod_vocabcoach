@@ -21,6 +21,7 @@ use core\output\html_writer;
 use core_table\dynamic;
 use core_table\local\filter\filterset;
 use core_table\sql_table;
+use moodle_url;
 
 class lists_table extends sql_table implements dynamic {
     protected int $cmid;
@@ -120,11 +121,15 @@ class lists_table extends sql_table implements dynamic {
         global $USER, $OUTPUT;
         $editable = $this->caneditall || (int) $row->createdby === (int)$USER->id;
 
-
+        $cmidlistparams = ['id' => $this->cmid, 'listid' => $row->id];
         $menucontext = [
             'id' => $row->id,
             'editable' => $editable,
             'distributable' => $this->candistribute,
+            'url_pdf_export' => new moodle_url('/mod/vocabcoach/export.php',  [...$cmidlistparams, 'dataformat' => 'pdf']),
+            'url_csv_export' => new moodle_url('/mod/vocabcoach/export.php',  [...$cmidlistparams, 'dataformat' => 'csv']),
+            'url_check' => new moodle_url('/mod/vocabcoach/check.php', $cmidlistparams),
+            'url_edit' => new moodle_url('/mod/vocabcoach/check.php', $cmidlistparams),
         ];
 
         return $OUTPUT->render_from_template(

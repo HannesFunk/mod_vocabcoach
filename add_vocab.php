@@ -130,7 +130,7 @@ if ($mform->is_cancelled()) {
     }
 
     if ($formdata->list_distribute_now) {
-        if (has_capability('mod/vocabcoach:distribute_lists', $context)) {
+        if (has_capability('mod/vocabcoach:distribute_lists', $modulecontext)) {
             $lm = new \mod_vocabcoach\list_manager($listid, $cmid);
             $lm->distribute_to_students();
         } else {

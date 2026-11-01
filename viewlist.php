@@ -58,7 +58,6 @@ $PAGE->set_url('/mod/vocabcoach/viewlist.php');
 $PAGE->set_title(get_string('list_pagetitle', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('list_pagetitle', 'mod_vocabcoach'));
 $PAGE->navbar->add($listinfo->title);
-$PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 
 $checkapi = new \mod_vocabcoach\external\vocab_api();
 $vocabarray = $checkapi->get_list_vocabs($listid);

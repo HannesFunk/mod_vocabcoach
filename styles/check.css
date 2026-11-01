@@ -5,10 +5,6 @@
     margin: auto;
 }
 
-#check-buttons.hidden {
-    display: none;
-}
-
 .check-box {
     border: 1px solid grey;
     border-radius: 10px;
@@ -18,10 +14,6 @@
     margin: 15px auto;
     overflow-y: scroll;
     scrollbar-width: none;
-}
-
-.check-box.hidden {
-    display: none !important;
 }
 
 .check-label{
@@ -45,25 +37,6 @@
     flex-direction: column;
 }
 
-.check-summary.hidden {
-    display: none;
-}
-
-.check-summary > div {
-    margin-bottom: 1rem;
-}
-
-.check-summary:hover {
-    background-color: #f5f9fc;
-    border: 1px solid #3584c9;
-}
-
-.check-summary-known,
-.check-summary-total {
-    font-size: xx-large;
-    font-weight: bold;
-}
-
 input.wrong {
     animation: shake .5s;
     border-color: #e70a0a;
@@ -82,14 +55,6 @@ input.wrong {
     80% {
         transform: translate(-8px);
     }
-}
-
-.check-number-remaining {
-    float: right;
-}
-
-.instruction-front-back-random {
-    float: left;
 }
 
 #input-vocab-front {

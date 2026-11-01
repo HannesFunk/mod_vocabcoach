@@ -13,7 +13,7 @@ import {removeVocabFromUserAJAX} from "./repository";
  *
  * The handler is delegated on the document, so it also covers rows added after init.
  */
-export function init () {
+export function init() {
     document.addEventListener('click', e => {
        if (e.target.closest(Selectors.actions.removeVocab)) {
            let dataid = e.target.closest(Selectors.actions.removeVocab).getAttribute('data-dataid');

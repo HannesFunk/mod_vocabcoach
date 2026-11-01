@@ -8,65 +8,6 @@
 
 import {call as fetchMany} from 'core/ajax';
 
-/**
- * Records whether the user knew a vocabulary item and moves it to the next box stage.
- *
- * @param {Number} vocabid The id of the user's vocabulary record.
- * @param {Number} userid The id of the user the record belongs to.
- * @param {Boolean} known Whether the user answered the item correctly.
- * @returns {Promise} Resolves once the record has been updated.
- */
-export const updateVocabAJAX = (
-    vocabid, userid, known
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_update_vocab',
-    args: {
-        dataid: vocabid,
-        userid: userid,
-        known: known
-    },
-}])[0];
-
-/**
- * Saves an edited vocabulary item belonging to a user.
- *
- * @param {Object} updatedVocab The vocabulary item, with front, back and dataid properties.
- * @returns {Promise<Object>} Resolves with the new dataid, or -1 if the item could not be saved.
- */
-export const editUserVocabAJAX = (
-    updatedVocab,
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_edit_user_vocab',
-    args: {
-        front: updatedVocab.front,
-        back: updatedVocab.back,
-        dataid: updatedVocab.dataid
-    },
-}])[0];
-
-/**
- * Fetches the vocabulary items in one stage of a user's box.
- *
- * @param {Number} userid The id of the user whose box is read.
- * @param {Number} cmid The course module id.
- * @param {Number} stage The box stage to read.
- * @param {Boolean} force Whether to include items that are not due yet.
- * @returns {Promise<Array>} Resolves with the vocabulary items.
- */
-export const getBoxArrayAJAX = (
-    userid,
-    cmid,
-    stage,
-    force
-) => fetchMany([{
-    methodname: 'mod_vocabcoach_get_user_vocabs',
-    args: {
-        userid,
-        cmid,
-        stage,
-        force
-    },
-}])[0];
 
 /**
  * Deletes a vocabulary list.

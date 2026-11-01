@@ -39,7 +39,6 @@ $PAGE->set_url('/mod/vocabcoach/viewbox.php', ['id' => $cmid, 'stage' => $stage]
 $PAGE->set_title(get_string('list_pagetitle', 'mod_vocabcoach'));
 $PAGE->set_heading(get_string('list_pagetitle', 'mod_vocabcoach'));
 $PAGE->navbar->add(get_string('view_box_title', 'mod_vocabcoach', $stage));
-$PAGE->requires->css('/mod/vocabcoach/styles/check.css');
 $PAGE->requires->js_call_amd('mod_vocabcoach/viewbox', 'init');
 
 $checkapi = new \mod_vocabcoach\external\vocab_api();

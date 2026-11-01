@@ -63,7 +63,7 @@ class add_list_vocabs_to_user extends external_api {
         require_capability('mod/vocabcoach:view', $context);
 
         $list = new vocablist($listid);
-        $listinactivity = (int) $list->get('id') === $cmid;
+        $listinactivity = (int) $list->get('cmid') === $cmid;
         $canseelist = !$list->get('private') || (int)$list->get('createdby') === $USER->id;
 
         if (!$listinactivity || !$canseelist) {

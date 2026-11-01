@@ -82,15 +82,24 @@ class mod_vocabcoach_generator extends testing_module_generator {
     }
 
     /**
-     * Create a vocab item and put it into a user's first box, due for checking.
+     * Create a vocab item and place it in a user's box.
      *
-     * @param array $record Requires userid and cmid; front and back are optional.
+     * Vocab items are deduplicated on their text and a user cannot hold the same item twice, so
+     * calling this again with a front/back that already exists creates no second card and instead
+     * moves the existing one to the given stage. Pass a distinct front/back for every card.
+     *
+     * @param array $record Requires userid and cmid. Optional: front, back, stage, lastchecked.
+     *                      Omitting lastchecked leaves the card due for checking.
      * @return stdClass
      */
     public function create_vocab($record = []) {
+        global $DB;
+
         $defaults = [
             'front' => 'front',
             'back' => 'back',
+            'stage' => 1,
+            'lastchecked' => null,
         ];
 
         $record = (object)array_merge($defaults, $record);
@@ -100,6 +109,44 @@ class mod_vocabcoach_generator extends testing_module_generator {
         $manager->add_vocab_ids_to_user([$vocab->get('id')], $record->cmid, $record->userid);
 
         $record->id = $vocab->get('id');
+
+        $data = $DB->get_record(
+            'vocabcoach_vocabdata',
+            ['vocabid' => $record->id, 'cmid' => $record->cmid, 'userid' => $record->userid],
+            '*',
+            MUST_EXIST
+        );
+        $data->stage = $record->stage;
+        if ($record->lastchecked !== null) {
+            $data->lastchecked = $record->lastchecked;
+        }
+        $DB->update_record('vocabcoach_vocabdata', $data);
+
+        $record->dataid = $data->id;
+
+        return $record;
+    }
+
+    /**
+     * Create a vocabdata row whose vocabid points at no vocab item.
+     *
+     * This models the orphan rows that arise because Moodle does not enforce the declared
+     * foreign key, and that box and leaderboard counts must ignore.
+     *
+     * @param array $record Requires userid and cmid. Optional: stage, lastchecked.
+     * @return stdClass
+     */
+    public function create_orphan_vocabdata($record = []) {
+        global $DB;
+
+        $defaults = [
+            'stage' => 1,
+            'lastchecked' => 0,
+        ];
+
+        $record = (object)array_merge($defaults, $record);
+        $record->vocabid = (int)$DB->get_field_sql('SELECT COALESCE(MAX(id), 0) FROM {vocabcoach_vocab}') + 1000;
+        $record->id = $DB->insert_record('vocabcoach_vocabdata', $record);
 
         return $record;
     }

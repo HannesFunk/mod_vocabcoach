@@ -65,15 +65,16 @@ class vocabhelper {
 
     /**
      * Returns a string when the vocab is due next
-     * @param int|null $lastchecked
-     * @param int $boxtime
+     * @param int|null $lastchecked The last time the vocab was checked
+     * @param int $stage The stage the vocab is currently at
      * @return string
      */
-    public function compute_due_time_string(int|null $lastchecked, int $boxtime): string {
+    public function compute_due_time_string(int|null $lastchecked, int $stage): string {
         if ($lastchecked === null) {
             return '-';
         }
 
+        $boxtime = $this->boxtimes[$stage];
         $nextdue = time() + $boxtime * 60 * 60 * 24;
         $secondsleft = $nextdue - $lastchecked;
         if ($secondsleft > 60 * 60 * 24) {
@@ -85,18 +86,35 @@ class vocabhelper {
         }
     }
 
-    /**
-     * Return SQL conditions for vocabs to be due in a box.
-     * @return string
-     */
-    public function get_sql_box_conditions(): string {
-        $boxconditions = "";
-        for ($i = 1; $i <= $this->boxnumber; $i++) {
-            if ($i != 1) {
-                $boxconditions .= " OR ";
-            }
-            $boxconditions .= " (vd.stage = $i AND lastchecked < " . $this->old_timestamp($this->boxtimes[$i]) . ")";
+    public function get_due_sql(int $stage): array {
+        if (!array_key_exists($stage, $this->boxtimes)) {
+            throw new \invalid_parameter_exception('Invalid stage: ' . $stage);
         }
-        return $boxconditions;
+
+        $key = 'duetime' . $stage;
+        return [
+            "vd.lastchecked < :$key",
+            [$key => $this->old_timestamp($this->boxtimes[$stage])]
+        ];
+    }
+
+    public function get_due_sql_all(): array {
+        $clauses = [];
+        $params = [];
+        for ($i = 1; $i <= $this->boxnumber; $i++) {
+            [$clause, $param] = $this->get_due_sql($i);
+            $clauses[] = "(vd.stage = $i AND $clause)";
+            $params += $param;
+        }
+        $sql = '(' . implode(' OR ', $clauses) . ')';
+        return [$sql, $params];
+    }
+
+    public function get_vocabs_sql(int $userid): array {
+        $sql = " FROM {vocabcoach_vocabdata} vd
+                 JOIN {vocabcoach_vocab} v ON v.id = vd.vocabid
+                 WHERE vd.userid = :userid AND vd.cmid = :cmid";
+        $params = ['userid' => $userid, 'cmid' => $this->cmid];
+        return [$sql, $params];
     }
 }

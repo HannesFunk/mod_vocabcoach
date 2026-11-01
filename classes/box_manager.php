@@ -17,7 +17,6 @@
 namespace mod_vocabcoach;
 
 defined('MOODLE_INTERNAL') || die();
-require('vocabhelper.php');
 
 /**
  * Box manager class. Manages the vocab boxes for a user.
@@ -30,9 +29,6 @@ require('vocabhelper.php');
 class box_manager {
     /** @var vocabhelper The instance of vocabhelper to do basic vocab operations */
     private vocabhelper $vocabhelper;
-
-    /** @var int $cmid Course Module ID */
-    private int $cmid;
 
     /** @var int $userid User ID */
     private int $userid;
@@ -49,7 +45,6 @@ class box_manager {
      */
     public function __construct(int $cmid, int $userid) {
         $this->vocabhelper = new vocabhelper($cmid);
-        $this->cmid = $cmid;
         $this->userid = $userid;
         $this->boxdata = $this->query_box_details();
     }
@@ -60,50 +55,41 @@ class box_manager {
      */
     private function query_box_details(): array {
         global $DB;
+        $vh = $this->vocabhelper;
+        [$from, $params] = $vh->get_vocabs_sql($this->userid);
+        [$duesql, $dueparams] = $vh->get_due_sql_all();
 
-        $output = [];
-        for ($i = 1; $i <= $this->vocabhelper->boxnumber; $i++) {
-            $total = $DB->count_records_select(
-                'vocabcoach_vocabdata',
-                'userid = ? AND cmid = ? AND stage = ?',
-                [$this->userid, $this->cmid, $i]
-            );
+        $sql = "SELECT vd.stage AS stage,
+                       COUNT(*) AS total,
+                       SUM(CASE WHEN $duesql THEN 1 ELSE 0 END) AS due,
+                       MIN(vd.lastchecked) AS oldest
+                $from
+                    GROUP BY vd.stage";
+        $rows = $DB->get_records_sql($sql, array_merge($params, $dueparams));
 
-            $mindayssincecheck = $this->vocabhelper->boxtimes[$i];
-            $due = $DB->count_records_select(
-                'vocabcoach_vocabdata',
-                'userid = ? AND cmid = ? AND stage = ? AND lastchecked < ?',
-                [$this->userid, $this->cmid, $i, $this->vocabhelper->old_timestamp($mindayssincecheck)]
-            );
-
-            if ($due === 0) {
-                $query = "SELECT MIN(vd.lastchecked) AS recent
-                            FROM {vocabcoach_vocabdata} vd
-                            WHERE userid = {$this->userid} AND cmid = {$this->cmid} AND stage = {$i}
-                            ";
-                try {
-                    $record = $DB->get_record_sql($query);
-                    if ($record == null || $record->recent == null) {
-                        $nextdue = '-';
-                    } else {
-                        $nextdue = $this->vocabhelper->compute_due_time_string($record->recent, $this->vocabhelper->boxtimes[$i]);
-                    }
-                } catch (\dml_exception $e) {
-                    $nextdue = '-';
-                }
-            } else {
-                $nextdue = get_string('duetime_now', 'mod_vocabcoach');
+        for ($i = 1; $i <= $vh->boxnumber; $i++) {
+            if (!isset($rows[$i])) {
+                $row = (object)[
+                    'total' => 0,
+                    'due' => 0,
+                    'stage' => $i,
+                    'oldest' => null,
+                ];
+                $rows[$i] = $row;
             }
 
-            $output[] = [
-                'stage' => $i,
-                'due' => $due,
-                'total' => $total,
-                'status' => self::compute_box_status($due, $total),
-                'nextdue' => $nextdue,
-            ];
+            $row = $rows[$i];
+            $row->due = (int) $row->due;
+            $row->total = (int) $row->total;
+            $row->stage = (int) $row->stage;
+
+            $row->status = self::compute_box_status($row->due, $row->total);
+            $row->nextdue = $row->due === 0
+                ?  $vh->compute_due_time_string($row->oldest, $i)
+                : get_string('duetime_now', 'mod_vocabcoach');
         }
-        return $output;
+        ksort($rows);
+        return $rows;
     }
 
     /**
@@ -111,7 +97,7 @@ class box_manager {
      * @return array
      */
     public function get_box_details(): array {
-        return $this->boxdata;
+        return array_values($this->boxdata);
     }
 
     /**
@@ -132,14 +118,9 @@ class box_manager {
     }
     /**
      * Returns the total number of due items across all boxes.
-     *
      * @return int Total number of due items
      */
     public function get_total_due(): int {
-        $total = 0;
-        foreach ($this->boxdata as $box) {
-            $total += $box['due'];
-        }
-        return $total;
+        return array_sum(array_column($this->boxdata, 'due'));
     }
 }

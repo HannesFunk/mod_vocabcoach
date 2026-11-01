@@ -82,10 +82,6 @@ class send_due_notifications extends \core\task\scheduled_task {
                 continue;
             }
 
-            $boxconditions = $vh->get_sql_box_conditions();
-            if (trim($boxconditions) === '') {
-                continue;
-            }
 
             $coursecontext = \context_course::instance($cm->course);
             $students = get_role_users($studentrole->id, $coursecontext, false, 'u.*');
@@ -94,6 +90,8 @@ class send_due_notifications extends \core\task\scheduled_task {
                 continue;
             }
 
+            [$duesql, $dueparams] = $vh->get_due_sql_all();
+
             foreach ($students as $student) {
                 try {
                     $userprefs = new \mod_vocabcoach\user_preferences($cm->cmid, $student->id);
@@ -101,9 +99,13 @@ class send_due_notifications extends \core\task\scheduled_task {
                         continue;
                     }
 
-                    $sql = "SELECT COUNT(*) FROM {vocabcoach_vocabdata} vd
-                            WHERE vd.userid = :userid AND vd.cmid = :cmid AND (" . $boxconditions . ")";
-                    $count = (int)$DB->count_records_sql($sql, ['userid' => $student->id, 'cmid' => $cm->cmid]);
+                    $sql = "SELECT COUNT(*) 
+                            FROM {vocabcoach_vocabdata} vd
+                            JOIN {vocabcoach_vocab} v
+                            ON v.id = vd.vocabid
+                            WHERE vd.userid = :userid AND vd.cmid = :cmid AND $duesql";
+                    $params = $dueparams + ['userid' => $student->id, 'cmid' => $cm->cmid];
+                    $count = $DB->count_records_sql($sql, $params);
 
                     if ($count <= 0) {
                         continue;

@@ -50,62 +50,52 @@ class course_features {
         global $DB;
         $cmid = $this->context->instanceid;
 
-        $boxconditions = $this->vh->get_sql_box_conditions();
-        $users = $this->get_student_users();
-        $perfect = [];
-
-        foreach ($users as $user) {
-            $query =
-                    "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} vd
-                          WHERE userid = $user->id AND cmid = $cmid AND ($boxconditions);";
-            $count = $DB->get_record_sql($query);
-            if ($count->number == 0) {
-                $perfect[] =
-                        (object) ['id' => $user->id, 'firstname' => $user->firstname, 'lastname' => $user->lastname, 'number' => 0];
-            }
-        }
-
-        $courseid = $this->context->get_course_context()->instanceid;
-        $query = "SELECT uu.id, uu.firstname, uu.lastname, COUNT(vd.userid) AS number
-                FROM {user} uu
-                JOIN {user_enrolments} ue ON uu.id = ue.userid
-                JOIN {enrol} en ON ue.enrolid = en.id
-                LEFT JOIN {vocabcoach_vocabdata} vd ON vd.userid = uu.id
-                WHERE en.courseid = $courseid AND vd.cmid = $cmid AND ($boxconditions)
-                GROUP BY uu.id
-                ORDER BY number;";
-        $nonperfect = $DB->get_records_sql($query);
-
-        // Merge all records in the DB.
-        $records = array_merge($perfect, $nonperfect);
-        if (count($records) == 0) {
+        $students = $this->get_student_users();
+        if (empty($students)) {
             return [];
         }
 
-        // Ranking algorithm: array is already ordered, now compute the (dense) rank and edit rows accordingly.
-        $rank = 1;
-        // Compute the index of the last record in the top three.
-        $lasttopthree = 0;
-        $records = array_values($records);
-        $ownindex = null;
-        $records[0]->rank = 1;
+        [$insql, $inparams] = $DB->get_in_or_equal(array_column($students, 'id'), SQL_PARAMS_NAMED, 'uid');
+        [$duesql, $dueparams] = $this->vh->get_due_sql_all();
 
-        $total = count($records);
-        for ($i = 1; $i < $total; $i++) {
-            if ($records[$i - 1]->number < $records[$i]->number) {
+        $sql = "SELECT uu.id, uu.firstname, uu.lastname, COUNT(v.id) AS number
+                FROM {user} uu
+                LEFT JOIN {vocabcoach_vocabdata} vd
+                ON vd.userid = uu.id AND vd.cmid = :cmid AND $duesql
+                LEFT JOIN {vocabcoach_vocab} v ON v.id = vd.vocabid
+                WHERE uu.id $insql
+                GROUP BY uu.id, uu.firstname, uu.lastname
+                ORDER BY number ASC, uu.lastname ASC, uu.firstname ASC, uu.id ASC";
+
+        $records = $DB->get_records_sql($sql, $dueparams + $inparams + ['cmid' => $cmid]);
+        return $this->rank_leaderboard(array_values($records), $userid);
+    }
+
+    private function rank_leaderboard(array $records, int $userid): array {
+        // Ranking algorithm: array is already ordered, now compute the (dense) rank and edit rows accordingly.
+        $rank = 0;
+        $previous = null;
+        $lasttopthree = 0;
+        $ownindex = null;
+
+        foreach ($records as $i => $record) {
+            $record->number = (int) $record->number;
+            if ($record->number !== $previous) {
                 $rank++;
-                $records[$i]->rank = $rank;
+                $record->rank = $rank;
+                $previous = $record->number;
             } else {
-                $records[$i]->rank = "";
+                $record->rank = "";
             }
 
             if ($rank <= 3) {
                 $lasttopthree = $i;
             }
 
-            if ($records[$i]->id == $userid) {
+            $record->self = (int) $record->id === $userid;
+            if ($record->self) {
                 $ownindex = $i;
-                $records[$i]->self = true;
+
             }
         }
 
@@ -155,17 +145,16 @@ class course_features {
             return -1;
         }
         global $DB;
-        $cmid = $this->context->instanceid;
-        $boxconditions = $this->vh->get_sql_box_conditions();
+        [$duesql, $dueparams] = $this->vh->get_due_sql_all();
+        [$insql, $inparams] = $DB->get_in_or_equal(array_column($users, 'id'), SQL_PARAMS_NAMED, 'userid');
 
-        $useridlist = implode(',', array_map(fn($user) => $user->id, $users));
+        $query = "SELECT COUNT(*)
+                  FROM {vocabcoach_vocabdata} vd
+                  JOIN {vocabcoach_vocab} v
+                  ON v.id = vd.vocabid
+                  WHERE vd.userid $insql AND vd.cmid = :cmid AND $duesql";
+        $params = $dueparams + $inparams + ['cmid' => $this->context->instanceid];
 
-        $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd
-             WHERE userid IN ($useridlist) AND cmid = $cmid AND ($boxconditions)";
-        $record = $DB->get_record_sql($query);
-        if (!$record) {
-            return -1;
-        }
-        return $record->total;
+        return $DB->count_records_sql($query, $params);
     }
 }

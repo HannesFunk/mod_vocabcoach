@@ -22,6 +22,7 @@ global $CFG;
 require_once("{$CFG->libdir}/externallib.php");
 require_once(__DIR__ . '/../user_preferences.php');
 
+use core_external\external_description;
 use core_external\external_function_parameters;
 use core_external\external_api;
 use core_external\external_single_structure;
@@ -53,25 +54,20 @@ class checkprefs_api extends external_api {
      * @param int $cmid Course module id
      * @param int $userid User id
      * @param string $mode Mode (front, back, random, type)
-     *
-     * @return array Success flag
      */
-    public static function set_mode(int $cmid, int $userid, string $mode): array {
+    public static function set_mode(int $cmid, int $userid, string $mode): void {
         self::validate_parameters(self::set_mode_parameters(), ['cmid' => $cmid, 'userid' => $userid, 'mode' => $mode]);
         $userprefs = new \mod_vocabcoach\user_preferences($cmid, $userid);
         $userprefs->set_mode($mode);
-        return ['success' => true];
     }
 
     /**
      * Describes the return structure of the service.
      *
-     * @return external_single_structure the return structure
+     * @return external_description|null
      */
-    public static function set_mode_returns(): external_single_structure {
-        return new external_single_structure([
-            'success' => new external_value(PARAM_BOOL, 'Success flag'),
-        ]);
+    public static function set_mode_returns(): ?external_description {
+        return null;
     }
 
     /**

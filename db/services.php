@@ -83,7 +83,7 @@ $functions = [
         'classname' => 'mod_vocabcoach\external\vocab_api',
         'methodname' => 'get_class_total',
         'description' => 'Count the total of vocabs due across all users in a course.',
-        'type' => 'write',
+        'type' => 'read',
         'ajax' => true,
     ],
     'mod_vocabcoach_set_checkmode' => [

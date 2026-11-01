@@ -36,9 +36,8 @@ const Selectors = {
  *
  * @param {Number} cmid The course module id.
  * @param {Number} userid The id of the current user.
- * @param {Number} courseid The id of the course the activity belongs to.
  */
-export function init(cmid, userid, courseid) {
+export function init(cmid, userid) {
     document.addEventListener('click', e => {
         if (e.target.closest(Selectors.actions.forceCheck)) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox), true);
@@ -55,7 +54,7 @@ export function init(cmid, userid, courseid) {
             location.href = 'add_vocab.php?id=' + cmid;
         } else if (e.target.closest(Selectors.actions.showLists)) {
             location.href = 'lists.php?id=' + cmid;
-        } else if (e.target.closest(Selectors.elements.dropdown)) { // keep this after dropdown-items, but before opening boxes
+        } else if (e.target.closest(Selectors.elements.dropdown)) { // Keep this after dropdown-items, but before opening boxes
             return false;
         } else if (e.target.closest(Selectors.actions.checkBox)) {
             checkBox(cmid, e.target.closest(Selectors.actions.checkBox));
@@ -70,9 +69,9 @@ export function init(cmid, userid, courseid) {
                     return;
                 }
                 const intervalID = setInterval( () => {
-                    getClassTotalAJAX(cmid, courseid).then(
-                        (result) => {
-                            document.getElementById('vocabcoach-class-total').innerHTML = result.total === -1 ? '-' : result.total;
+                    getClassTotalAJAX(cmid).then(
+                        (total) => {
+                            document.getElementById('vocabcoach-class-total').innerHTML = total === -1 ? '-' : total;
                         }
                     );
                 }, 1000);

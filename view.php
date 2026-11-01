@@ -53,9 +53,9 @@ $PAGE->set_context($modulecontext);
 
 $PAGE->requires->css('/mod/vocabcoach/styles/boxes.css');
 $PAGE->requires->css('/mod/vocabcoach/styles/activity.css');
-$PAGE->requires->js_call_amd('mod_vocabcoach/view', 'init', [$cmid, $USER->id, $course->id]);
+$PAGE->requires->js_call_amd('mod_vocabcoach/view', 'init', [$cm->id, $USER->id]);
 
-$boxmanager = new box_manager($cmid, $USER->id);
+$boxmanager = new box_manager($cm->id, $USER->id);
 $boxdata = $boxmanager->get_box_details();
 
 $sm = new streak_manager($USER->id, $cm->id);
@@ -78,7 +78,7 @@ $templatecontext = [
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_vocabcoach/view', (object) $templatecontext);
 
-$cf = new \mod_vocabcoach\course_features($course->id, $cmid, $USER->id);
+$cf = new \mod_vocabcoach\course_features($modulecontext);
 
 if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
     $total = $cf->get_class_total();
@@ -90,7 +90,7 @@ if (has_capability('mod/vocabcoach:show_class_total', $modulecontext)) {
 }
 
 if (has_capability('mod/vocabcoach:show_leaderboard', $modulecontext)) {
-    $leaderboarddata = $cf->get_leaderboard();
+    $leaderboarddata = $cf->get_leaderboard($USER->id);
     if (!empty($leaderboarddata)) {
         echo $OUTPUT->render_from_template('mod_vocabcoach/leaderboard', (object) ['leaders' => $leaderboarddata]);
     }

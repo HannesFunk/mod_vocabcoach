@@ -140,16 +140,14 @@ export const removeVocabFromUserAJAX = (
  * Fetches the number of vocabulary items the whole course has practised.
  *
  * @param {Number} cmid The course module id.
- * @param {Number} courseid The course id.
  * @returns {Promise<Object>} Resolves with the total, or -1 if it is not available.
  */
 export const getClassTotalAJAX = (
-    cmid, courseid) =>
+    cmid) =>
     fetchMany([{
         methodname: 'mod_vocabcoach_get_class_total',
         args: {
-            'cmid': cmid,
-            'courseid': courseid
+            'cmid': cmid
         },
     }])[0];
 

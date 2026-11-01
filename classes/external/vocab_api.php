@@ -263,34 +263,38 @@ class vocab_api extends external_api {
     public static function get_class_total_parameters(): external_function_parameters {
         return new external_function_parameters([
                 'cmid' => new external_value(PARAM_INT),
-                'courseid' => new external_value(PARAM_INT),
         ]);
     }
 
     /**
      * Returns description of get_class_total() result value.
      *
-     * @return external_single_structure
+     * @return external_value
      */
-    public static function get_class_total_returns(): external_single_structure {
-        return new external_single_structure([
-                'total' => new external_value(PARAM_INT, 'the total number of due vocab'),
-        ]);
+    public static function get_class_total_returns(): external_value {
+        return new external_value(PARAM_INT, 'the total number of due vocab');
     }
 
     /**
      * Return the total number of vocab waiting for revision in a course, defaults to -1 at error.
      *
      * @param int $cmid
-     * @param int $courseid
-     * @return array
+     * @return int
+     * @throws \invalid_parameter_exception
      */
-    public static function get_class_total(int $cmid, int $courseid): array {
+    public static function get_class_total(int $cmid): int {
+        ['cmid' => $cmid] = self::validate_parameters(
+            self::get_class_total_parameters(),
+            ['cmid' => $cmid]
+        );
 
-        $vh = new vocabhelper($cmid);
-        $total = $vh->get_class_total($courseid);
+        $context = \core\context\module::instance($cmid);
+        self::validate_context($context);
 
-        return ['total' => $total];
+        require_capability('mod/vocabcoach:show_class_total_live', $context);
+
+        $cf = new \mod_vocabcoach\course_features($context);
+        return $cf->get_class_total();
     }
 
 

@@ -16,6 +16,8 @@
 
 namespace mod_vocabcoach;
 
+use core\context\module;
+
 /**
  * Course Features. Provides information across users from the same course.
  *
@@ -25,41 +27,37 @@ namespace mod_vocabcoach;
  * @author    Johannes Funk
  */
 class course_features {
-    /** @var int $courseid Course ID */
-    private int $courseid;
-    /** @var int $cmid Course Module ID */
-    private int $cmid;
-    /** @var int $userid User ID */
-    private int $userid;
+    /** @var module $context The module context */
+    private module $context;
+    /** @var vocabhelper $vh Vocabhelper class */
+    private vocabhelper $vh;
 
     /**
      * Construct the class.
-     * @param int $courseid Course ID
-     * @param int $cmid Course module id
-     * @param int $userid User id
+     * @param module $context module context
      */
-    public function __construct(int $courseid, int $cmid, int $userid) {
-        $this->courseid = $courseid;
-        $this->cmid = $cmid;
-        $this->userid = $userid;
+    public function __construct(module $context) {
+        $this->context = $context;
+        $this->vh = new vocabhelper($context->instanceid);
     }
 
     /**
      * Returns the leaderboard.
+     * @param int $userid ID of the current user
      * @return array the list of the first three leaders and the user.
-     * @throws \dml_exception
      */
-    public function get_leaderboard(): array {
+    public function get_leaderboard(int $userid): array {
         global $DB;
-        $vh = new vocabhelper($this->cmid);
-        $boxconditions = $vh->get_sql_box_conditions();
+        $cmid = $this->context->instanceid;
+
+        $boxconditions = $this->vh->get_sql_box_conditions();
         $users = $this->get_student_users();
         $perfect = [];
 
         foreach ($users as $user) {
             $query =
                     "SELECT COUNT(*) AS number FROM {vocabcoach_vocabdata} vd
-                          WHERE userid = $user->id AND cmid = $this->cmid AND ($boxconditions);";
+                          WHERE userid = $user->id AND cmid = $cmid AND ($boxconditions);";
             $count = $DB->get_record_sql($query);
             if ($count->number == 0) {
                 $perfect[] =
@@ -67,12 +65,13 @@ class course_features {
             }
         }
 
+        $courseid = $this->context->get_course_context()->instanceid;
         $query = "SELECT uu.id, uu.firstname, uu.lastname, COUNT(vd.userid) AS number
                 FROM {user} uu
                 JOIN {user_enrolments} ue ON uu.id = ue.userid
                 JOIN {enrol} en ON ue.enrolid = en.id
                 LEFT JOIN {vocabcoach_vocabdata} vd ON vd.userid = uu.id
-                WHERE en.courseid = $this->courseid AND vd.cmid = $this->cmid AND ($boxconditions)
+                WHERE en.courseid = $courseid AND vd.cmid = $cmid AND ($boxconditions)
                 GROUP BY uu.id
                 ORDER BY number;";
         $nonperfect = $DB->get_records_sql($query);
@@ -104,7 +103,7 @@ class course_features {
                 $lasttopthree = $i;
             }
 
-            if ($records[$i]->id == $this->userid) {
+            if ($records[$i]->id == $userid) {
                 $ownindex = $i;
                 $records[$i]->self = true;
             }
@@ -132,7 +131,7 @@ class course_features {
             return [];
         }
 
-        $coursecontext = \context_course::instance($this->courseid);
+        $coursecontext = $this->context->get_course_context();
         return get_role_users($studentrole->id, $coursecontext, false, 'u.*');
     }
 
@@ -142,27 +141,27 @@ class course_features {
      */
     public function get_class_total(): int {
         $userids = $this->get_student_users();
-        return self::get_due_count($userids);
+        return $this->get_due_count($userids);
     }
 
     /**
      * Returns the number of vocab items that are due
-     * @param array $userids
+     * @param array $users
      * @return int
      * @throws \dml_exception
      */
-    public function get_due_count(array $userids): int {
-        if (empty($userids)) {
+    public function get_due_count(array $users): int {
+        if (empty($users)) {
             return -1;
         }
         global $DB;
-        $vocabhelper = new vocabhelper($this->cmid);
-        $boxconditions = $vocabhelper->get_sql_box_conditions();
+        $cmid = $this->context->instanceid;
+        $boxconditions = $this->vh->get_sql_box_conditions();
 
-        $useridlist = implode(',', array_map(fn($user) => $user->id, $userids));
+        $useridlist = implode(',', array_map(fn($user) => $user->id, $users));
 
         $query = "SELECT COUNT(*) AS total FROM {vocabcoach_vocabdata} vd
-             WHERE userid IN ($useridlist) AND cmid = $this->cmid AND ($boxconditions)";
+             WHERE userid IN ($useridlist) AND cmid = $cmid AND ($boxconditions)";
         $record = $DB->get_record_sql($query);
         if (!$record) {
             return -1;

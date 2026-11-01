@@ -51,13 +51,14 @@ class box_manager {
         $this->vocabhelper = new vocabhelper($cmid);
         $this->cmid = $cmid;
         $this->userid = $userid;
+        $this->boxdata = $this->query_box_details();
     }
 
     /**
-     * Returns an array to display all the information used on the first page
+     * Determine the details of a user's box
      * @return array
      */
-    public function get_box_details(): array {
+    private function query_box_details(): array {
         global $DB;
 
         $output = [];
@@ -102,8 +103,15 @@ class box_manager {
                 'nextdue' => $nextdue,
             ];
         }
-        $this->boxdata = $output;
         return $output;
+    }
+
+    /**
+     * Returns an array to display all the information used on the view page
+     * @return array
+     */
+    public function get_box_details(): array {
+        return $this->boxdata;
     }
 
     /**
